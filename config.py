@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 # Specify the path to your .env file
-dotenv_path = '/home/ubuntu//projects/generic_chat/.evn/.env'
+dotenv_path = '/home/ned/projects/generic_chat/.evn/.env'
 
 # Load environment variables from the specified .env file
 load_dotenv(dotenv_path)
