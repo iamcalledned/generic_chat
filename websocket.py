@@ -79,6 +79,7 @@ async def clear_session_data_after_timeout(session_id, username):
 
 @app.websocket("/")
 async def websocket_endpoint(websocket: WebSocket):
+    print('hit websocket')
     await websocket.accept()
     username = None
     
