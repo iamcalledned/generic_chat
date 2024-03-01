@@ -29,7 +29,7 @@ function initializeShoppingList() {
 
 function initializeWebSocket(sessionId) {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket('wss://www.iamcalledned.ai:8055');
+        socket = new WebSocket('wss://www.iamcalledned.ai/ws');
 
         socket.onopen = function() {
             displayConnectionMessage('Connected to the server.', 'success');
