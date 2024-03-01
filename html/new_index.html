@@ -17,6 +17,7 @@
             height: 100vh;
             margin: 0;
             text-align: center;
+            padding: 0 20px;
         }
         .chatbot-intro {
             margin-bottom: 20px;
@@ -24,17 +25,17 @@
             opacity: 0.9;
         }
         .login-button {
-            padding: 20px 40px;
+            padding: 15px 30px;
             border: none;
             border-radius: 20px;
             background-color: #FFD700; /* Eye-catching button color */
             color: #4E5D94; /* Button text color */
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            display: inline-block;
             text-decoration: none;
+            margin: 0 auto;
         }
         .login-button:hover, .login-button:focus {
             background-color: #FCC419;
@@ -57,6 +58,18 @@
                 transform: translateY(-15px);
             }
         }
+        @media (max-width: 768px) {
+            .chatbot-intro {
+                font-size: 1rem;
+            }
+            .login-button {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+            .icon {
+                font-size: 3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -65,7 +78,7 @@
     <div class="icon">🤖</div>
     <p>Welcome to iamcalledned.ai! Click below to start chatting with Ned, your AI companion.</p>
 </div>
-<button class="login-button" onclick="redirectToLogin()">Login with Amazon Cognito</button>
+<button class="login-button" onclick="redirectToLogin()">Login</button>
 
 <script>
     function redirectToLogin() {

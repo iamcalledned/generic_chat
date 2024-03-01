@@ -29,7 +29,7 @@ function initializeShoppingList() {
 
 function initializeWebSocket(sessionId) {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket('wss://www.whattogrill.com:8055');
+        socket = new WebSocket('wss://www.iamcalledned.ai:8055');
 
         socket.onopen = function() {
             displayConnectionMessage('Connected to the server.', 'success');
