@@ -104,7 +104,7 @@ def load_train_data(file_path):
     return train_data
 
 # Define the path to the file
-file_path = os.path.expanduser('~/generic_chat/ents.txt')
+file_path = os.path.expanduser('~/projects/generic_chat/ents.txt')
 
 # Load the training data from the file
 train_data = load_train_data(file_path)
@@ -147,6 +147,6 @@ with nlp.disable_pipes(*other_pipes):
 
 
 # Save the trained model
-model_path = os.path.expanduser("~/generic_chat/model")
+model_path = os.path.expanduser("~/projects/generic_chat/model")
 
 nlp.to_disk(model_path)
