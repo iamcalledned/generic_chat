@@ -89,7 +89,7 @@ async def clear_session_data_after_timeout(session_id, username):
     except Exception as e:
         print(f"Error in session cleanup task for {username}: {e}")
 
-@app.websocket("/")
+@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     cookies = websocket.cookies
