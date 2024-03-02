@@ -95,6 +95,7 @@ async def websocket_endpoint(websocket: WebSocket):
     cookies = websocket.cookies
     session_id_from_cookies = cookies.get('session_id')
         # Obtain client IP address
+    print('session-from-cookie: ', session_id_from_cookies)
     client_host, client_port = websocket.client
     client_ip = client_host
     print(f"Client IP: {client_ip}")
