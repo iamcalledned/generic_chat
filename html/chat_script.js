@@ -3,6 +3,11 @@ let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
 
+// Get the selected personality from localStorage
+var selectedPersonality = localStorage.getItem('selectedPersonality');
+
+// Now you can use 'selectedPersonality' in your script
+console.log("Selected personality: ", selectedPersonality);
 
 function showTypingIndicator() {
     $('#typing-container').show();
