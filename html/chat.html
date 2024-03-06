@@ -19,7 +19,8 @@
 
             <div class="options-menu">
                 <ul class="menu-items">
-                   <li class="menu-item" id="logout">Logout</li>
+                    <li class="menu-item" id="Personalities">Shopping List</li>
+                    <li class="menu-item" id="logout">Logout</li>
                 </ul>
             </div>
         <!--    <img src="what_to_grill_image_round.png" alt="Logo" class="chat-logo"> -->
@@ -42,53 +43,17 @@
             <button id="send-button">Send</button>
         </div>
     </div>
-    <!-- Personality Overlay -->
-    <div id="personalityModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>What personality are you looking for?</p>
-            <select id="personalitySelect">
-                <option value="timmy">Timmy</option>
-                <!-- Add more options here -->
-            </select>
-            <button id="personalitySubmit">Submit</button>
+    <!-- Shopping List Overlay -->
+    <div id="shopping-list-overlay" class="overlay hidden">
+        <div class="shopping-list-content">
+            <h2>Shopping List</h2>
+            <ul id="shopping-list">
+                <!-- Shopping list items will go here -->
+            </ul>
+            <button id="close-shopping-list">Close</button>
         </div>
     </div>
-<!-- personality Overlay -->
-    <div id="personalityModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>What personality are you looking for?</p>
-            <select id="personalitySelect">
-                <option value="timmy">Timmy</option>
-                <!-- Add more options here -->
-            </select>
-            <button id="personalitySubmit">Submit</button>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            // Immediately show the modal when the page loads
-            $('#personalityModal').show();
-            
-            // Handle the close button
-            $('.close').click(function() {
-                $('#personalityModal').hide();
-            });
-
-            // Handle the submission of the personality selection
-            $('#personalitySubmit').click(function() {
-                var selectedPersonality = $('#personalitySelect').val();
-                localStorage.setItem('selectedPersonality', selectedPersonality);
-                $('#personalityModal').hide();
-                
-                // Now you can use 'selectedPersonality' in your script
-                // For example, you can start loading chatbot with the selected personality
-            });
-        });
-    </script>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
