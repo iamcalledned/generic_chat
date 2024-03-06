@@ -259,7 +259,7 @@ $(document).ready(function() {
         $('#personalityModal').show();
 
         // Initialize event listeners
-        initializePersonalitySelection();
+        
         
 
     $('#send-button').click(sendMessage);
