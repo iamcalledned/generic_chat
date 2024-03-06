@@ -19,8 +19,7 @@
 
             <div class="options-menu">
                 <ul class="menu-items">
-                    <li class="menu-item" id="shopping-list-button">Shopping List</li>
-                    <li class="menu-item" id="logout">Logout</li>
+                   <li class="menu-item" id="logout">Logout</li>
                 </ul>
             </div>
         <!--    <img src="what_to_grill_image_round.png" alt="Logo" class="chat-logo"> -->
@@ -53,6 +52,19 @@
             <button id="close-shopping-list">Close</button>
         </div>
     </div>
+<!-- personality Overlay -->
+    <div id="personalityModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>What personality are you looking for?</p>
+            <select id="personalitySelect">
+                <option value="timmy">Timmy</option>
+                <!-- Add more options here -->
+            </select>
+            <button id="personalitySubmit">Submit</button>
+        </div>
+    </div>
+    
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
