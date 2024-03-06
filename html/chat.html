@@ -6,9 +6,62 @@
     <title>Chatbot</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="manifest" href="/manifest.json">
+    <style>
+        #chat-container {
+            display: none; /* Hide the chat container initially */
+        }
+        .modal {
+            /* Full screen modal */
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <!-- Personality Overlay -->
+    <div id="personalityModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>What personality are you looking for?</p>
+            <select id="personalitySelect">
+                <option value="timmy">Timmy</option>
+                <!-- Add more options here -->
+            </select>
+            <button id="personalitySubmit">Submit</button>
+        </div>
+    </div>
+
     <div id="chat-container">
+        <!-- Chat content here -->
         <header class="chat-header">
             <button class="hamburger-menu">
                 <span></span>
@@ -17,7 +70,7 @@
             </button>
             <div class="options-menu">
                 <ul class="menu-items">
-                   <li class="menu-item" id="logout">Logout</li>
+                    <li class="menu-item" id="logout">Logout</li>
                 </ul>
             </div>
         </header>
@@ -37,40 +90,36 @@
             <button id="send-button">Send</button>
         </div>
     </div>
-    <!-- Personality Overlay -->
-    <div id="personalityModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>What personality are you looking for?</p>
-            <select id="personalitySelect">
-                <option value="timmy">Timmy</option>
-                <!-- Future options go here -->
-            </select>
-            <button id="personalitySubmit">Submit</button>
-        </div>
-    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Show modal on page load
             $('#personalityModal').show();
+
+            // Close button on modal
             $('.close').click(function() {
                 $('#personalityModal').hide();
             });
+
+            // Submit button on modal
             $('#personalitySubmit').click(function() {
                 var selectedPersonality = $('#personalitySelect').val();
                 localStorage.setItem('selectedPersonality', selectedPersonality);
                 $('#personalityModal').hide();
+                $('#chat-container').css('display', 'block'); // Show chat container
                 runPostSelectionActions();
             });
         });
 
         function runPostSelectionActions() {
-            // Dynamically load chat_script.js
+            // Load chat_script.js or any other actions after selection
+            // Example: Dynamically load chat_script.js
             var script = document.createElement('script');
             script.src = 'chat_script.js';
             document.body.appendChild(script);
 
-            // Register the service worker after user selection
+            // Example: Register the service worker
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
                     console.log('Service Worker registered with scope: ', registration.scope);
