@@ -250,7 +250,12 @@ $(document).ready(function() {
          initializeWebSocket();
          initializeShoppingList();
          initializeRecipeBox();
-    
+        // Show the personality selection modal
+        $('#personalityModal').show();
+
+        // Initialize event listeners
+        initializePersonalitySelection();
+        
 
     $('#send-button').click(sendMessage);
     $('#message-input').keypress(function(e) {
