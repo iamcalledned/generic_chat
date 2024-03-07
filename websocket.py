@@ -99,7 +99,16 @@ async def websocket_endpoint(websocket: WebSocket):
     client_ip = client_host
     print(f"Client IP: {client_ip}")
     print("connections at websocket_endpoint:", connections)
-    
+
+    async def ping_client():
+        while True:
+            try:
+                await websocket.send_text(json.dumps({'action': 'ping'}))
+                await asyncio.sleep(30)  # Send a ping every 30 seconds
+            except Exception as e:
+                print(f"Error sending ping: {e}")
+                break
+            ping_task = asyncio.create_task(ping_client())
     
     username = None
     
@@ -140,17 +149,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     await websocket.send_text(json.dumps({
                         'action': 'recent_messages',
                         'messages': recent_messages
+                    
                     }))
-                    async def ping_client():
-                        while True:
-                            try:
-                                await websocket.send_text(json.dumps({'action': 'ping'}))
-                                await asyncio.sleep(30)  # Send a ping every 30 seconds
-                            except Exception as e:
-                                print(f"Error sending ping: {e}")
-                                break
-                            ping_task = asyncio.create_task(ping_client())
 
+                    ping_task = asyncio.create_task(ping_client())
                 else:
 
                     await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
