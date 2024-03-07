@@ -181,6 +181,7 @@ async def websocket_endpoint(websocket: WebSocket):
             
             
             if data_dict.get('action') == 'pong':
+                print('pong')
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
                 continue
 
