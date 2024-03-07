@@ -4,9 +4,10 @@ let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
 
 
+// This function should only be responsible for sending the selected persona
 function sendPersona() {
     var persona = document.getElementById('personaDropdown').value;
-    
+
     // Send the selected persona back to the server
     socket.send(JSON.stringify({
         action: 'persona_selected',
@@ -15,6 +16,11 @@ function sendPersona() {
 
     // Hide the dropdown after selection
     document.getElementById('personaSelection').style.display = 'none';
+}
+
+// This function is called when 'select_persona' message is received
+function showPersonaSelection() {
+    document.getElementById('personaSelection').style.display = 'block';
 }
 
 function showTypingIndicator() {
@@ -162,9 +168,9 @@ function initializeWebSocket() {
             
             
             } else if (msg.action === 'select_persona') {
-                sendPersona();
-
-
+                        // Call the function to show persona selection dropdown
+                    showPersonaSelection();
+    
             } else if (msg.action === 'redirect_login') {
                 // Optionally display an alert or notification to the user
                 alert('Your session is invalid. Please log in again.');

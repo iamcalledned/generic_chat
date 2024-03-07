@@ -101,7 +101,6 @@ async def websocket_endpoint(websocket: WebSocket):
     print("connections at websocket_endpoint:", connections)
 
     async def ping_client():
-        print('called pinger')
         while True:
             try:
                 await websocket.send_text(json.dumps({'action': 'ping'}))
@@ -137,28 +136,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 }))
                 print('sent persona request')
                 
-                # Wait for persona selection from the user
-                persona_selection = await websocket.receive_text()
-                persona_data = json.loads(persona_selection)
-                print('persona selection:', persona_data)
-                
-                if persona_data['action'] == 'persona_selected':
-                    # Now that the persona is selected, you can fetch and send the recent messages
-                    print('persona selected', persona_data['persona'])
-                    userID = await get_user_id(app.state.pool, username)
-                    recent_messages = await get_recent_messages(app.state.pool, userID)
-                    await websocket.send_text(json.dumps({
-                        'action': 'recent_messages',
-                        'messages': recent_messages
-                    
-                    }))
-
-                    ping_task = asyncio.create_task(ping_client())
-                else:
-
-                    await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
-                    #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
-                    return
         else:
             await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
             #await websocket.send_text(json.dumps({'error': 'Session ID required'}))
@@ -179,9 +156,27 @@ async def websocket_endpoint(websocket: WebSocket):
             # Renew the session expiry time
             redis_client.expire(session_id, 3600)
             
-            
+            # Wait for persona selection from the user
+            if data_dict.get('action') == 'persona_selected':
+                # Now that the persona is selected, you can fetch and send the recent messages
+                
+                userID = await get_user_id(app.state.pool, username)
+                recent_messages = await get_recent_messages(app.state.pool, userID)
+                await websocket.send_text(json.dumps({
+                    'action': 'recent_messages',
+                    'messages': recent_messages
+                
+                }))
+
+                ping_task = asyncio.create_task(ping_client())
+            else:
+
+                await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
+                #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
+                return
+
+
             if data_dict.get('action') == 'pong':
-                print('pong')
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
                 continue
 
