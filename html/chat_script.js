@@ -162,7 +162,7 @@ function initializeWebSocket() {
             
             
             } else if (msg.action === 'select_persona') {
-                selectPersona();
+                sendPersona();
 
 
             } else if (msg.action === 'redirect_login') {

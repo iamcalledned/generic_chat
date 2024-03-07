@@ -142,6 +142,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 if persona_data['action'] == 'persona_selected':
                     # Now that the persona is selected, you can fetch and send the recent messages
+                    print('persona selected', persona_data['persona'])
                     userID = await get_user_id(app.state.pool, username)
                     recent_messages = await get_recent_messages(app.state.pool, userID)
                     await websocket.send_text(json.dumps({
