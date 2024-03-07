@@ -3,6 +3,7 @@ let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
 
+
 function sendPersona() {
     var persona = document.getElementById('personaDropdown').value;
     
@@ -158,6 +159,11 @@ function initializeWebSocket() {
             } else if (msg.action === 'force_logout') {
                 // Redirect to login page
                 window.location.href = '/login'; // Adjust URL as needed
+            
+            
+            } else if (msg.action === 'select_persona') {
+                selectPersona();
+
 
             } else if (msg.action === 'redirect_login') {
                 // Optionally display an alert or notification to the user
