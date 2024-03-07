@@ -137,10 +137,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 }))
                 print('sent persona request')
                 
-        else:
-            await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
-            #await websocket.send_text(json.dumps({'error': 'Session ID required'}))
-            return
+            else:
+                await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
+                #await websocket.send_text(json.dumps({'error': 'Session ID required'}))
+                return
 
         while True:
             data = await websocket.receive_text()
