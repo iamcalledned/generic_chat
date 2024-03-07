@@ -173,6 +173,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 }))
 
                 ping_task = asyncio.create_task(ping_client())
+                continue
+            
             else:
 
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
