@@ -149,7 +149,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             except Exception as e:
                                 print(f"Error sending ping: {e}")
                                 break
-                    ping_task = asyncio.create_task(ping_client())
+                            ping_task = asyncio.create_task(ping_client())
 
                 else:
 
@@ -287,8 +287,8 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         print(f"Unhandled exception for user {username}: {e}")
         print("Exception Traceback: " + traceback.format_exc())
-    #finally:
-    #    ping_task.cancel()
+    finally:
+        ping_task.cancel()
 
 async def on_user_reconnect(username, session_id):
     if session_id in tasks:
