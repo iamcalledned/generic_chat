@@ -139,6 +139,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
             else:
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
+                print('hit else 1')
                 #await websocket.send_text(json.dumps({'error': 'Session ID required'}))
                 return
 
@@ -153,6 +154,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Validate session_id
             if not session_id or not redis_client.exists(session_id):
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid or expired session'}))
+                print('hit else 2')
                 
 
             # Renew the session expiry time
@@ -175,6 +177,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
                 #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
+                print('hit else 3')
                 return
 
 
