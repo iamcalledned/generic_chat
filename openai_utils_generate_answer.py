@@ -41,7 +41,7 @@ openai_client = OpenAI()
 openai_client.api_key = Config.OPENAI_API_KEY
 client = OpenAI()
 
-async def generate_answer(pool,username, message, user_ip, uuid):  # Add db_pool parameter
+async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Add db_pool parameter
     # Use your new database module to create a connection
         print("username:", username)
         #userID = await insert_user(pool, userID)
@@ -49,7 +49,7 @@ async def generate_answer(pool,username, message, user_ip, uuid):  # Add db_pool
         print("userID", userID)
 
     
-        active_thread = await get_active_thread_for_user(pool, userID)
+        active_thread = await get_active_thread_for_user(pool, userID, persona)
 
         if active_thread:
             thread_id_n = active_thread['ThreadID']  # Use .get() method to safely access the key
@@ -60,14 +60,14 @@ async def generate_answer(pool,username, message, user_ip, uuid):  # Add db_pool
                     
                     thread_id_n = await create_thread_in_openai()
                     current_time = datetime.datetime.now().isoformat()
-                    await insert_thread(pool, thread_id_n, userID, True, current_time)
+                    await insert_thread(pool, thread_id_n, userID, True, current_time, persona)
             else:
                 print("Key 0 is not present in active_thread.")
         else:
             print("No active thread found for userID:", userID, "Creating a new thread.")
             thread_id_n = await create_thread_in_openai()
             current_time = datetime.datetime.now().isoformat()
-            await insert_thread(pool, thread_id_n, userID, True, current_time)
+            await insert_thread(pool, thread_id_n, userID, True, current_time, persona)
 
         if thread_id_n:
             response_text = await send_message(thread_id_n, message)

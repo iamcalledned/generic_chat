@@ -54,20 +54,20 @@ async def clear_user_session_id(pool, session_id):
        
 
 
-async def insert_thread(pool, thread_id, userID, is_active, created_time):
+async def insert_thread(pool, thread_id, userID, is_active, created_time, persona):
     """Insert a new thread into the threads table"""
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
-            sql = '''INSERT INTO threads(ThreadID, UserID, IsActive, CreatedTime)
-                     VALUES(%s, %s, %s, %s)'''
-            await cur.execute(sql, (thread_id, userID, is_active, created_time))
+            sql = '''INSERT INTO threads(ThreadID, UserID, IsActive, CreatedTime, persona)
+                     VALUES(%s, %s, %s, %s, %s)'''
+            await cur.execute(sql, (thread_id, userID, is_active, created_time, persona))
             await conn.commit()
 
-async def get_active_thread_for_user(pool, userID):
+async def get_active_thread_for_user(pool, userID, persona):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
-            sql = '''SELECT ThreadID FROM threads WHERE UserID = %s'''
-            await cur.execute(sql, (userID,))
+            sql = '''SELECT ThreadID FROM threads WHERE UserID = %s AND persona = %s'''
+            await cur.execute(sql, (userID, persona))
             return await cur.fetchone()
 
 async def deactivate_thread(pool, thread_id):
@@ -78,13 +78,13 @@ async def deactivate_thread(pool, thread_id):
             await cur.execute(sql, (thread_id,))
             await conn.commit()
 
-async def insert_conversation(pool, userID, thread_id, run_id, message, message_type, ip_address):
+async def insert_conversation(pool, userID, thread_id, run_id, message, message_type, ip_address, persona):
     """Insert a new conversation record into the conversations table"""
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
-            sql = '''INSERT INTO conversations(UserID, ThreadID, RunID, Message, MessageType, IPAddress)
-                     VALUES(%s, %s, %s, %s, %s, %s)'''
-            await cur.execute(sql, (userID, thread_id, run_id, message, message_type, ip_address))
+            sql = '''INSERT INTO conversations(UserID, ThreadID, RunID, Message, MessageType, IPAddress, persona)
+                     VALUES(%s, %s, %s, %s, %s, %s, %s)'''
+            await cur.execute(sql, (userID, thread_id, run_id, message, message_type, ip_address, persona))
             await conn.commit()
 
 async def get_conversations_by_run(pool, run_id):
