@@ -144,6 +144,7 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             data = await websocket.receive_text()
             data_dict = json.loads(data)
+            print('data: ', data_dict)
             message = data_dict.get('message', '')
             #session_id = data_dict.get('session_id', '')
             session_id = session_id_from_cookies
