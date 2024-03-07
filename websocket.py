@@ -173,14 +173,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 }))
 
                 ping_task = asyncio.create_task(ping_client())
-                continue
+                continue    
                 
             else:
 
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
                 #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
                 print('hit else 3')
-                return
+                
 
 
             if data_dict.get('action') == 'pong':
