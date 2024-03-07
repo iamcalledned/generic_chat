@@ -82,7 +82,7 @@ async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Ad
             print('created run')
             if run is not None:
                 # Now we have a run ID, we can log the user's message
-                await insert_conversation(pool, userID, thread_id_n, run.id, message, 'user', user_ip)  # Replace 'user_ip' with actual IP if available
+                await insert_conversation(pool, userID, thread_id_n, run.id, message, 'user', user_ip, persona)  # Replace 'user_ip' with actual IP if available
                 print('done with insert')
                 while True:
                     run = client.beta.threads.runs.retrieve(
