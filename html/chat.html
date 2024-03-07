@@ -19,7 +19,6 @@
 
             <div class="options-menu">
                 <ul class="menu-items">
-                    <li class="menu-item" id="Personalities">Shopping List</li>
                     <li class="menu-item" id="logout">Logout</li>
                 </ul>
             </div>
@@ -30,7 +29,7 @@
         </div>
         <!-- Typing indicator -->
         <div id="typing-container">
-            <span id="typing-text">Ned is typing</span>
+            <span id="typing-text">Timmy is typing</span>
             <div class="typing-indicator">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -43,15 +42,14 @@
             <button id="send-button">Send</button>
         </div>
     </div>
-    <!-- Shopping List Overlay -->
-    <div id="shopping-list-overlay" class="overlay hidden">
-        <div class="shopping-list-content">
-            <h2>Shopping List</h2>
-            <ul id="shopping-list">
-                <!-- Shopping list items will go here -->
-            </ul>
-            <button id="close-shopping-list">Close</button>
-        </div>
+    <!-- Persona Selection Dropdown (hidden initially) -->
+    <div id="personaSelection" style="display:none;">
+        <label for="personaDropdown">Choose a persona:</label>
+        <select id="personaDropdown">
+            <option value="persona1">Timmy</option>
+               <!-- Add more personas as needed -->
+        </select>
+        <button onclick="sendPersona()">Submit</button>
     </div>
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>

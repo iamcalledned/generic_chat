@@ -17,6 +17,24 @@ function hideTypingIndicator() {
     $('#typing-container').hide();
 }
 
+// Show the persona selection dropdown
+function selectPersona() {    
+    document.getElementById('personaSelection').style.display = 'block';
+}
+
+
+function sendPersona() {
+    var persona = document.getElementById('personaDropdown').value;
+    console.log("Selected persona: ", persona);
+    // Send the selected persona back to the server
+   // websocket.send(JSON.stringify({
+   //     action: 'persona_selected',
+   //     persona: persona
+   // }));
+
+    // Hide the dropdown after selection
+    document.getElementById('personaSelection').style.display = 'none';
+}
 
 function initializeShoppingList() {
     $('#shopping-list-button').click(function() {
@@ -48,7 +66,7 @@ function displayRecentMessages(messages) {
         if (message.MessageType === 'user') {
             messageElement = $('<div class="message user">').text('You: ' + message.Message);
         } else if (message.MessageType === 'bot') {
-            messageElement = $('<div class="message bot">').text('Ned: ' + message.Message);
+            messageElement = $('<div class="message bot">').text('Timmy: ' + message.Message);
         } else {
             messageElement = $('<div class="message">').text(message.Message); // Fallback for undefined MessageType
         }
@@ -138,7 +156,11 @@ function initializeWebSocket() {
 
             } else if (msg.action === 'recent_messages') {
                     displayRecentMessages(msg.messages);
-     
+
+            } else if (msg.action === 'select_persona') {
+                    selectPersona();
+          
+                    
             } else if (msg.action === 'older_messages') {
                     displayMoreMessages(msg.messages);
     

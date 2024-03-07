@@ -129,9 +129,16 @@ async def websocket_endpoint(websocket: WebSocket):
                 username = session_data['username']
                 # Renew the session expiry time upon successful connection
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
+                
+                # First, ask the user to select a persona
+                print('about to ask for persona')
+                await websocket.send_text(json.dumps({
+                'action': 'select_persona'
+                }))
+                print('asked for persona')
+                
                 #get and send recent messages
                 userID = await get_user_id(app.state.pool, username)
-                
                 recent_messages = await get_recent_messages(app.state.pool, userID)
                 await websocket.send_text(json.dumps({
                         'action': 'recent_messages',
