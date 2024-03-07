@@ -119,6 +119,7 @@ async def websocket_endpoint(websocket: WebSocket):
         initial_data = json.loads(initial_data)
         #session_id = initial_data.get('session_id', '')
         session_id = session_id_from_cookies
+        ping_task = None
     
 
         if session_id:
