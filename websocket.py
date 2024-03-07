@@ -109,7 +109,7 @@ async def websocket_endpoint(websocket: WebSocket):
             except Exception as e:
                 print(f"Error sending ping: {e}")
                 break
-            ping_task = asyncio.create_task(ping_client())
+            
     
     username = None
     
@@ -153,7 +153,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     
                     }))
 
-                    ping_task2 = asyncio.create_task(ping_client())
+                    ping_task = asyncio.create_task(ping_client())
                 else:
 
                     await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
