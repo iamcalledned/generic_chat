@@ -175,13 +175,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 ping_task = asyncio.create_task(ping_client())
                 continue    
                 
-            else:
-
-                await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
-                #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
-                print('hit else 3')
-                
-
 
             if data_dict.get('action') == 'pong':
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
