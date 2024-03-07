@@ -3,11 +3,18 @@ let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
 
-// Get the selected personality from localStorage
-var selectedPersonality = localStorage.getItem('selectedPersonality');
+function sendPersona() {
+    var persona = document.getElementById('personaDropdown').value;
+    
+    // Send the selected persona back to the server
+    socket.send(JSON.stringify({
+        action: 'persona_selected',
+        persona: persona
+    }));
 
-// Now you can use 'selectedPersonality' in your script
-console.log("Selected personality: ", selectedPersonality);
+    // Hide the dropdown after selection
+    document.getElementById('personaSelection').style.display = 'none';
+}
 
 function showTypingIndicator() {
     $('#typing-container').show();
@@ -17,24 +24,7 @@ function hideTypingIndicator() {
     $('#typing-container').hide();
 }
 
-// Show the persona selection dropdown
-function selectPersona() {    
-    document.getElementById('personaSelection').style.display = 'block';
-}
 
-
-function sendPersona() {
-    var persona = document.getElementById('personaDropdown').value;
-    console.log("Selected persona: ", persona);
-    // Send the selected persona back to the server
-   // websocket.send(JSON.stringify({
-   //     action: 'persona_selected',
-   //     persona: persona
-   // }));
-
-    // Hide the dropdown after selection
-    document.getElementById('personaSelection').style.display = 'none';
-}
 
 function initializeShoppingList() {
     $('#shopping-list-button').click(function() {
@@ -157,9 +147,6 @@ function initializeWebSocket() {
             } else if (msg.action === 'recent_messages') {
                     displayRecentMessages(msg.messages);
 
-            } else if (msg.action === 'select_persona') {
-                    selectPersona();
-          
                     
             } else if (msg.action === 'older_messages') {
                     displayMoreMessages(msg.messages);
@@ -277,8 +264,7 @@ $(document).ready(function() {
          initializeWebSocket();
          initializeShoppingList();
          initializeRecipeBox();
-        // Show the personality selection modal
-        $('#personalityModal').show();
+
 
         // Initialize event listeners
         

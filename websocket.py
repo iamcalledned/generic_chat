@@ -130,25 +130,28 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Renew the session expiry time upon successful connection
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
                 
-                # First, ask the user to select a persona
-                print('about to ask for persona')
+                 # First, ask the user to select a persona
                 await websocket.send_text(json.dumps({
-                'action': 'select_persona'
+                    'action': 'select_persona'
                 }))
-                print('asked for persona')
                 
-                #get and send recent messages
-                userID = await get_user_id(app.state.pool, username)
-                recent_messages = await get_recent_messages(app.state.pool, userID)
-                await websocket.send_text(json.dumps({
+                # Wait for persona selection from the user
+                persona_selection = await websocket.receive_text()
+                persona_data = json.loads(persona_selection)
+                
+                if persona_data['action'] == 'persona_selected':
+                    # Now that the persona is selected, you can fetch and send the recent messages
+                    userID = await get_user_id(app.state.pool, username)
+                    recent_messages = await get_recent_messages(app.state.pool, userID)
+                    await websocket.send_text(json.dumps({
                         'action': 'recent_messages',
                         'messages': recent_messages
-                        }))
-    
-            else:
-                await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
-                #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
-                return
+                    }))
+                else:
+
+                    await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid session'}))
+                    #await websocket.send_text(json.dumps({'error': 'Invalid session'}))
+                    return
         else:
             await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
             #await websocket.send_text(json.dumps({'error': 'Session ID required'}))
