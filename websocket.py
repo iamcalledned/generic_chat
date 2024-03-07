@@ -134,6 +134,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text(json.dumps({
                     'action': 'select_persona'
                 }))
+                print('sent persona request')
                 
                 # Wait for persona selection from the user
                 persona_selection = await websocket.receive_text()
