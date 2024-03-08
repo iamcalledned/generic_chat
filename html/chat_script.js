@@ -10,13 +10,14 @@ function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
 
     // Send the selected persona back to the server
-    socket.send(JSON.stringify({
-        action: 'persona_selected',
-        persona: persona
-    }));
-
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: 'persona_selected',
+            persona: persona
+        }));
+    }
     // Update the typing text span with the selected persona's name
-    document.getElementById('typing-text').innerText = `${persona} is typing...`;
+    document.getElementById('typing-text').innerText = persona + ' is typing...';
 
     // Hide the dropdown after selection using classList to remove 'show' class
     document.getElementById('personaSelection').classList.remove('show');
