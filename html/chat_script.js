@@ -2,6 +2,7 @@
 let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
+var persona = "";
 
 
 // This function should only be responsible for sending the selected persona
