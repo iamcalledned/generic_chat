@@ -8,51 +8,52 @@
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-    <div id="chat-container">
-        <header class="chat-header">
-            <!-- Hamburger Menu Button -->
-            <button class="hamburger-menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+    <div id="'main-container">
+        <div id="chat-container">
+            <header class="chat-header">
+                <!-- Hamburger Menu Button -->
+                <button class="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-            <div class="options-menu">
-                <ul class="menu-items">
-                    <li class="menu-item" id="logout">Logout</li>
-                </ul>
+                <div class="options-menu">
+                    <ul class="menu-items">
+                        <li class="menu-item" id="logout">Logout</li>
+                    </ul>
+                </div>
+            <!--    <img src="what_to_grill_image_round.png" alt="Logo" class="chat-logo"> -->
+            </header>
+            <div id="messages">
+                <!-- Chat messages will be dynamically added here -->
             </div>
-        <!--    <img src="what_to_grill_image_round.png" alt="Logo" class="chat-logo"> -->
-        </header>
-        <div id="messages">
-            <!-- Chat messages will be dynamically added here -->
-        </div>
-        <!-- Typing indicator -->
-        <div id="typing-container">
-            <span id="typing-text">Timmy is typing</span>
-            <div class="typing-indicator">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+            <!-- Typing indicator -->
+            <div id="typing-container">
+                <span id="typing-text">Timmy is typing</span>
+                <div class="typing-indicator">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+            <!-- Input field -->
+            <div class="input-group">
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button id="send-button">Send</button>
             </div>
         </div>
-        <!-- Input field -->
-        <div class="input-group">
-            <input type="text" id="message-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
+        <!-- Persona Selection Dropdown (hidden initially) -->
+        <div id="personaSelection" style="display:none;">
+            <label for="personaDropdown">Choose a persona:</label>
+            <select id="personaDropdown">
+                <option value="Timmy">Timmy</option>
+                <option value="Glenda">Glenda</option>
+                <!-- Add more personas as needed -->
+            </select>
+            <button onclick="sendPersona()">Submit</button>
         </div>
     </div>
-    <!-- Persona Selection Dropdown (hidden initially) -->
-    <div id="personaSelection" style="display:none;">
-        <label for="personaDropdown">Choose a persona:</label>
-        <select id="personaDropdown">
-            <option value="Timmy">Timmy</option>
-            <option value="Glenda">Glenda</option>
-               <!-- Add more personas as needed -->
-        </select>
-        <button onclick="sendPersona()">Submit</button>
-    </div>
-
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
