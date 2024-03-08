@@ -7,6 +7,7 @@ dotenv_path = '/home/ned/projects/generic_chat/.evn/.env'
 # Load environment variables from the specified .env file
 load_dotenv(dotenv_path)
 
+
 class Config:
     FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
     COGNITO_USER_POOL_ID = os.getenv('COGNITO_USER_POOL_ID')
