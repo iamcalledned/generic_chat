@@ -74,9 +74,13 @@ async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Ad
             
 
             # Create the run on OpenAI
+            assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
+            print('assistant id:', assistant_id_persona)
             run = client.beta.threads.runs.create(
                 thread_id=thread_id_n,
-                assistant_id="asst_yUIJI6tt54F4xyzr5cq2cxtw"
+                #assistant_id="asst_yUIJI6tt54F4xyzr5cq2cxtw"
+                assistant_id=assistant_id_persona
+                
             )
             
             print('created run')

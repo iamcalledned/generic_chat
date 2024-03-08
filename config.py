@@ -26,3 +26,8 @@ class Config:
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     DB_NAME = os.getenv('DB_NAME')
     SESSION_SECRET_KEY = os.getenv('SESSION_SECRET_KEY')
+    PERSONA_ASSISTANT_MAPPING = {
+        "Timmy": "asst_yUIJI6tt54F4xyzr5cq2cxtw",
+        "Glenda": "asst_id_for_persona2",
+        # Add more mappings as needed
+    }
