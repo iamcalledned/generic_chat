@@ -578,6 +578,9 @@ html, body {
     height: auto;
     border: 1px solid #eaeaea; /* Optional: adds a subtle border */
     transition: all 0.3s ease; /* Smooth transition for interactions */
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s linear 0.3s, opacity 0.3s linear; /* Notice the 0.3s delay for visibility */
 }
 
 #personaDropdown {
@@ -609,13 +612,9 @@ button:hover {
 }
 
 /* Optional: Adding a slight fade-in effect when the selection appears */
-#personaSelection {
-    opacity: 0;
-    visibility: hidden;
-    transition: visibility 0s, opacity 0.3s ease;
-}
 
 #personaSelection.show {
     opacity: 1;
     visibility: visible;
+    transition: visibility 0s linear 0s, opacity 0.3s linear;
 }
