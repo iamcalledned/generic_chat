@@ -14,6 +14,9 @@ function sendPersona() {
         persona: persona
     }));
 
+    // Update the typing text span with the selected persona's name
+    document.getElementById('typing-text').innerText = `${persona} is typing...`;
+
     // Hide the dropdown after selection using classList to remove 'show' class
     document.getElementById('personaSelection').classList.remove('show');
 }
@@ -85,7 +88,7 @@ function displayRecentMessages(messages) {
         if (message.MessageType === 'user') {
             messageElement = $('<div class="message user">').text('You: ' + message.Message);
         } else if (message.MessageType === 'bot') {
-            messageElement = $('<div class="message bot">').text('Timmy: ' + message.Message);
+            messageElement = $('<div class="message bot">').text(persona + ': ' + message.Message);
         } else {
             messageElement = $('<div class="message">').text(message.Message); // Fallback for undefined MessageType
         }
@@ -106,7 +109,7 @@ function displayMoreMessages(messages) {
         if (message.MessageType === 'user') {
             messageElement = $('<div class="message user">').text('You: ' + message.Message);
         } else if (message.MessageType === 'bot') {
-            messageElement = $('<div class="message bot">').text('Ned: ' + message.Message);
+            messageElement = $('<div class="message bot">').text(persona + ': ' + message.Message);
         } else {
             messageElement = $('<div class="message">').text(message.Message); // Fallback for undefined MessageType
         }
