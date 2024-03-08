@@ -559,13 +559,25 @@ html, body {
 }
 
 #personaSelection {
-    background-color: #f2f2f2;
+    display: flex; /* Use flexbox to center inner content */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center content vertically in the flex container */
+    align-items: center; /* Center content horizontally in the flex container */
+    position: fixed; /* Position it relative to the viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto; /* This will center the box */
+    background-color: #f2f2f2; /* Your existing background */
     padding: 20px;
     border-radius: 5px;
-    width: 300px;
-    margin: auto;
-    display: block; /* Assuming you want to override the initial display:none; */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow for better visibility */
+    z-index: 1000; /* Makes sure the div is above other elements */
+    width: fit-content; /* Shrink to fit content */
+    height: fit-content; /* Shrink to fit content */
 }
+
 #personaDropdown {
     width: 100%;
     padding: 10px;
