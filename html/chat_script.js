@@ -7,7 +7,7 @@ var persona = "";
 
 // This function should only be responsible for sending the selected persona
 function sendPersona() {
-    var persona = document.getElementById('personaDropdown').value;
+    persona = document.getElementById('personaDropdown').value;
 
     // Send the selected persona back to the server
     socket.send(JSON.stringify({
