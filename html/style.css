@@ -156,18 +156,23 @@ html, body {
 
 /* Message input styles */
 #message-input {
-    flex-grow: 1;
+    flex-grow: 1; /* Will take up available space */
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 18px;
     font-size: 16px;
     line-height: 1.6;
-    margin-right: 10px;
+    min-height: 50px; /* Set a min-height */
+    overflow-y: auto; /* Allow it to scroll */
+    resize: none; /* If you do not want users to manually resize it */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
 }
 
 /* Send button styles */
 #send-button {
-    padding: 10px 20px;
+    padding: 10px 15px;
+    felx: none;
    background-color: #007bff;
     color: white;
     border: none;
