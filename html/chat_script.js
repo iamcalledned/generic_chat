@@ -3,11 +3,13 @@ let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
 var persona = "";
+console.log('set persona:', persona)
 
 
 // This function should only be responsible for sending the selected persona
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
+    console.log('set persona', persona);
 
     // Send the selected persona back to the server
     if (socket && socket.readyState === WebSocket.OPEN) {
@@ -32,21 +34,6 @@ function showPersonaSelection() {
 function showPersonaSelection() {
     // Use jQuery for consistency since it's used elsewhere in your script
     $('#personaSelection').addClass('show');
-}
-
-function sendPersona() {
-    var persona = $('#personaDropdown').val();
-
-    // Send the selected persona back to the server
-    // Ensure that your WebSocket is connected before sending
-    if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: 'persona_selected',
-            persona: persona
-        }));
-    }
-
-    $('#personaSelection').removeClass('show');
 }
 
 
