@@ -7,24 +7,17 @@ html, body {
     padding: 0;
     padding-top: 20px; /* Adjust this value to create the desired space */
     background-color: #f5f5f5;
-    /*display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     /* height: calc(100% - 20px); /* Subtract the padding from the total height */
     height: 100vh; /* This will make sure the body is as tall as the viewport */
-    /* box-sizing: border-box; */
+    box-sizing: border-box;
 
 }*, *:before, *:after {
     box-sizing: inherit;
   }
-/* main container */
-#main-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
+
 /* Chat container styles */
 #chat-container {
     width: 100%;
