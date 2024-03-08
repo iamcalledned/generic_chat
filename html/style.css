@@ -10,8 +10,7 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* height: calc(100% - 20px); /* Subtract the padding from the total height */
-    height: 100vh; /* This will make sure the body is as tall as the viewport */
+    height: calc(100% - 20px); /* Subtract the padding from the total height */
     box-sizing: border-box;
 
 }*, *:before, *:after {
@@ -28,8 +27,7 @@ html, body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    justify-content: center; /* This will center the child elements vertically */
-    align-items: center; /* This will center the child elements horizontally */
+    justify-content: flex-end;
     height: 95%;
 }
 
@@ -564,8 +562,8 @@ html, body {
     background-color: #f2f2f2;
     padding: 20px;
     border-radius: 5px;
-    width: auto; /* Adjust width as needed, or remove it to allow natural content width */
-    margin: 10px 0; /* Provides space above and below */
+    width: 300px;
+    margin: auto;
     display: block; /* Assuming you want to override the initial display:none; */
 }
 #personaDropdown {
