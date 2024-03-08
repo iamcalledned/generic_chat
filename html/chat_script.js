@@ -20,8 +20,14 @@ function sendPersona() {
 
 // This function is called when 'select_persona' message is received
 function showPersonaSelection() {
-    // Display the dropdown by adding 'show' class
-    document.getElementById('personaSelection').classList.add('show');
+    // Make sure the #personaSelection element exists and can be displayed
+    var personaSelection = document.getElementById('personaSelection');
+    if (personaSelection) {
+        personaSelection.classList.add('show');
+        console.log('Persona Selection should now be visible.'); // Check if this message appears in the console when expected
+    } else {
+        console.error('Persona Selection element not found.'); // Check for errors
+    }
 }
 
 function showTypingIndicator() {
