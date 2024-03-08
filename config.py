@@ -31,5 +31,6 @@ class Config:
     PERSONA_ASSISTANT_MAPPING = {
         "Timmy": "asst_yUIJI6tt54F4xyzr5cq2cxtw",
         "Glenda": "asst_cgxnYmrSbd8SSdcJux0LrZfh",
+        "No Mercy": "asst_RE88l2N9AIxFA1niUmyQlqEC",
         # Add more mappings as needed
     }
