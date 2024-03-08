@@ -20,15 +20,30 @@ function sendPersona() {
 
 // This function is called when 'select_persona' message is received
 function showPersonaSelection() {
-    // Make sure the #personaSelection element exists and can be displayed
-    var personaSelection = document.getElementById('personaSelection');
-    if (personaSelection) {
-        personaSelection.classList.add('show');
-        console.log('Persona Selection should now be visible.'); // Check if this message appears in the console when expected
-    } else {
-        console.error('Persona Selection element not found.'); // Check for errors
-    }
+    // Use jQuery for consistency since it's used elsewhere in your script
+    $('#personaSelection').addClass('show');
 }
+
+function showPersonaSelection() {
+    // Use jQuery for consistency since it's used elsewhere in your script
+    $('#personaSelection').addClass('show');
+}
+
+function sendPersona() {
+    var persona = $('#personaDropdown').val();
+
+    // Send the selected persona back to the server
+    // Ensure that your WebSocket is connected before sending
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: 'persona_selected',
+            persona: persona
+        }));
+    }
+
+    $('#personaSelection').removeClass('show');
+}
+
 
 function showTypingIndicator() {
     $('#typing-container').show();
