@@ -152,11 +152,12 @@ html, body {
 .input-group {
     display: flex;
     padding: 0 10px 10px 10px;
+    align-items: center;
 }
 
 /* Message input styles */
 #message-input {
-    flex-grow: 1; /* Will take up available space */
+    flex-grow: 2; /* Will take up available space */
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 18px;
@@ -172,7 +173,9 @@ html, body {
 /* Send button styles */
 #send-button {
     padding: 10px 15px;
-    felx: none;
+    flex-grow: 0; /* Prevent button from growing */
+    flex-shrink: 0; /* Prevent button from shrinking */
+    width: auto; /* Allow the button to be only as wide as its content */
    background-color: #007bff;
     color: white;
     border: none;
