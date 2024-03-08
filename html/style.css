@@ -559,38 +559,63 @@ html, body {
 }
 
 #personaSelection {
-    display: flex; /* Use flexbox to center inner content */
-    flex-direction: column; /* Stack children vertically */
-    justify-content: center; /* Center content vertically in the flex container */
-    align-items: center; /* Center content horizontally in the flex container */
-    position: fixed; /* Position it relative to the viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    margin: auto; /* This will center the box */
-    background-color: #f2f2f2; /* Your existing background */
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow for better visibility */
-    z-index: 1000; /* Makes sure the div is above other elements */
-    width: fit-content; /* Shrink to fit content */
-    height: fit-content; /* Shrink to fit content */
+    margin: auto;
+    background-color: #ffffff; /* Use a white or off-white color for a cleaner look */
+    padding: 30px; /* Increase padding for a more spacious feel */
+    border-radius: 10px; /* Larger radius for softer rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soften the shadow for subtlety */
+    z-index: 1000;
+    width: 340px; /* Set a fixed width for a more consistent appearance */
+    height: auto;
+    border: 1px solid #eaeaea; /* Optional: adds a subtle border */
+    transition: all 0.3s ease; /* Smooth transition for interactions */
 }
 
 #personaDropdown {
-    width: 100%;
+    width: calc(100% - 20px); /* Adjust width to account for padding */
     padding: 10px;
     margin-bottom: 20px;
+    border: 1px solid #eaeaea; /* Add a border to the dropdown for definition */
+    border-radius: 5px; /* Slight rounding of the corners */
+    background-color: #f8f8f8; /* Slightly off-white background for the dropdown */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
 }
+
 button {
-    background-color: #4CAF50;
+    background-color: #007bff;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 24px; /* Slightly more padding for a larger click area */
     border: none;
     cursor: pointer;
     width: 100%;
+    border-radius: 5px; /* Consistent border-radius with the dropdown */
+    font-weight: 500; /* Medium font weight for the button text */
+    letter-spacing: 0.5px; /* Slightly more letter-spacing for a modern touch */
+    transition: background-color 0.3s ease; /* Transition for the hover effect */
 }
+
 button:hover {
-    background-color: #45a049;
+    background-color: #0056b3; /* Slightly darker shade on hover for better interaction feedback */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover for depth */
+}
+
+/* Optional: Adding a slight fade-in effect when the selection appears */
+#personaSelection {
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.3s ease;
+}
+
+#personaSelection.show {
+    opacity: 1;
+    visibility: visible;
 }

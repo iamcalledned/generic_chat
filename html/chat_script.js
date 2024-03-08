@@ -14,13 +14,14 @@ function sendPersona() {
         persona: persona
     }));
 
-    // Hide the dropdown after selection
-    document.getElementById('personaSelection').style.display = 'none';
+    // Hide the dropdown after selection using classList to remove 'show' class
+    document.getElementById('personaSelection').classList.remove('show');
 }
 
 // This function is called when 'select_persona' message is received
 function showPersonaSelection() {
-    document.getElementById('personaSelection').style.display = 'block';
+    // Display the dropdown by adding 'show' class
+    document.getElementById('personaSelection').classList.add('show');
 }
 
 function showTypingIndicator() {
