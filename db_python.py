@@ -65,6 +65,7 @@ def create_tables(cursor):
             Timestamp datetime DEFAULT CURRENT_TIMESTAMP,
             MessageType varchar(255) NOT NULL,
             IPAddress varchar(255),
+            persona varchar(255),
             Status varchar(255) DEFAULT 'active',
             PRIMARY KEY (ConversationID),
             FOREIGN KEY (userID) REFERENCES user_data(userID)
@@ -76,6 +77,7 @@ def create_tables(cursor):
             threadID varchar(36) NOT NULL,
             userID int NOT NULL,
             IsActive tinyint(1) NOT NULL,
+            persona varchar(255),
             CreatedTime datetime NOT NULL,
             PRIMARY KEY (threadID),
             FOREIGN KEY (userID) REFERENCES user_data(userID)
