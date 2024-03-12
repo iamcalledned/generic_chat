@@ -1,4 +1,8 @@
 // Define functions in the global scope
+
+// !!!!!!!!Change WEBSOCKET_URL to your websocket!!!!!!!!!!!
+const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
+
 let socket; // Declare the WebSocket outside of the functions
 let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
@@ -124,7 +128,7 @@ function getOldestMessageTimestamp() {
 
 function initializeWebSocket() {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket('wss://www.iamcalledned.ai/ws');
+        socket = new WebSocket(WEBSOCKET_URL);
 
         socket.onopen = function() {
             
