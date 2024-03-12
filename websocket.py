@@ -94,22 +94,15 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     cookies = websocket.cookies
     session_id_from_cookies = cookies.get('session_id')
+    print('sessionID from cookies;', session_id_from_cookies)
         # Obtain client IP address
     client_host, client_port = websocket.client
     client_ip = client_host
+    ping_task = None
     print(f"Client IP: {client_ip}")
     print("connections at websocket_endpoint:", connections)
 
-    async def ping_client():
-        while True:
-            try:
-                await websocket.send_text(json.dumps({'action': 'ping'}))
-                await asyncio.sleep(30)  # Send a ping every 30 seconds
-            except Exception as e:
-                print(f"Error sending ping: {e}")
-                break
-            
-    
+   
     username = None
     
     
@@ -117,9 +110,11 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         initial_data = await websocket.receive_text()
         initial_data = json.loads(initial_data)
-        #session_id = initial_data.get('session_id', '')
+        #session_id_redis = initial_data.get('session_id', '')
         session_id = session_id_from_cookies
-        ping_task = None
+        #print('sessionID from REdis:', session_id_redis)
+        print('sessionID from cookies;', session_id)
+        
     
 
         if session_id:
@@ -167,6 +162,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 
                 userID = await get_user_id(app.state.pool, username)
+                print('getting recent messages')
                 recent_messages = await get_recent_messages(app.state.pool, userID, persona)
                 await websocket.send_text(json.dumps({
                     'action': 'recent_messages',
@@ -174,7 +170,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 }))
 
-                ping_task = asyncio.create_task(ping_client())
                 continue    
                 
 
@@ -288,8 +283,7 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         print(f"Unhandled exception for user {username}: {e}")
         print("Exception Traceback: " + traceback.format_exc())
-    finally:
-        ping_task.cancel()
+    
 
 async def on_user_reconnect(username, session_id):
     if session_id in tasks:
@@ -310,3 +304,4 @@ async def validate_session(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+#uvicorn websocket:app --port 8056 --ssl-keyfile /home/charlie/charlie_chat/certs/privkey.pem --ssl-certfile /home/charlie/charlie_chat/certs/fullchain.pem --reload
