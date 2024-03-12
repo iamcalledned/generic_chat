@@ -26,7 +26,7 @@ import asyncio
 import redis
 
 log_file_path = Config.LOG_PATH
-LOG_FORMAT = 'Login Process Handler - %(levelname)s - %(asctime)s - %(processName)s - %(name)s - %(message)s'
+LOG_FORMAT = 'generate-answer - %(asctime)s - %(processName)s - %(name)s - %(levelname)s - %(message)s'
 
 logging.basicConfig(
     filename=log_file_path,
@@ -52,7 +52,6 @@ app.add_middleware(SessionMiddleware, secret_key=Config.SESSION_SECRET_KEY)
 async def startup():
     app.state.pool = await create_db_pool()  # No argument is passed here
     print(f"Database pool created: {app.state.pool}")
-    logging.info("Database pool created.")
     asyncio.create_task(schedule_verifier_cleanup(app.state.pool, redis_client))
 
 
