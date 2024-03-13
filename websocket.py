@@ -10,7 +10,7 @@ from starlette.endpoints import WebSocketEndpoint
 
 from openai_utils_generate_answer import generate_answer
 from config import Config
-from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_recipe_for_printing, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before
+from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before
 from fastapi import APIRouter
 from fastapi import Request
 
@@ -217,18 +217,6 @@ async def websocket_endpoint(websocket: WebSocket):
                         }))
 
 
-            if 'action' in data_dict and data_dict['action'] == 'print_recipe':
-                # Handle the print_recipe recipe action
-                
-                # Initialize save_result with a default value
-                
-                recipe_id = data_dict.get('content')
-    
-                print_result = await get_recipe_for_printing(app.state.pool, recipe_id)
-    
-
-                await websocket.send_text(json.dumps({'action': 'recipe_printed', 'data': print_result}))
-                continue
             
             if 'action' in data_dict and data_dict['action'] == 'remove_recipe':
                 # Handle removing favorite_recipe
