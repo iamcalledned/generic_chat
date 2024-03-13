@@ -19,9 +19,7 @@ import logging
 import asyncio
 import aiomysql 
 from config import Config
-from classify_content import classify_content
 import re
-from process_recipe import process_recipe
 
 
 # Other imports as necessary
@@ -109,17 +107,8 @@ async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Ad
                 message_content = messages.data[0].content[0].text.value
             
             
-                content_type = await classify_content(message_content)
-                if content_type == 'recipe':
-                    await process_recipe(pool, message_content, userID)
-                    print("done processing recipe")
-                    
-
-
-                print("message_content:", message_content)
-                print("content_type:", content_type)
-            
-                
+                content_type = "other"
+                               
 
                 # Log OpenAI's response
                 await insert_conversation(pool, userID, thread_id_n, run.id, message_content, 'bot', None, persona)  # Same here for IP
