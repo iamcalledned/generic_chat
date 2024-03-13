@@ -175,36 +175,6 @@ async def websocket_endpoint(websocket: WebSocket):
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
                 continue
 
-            if 'action' in data_dict and data_dict['action'] == 'save_recipe':
-                # Handle the save recipe action
-                
-                # Initialize save_result with a default value
-                save_result = 'not processed'  # You can set a default value that makes sense for your application  
-                userID = await get_user_id(app.state.pool, username)
-                recipe_id = data_dict.get('content')
-    
-                save_result = await favorite_recipe(app.state.pool, userID, recipe_id)
-    
-
-                if save_result == 'Success':
-                   save_result = 'success'
-                   
-    
-                await websocket.send_text(json.dumps({'action': 'recipe_saved', 'status': save_result}))
-                continue
-            
-            if 'action' in data_dict and data_dict['action'] == 'get_user_recipes':
-    
-                user_id = await get_user_id(app.state.pool, username)
-    
-                if user_id:
-                    saved_recipes = await get_saved_recipes_for_user(app.state.pool, user_id)
-    
-                    await websocket.send_text(json.dumps({
-                        'action': 'user_recipes_list',
-                        'recipes': saved_recipes
-                    }))
-                continue
 
 
             if 'action' in data_dict and data_dict['action'] == 'load_more_messages': 
@@ -215,22 +185,8 @@ async def websocket_endpoint(websocket: WebSocket):
                         'action': 'older_messages',
                         'messages': older_messages
                         }))
-
-
-            
-            if 'action' in data_dict and data_dict['action'] == 'remove_recipe':
-                # Handle removing favorite_recipe
-                
-                recipe_id = data_dict.get('content')
-                
-                userID = await get_user_id(app.state.pool, username)
-                
-                remove_result = await un_favorite_recipe(app.state.pool, userID, recipe_id)
-                
-                
-
-                #await websocket.send_text(json.dumps({'action': 'recipe_printed', 'data': print_result}))
                 continue
+
             
             if 'action' in data_dict and data_dict['action'] == 'chat_message':
                 # Handle regular messages
