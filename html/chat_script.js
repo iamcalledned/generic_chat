@@ -8,6 +8,8 @@ let reconnectInterval = 1000; // Start with 1 second
 const MAX_RECONNECT_INTERVAL = 30000; // Max interval 30 seconds
 var persona = "";
 console.log('set persona:', persona)
+console.log('bot?', chatbot); // This will output "charlie" in the console
+
 
 
 // This function should only be responsible for sending the selected persona
