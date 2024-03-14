@@ -12,6 +12,7 @@ html, body {
     align-items: center;
     height: calc(100% - 20px); /* Subtract the padding from the total height */
     box-sizing: border-box;
+    background: linear-gradient(to right, #6dd5ed, #2193b0); /* Replace with your chosen colors */
 
 }*, *:before, *:after {
     box-sizing: inherit;
@@ -53,6 +54,9 @@ html, body {
     margin-right: 10px; /* Additional margin for better spacing */
     border-radius: 20px; /* Rounded corners for user messages */
     padding: 10px 15px; /* Padding for user messages */
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
 }
 /* Add bubble tail for user messages */
 .message.user::after {
@@ -83,6 +87,8 @@ html, body {
     margin-bottom: -15px;
 }
 
+
+
 /* Bot message styles */
 .message.bot {
     background-color: #aaeaec; /* Bot message background color */
@@ -91,6 +97,9 @@ html, body {
     margin-left: 10px; /* Additional margin for better spacing */
     border-radius: 20px; /* Rounded corners for bot messages */
     padding: 10px 15px; /* Padding for bot messages */
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
 }
 /* Bot message styles */
 .message-bubble {
@@ -167,6 +176,8 @@ html, body {
     overflow-y: auto; /* Allow it to scroll */
     resize: none; /* If you do not want users to manually resize it */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    border: 2px solid transparent; /* Adjust border as needed */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions for interactions */
 
 }
 
@@ -176,7 +187,7 @@ html, body {
     flex-grow: 0; /* Prevent button from growing */
     flex-shrink: 0; /* Prevent button from shrinking */
     width: auto; /* Allow the button to be only as wide as its content */
-   background-color: #007bff;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 20px;
@@ -184,11 +195,21 @@ html, body {
     font-size: 16px;
     line-height: 1.6;
     transition: background-color 0.3s ease;
+    border: 2px solid transparent; /* Adjust border as needed */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions for interactions */
+ 
 }
 
 /* Send button hover effect */
 #send-button:hover {
     background-color: #0056b3;
+    box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
+}
+
+#message-input:focus  {
+    border-color: #007bff; /* Change color as needed */
+    box-shadow: 0 0 8px rgba(50, 50, 250, 0.5); /* Soft glow effect */
+    /* Other styles... */
 }
 
 /* Media query for smaller screens (e.g., mobile devices) */
