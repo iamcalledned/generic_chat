@@ -176,7 +176,6 @@ html, body {
     overflow-y: auto; /* Allow it to scroll */
     resize: none; /* If you do not want users to manually resize it */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
-    border: 2px solid transparent; /* Adjust border as needed */
     transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions for interactions */
 
 }
