@@ -1,4 +1,4 @@
-#generate_answer.py
+# generate_answer.py
 import time
 import sys
 import os
@@ -21,8 +21,10 @@ import aiomysql
 from config import Config
 import re
 
+
 # Other imports as necessary
 OPENAI_API_KEY = Config.OPENAI_API_KEY
+
 
 log_file_path = '/home/ned/projects/generic_chat/generate_answer_logs.txt'
 logging.basicConfig(
@@ -32,87 +34,89 @@ logging.basicConfig(
 )
 
 # Initialize OpenAI client
-openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
-client = OpenAI(api_key=Config.OPENAI_API_KEY)
 
-async def generate_answer(pool, username, message, user_ip, uuid, persona):
-    print("username:", username)
-    userID = await get_user_id(pool, username)
-    print("userID", userID)
+openai_client = OpenAI()
+openai_client.api_key = Config.OPENAI_API_KEY
+client = OpenAI()
 
-    active_thread = await get_active_thread_for_user(pool, userID, persona)
+async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Add db_pool parameter
+    # Use your new database module to create a connection
+        print("username:", username)
+        #userID = await insert_user(pool, userID)
+        userID = await get_user_id(pool, username)
+        print("userID", userID)
 
-    if active_thread:
-        thread_id_n = active_thread.get('ThreadID')
-        if thread_id_n:
-            if await is_thread_valid(thread_id_n):
-                print("Thread is valid. Continuing with Thread ID:", thread_id_n)
-            else:
-                thread_id_n = await create_thread_in_openai()
-                if thread_id_n:
+    
+        active_thread = await get_active_thread_for_user(pool, userID, persona)
+
+        if active_thread:
+            thread_id_n = active_thread['ThreadID']  # Use .get() method to safely access the key
+            if thread_id_n:
+                if await is_thread_valid(thread_id_n):
+                    print("Thread is valid. Continuing with Thread ID:", thread_id_n)
+                else:
+                    
+                    thread_id_n = await create_thread_in_openai()
                     current_time = datetime.datetime.now().isoformat()
                     await insert_thread(pool, thread_id_n, userID, True, current_time, persona)
-                else:
-                    print("Error: Failed to create a new thread in OpenAI.")
-                    return "Error: Failed to create a new thread in OpenAI."
+            else:
+                print("Key 0 is not present in active_thread.")
         else:
-            print("Key 0 is not present in active_thread.")
-    else:
-        print("No active thread found for userID:", userID, "Creating a new thread.")
-        thread_id_n = await create_thread_in_openai()
-        if thread_id_n:
+            print("No active thread found for userID:", userID, "Creating a new thread.")
+            thread_id_n = await create_thread_in_openai()
             current_time = datetime.datetime.now().isoformat()
             await insert_thread(pool, thread_id_n, userID, True, current_time, persona)
-        else:
-            print("Error: Failed to create a new thread in OpenAI.")
-            return "Error: Failed to create a new thread in OpenAI."
 
-    if thread_id_n:
-        response_text = await send_message(thread_id_n, message)
+        if thread_id_n:
+            response_text = await send_message(thread_id_n, message)
+            
 
-        assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
-        print('assistant id:', assistant_id_persona)
-        run = client.conversations.create(
-            model="gpt-4",
-            messages=[
-                {"role": "user", "content": message}
-            ],
-            thread_id=thread_id_n,
-            assistant_id=assistant_id_persona
-        )
-
-        print('created run')
-        if run is not None:
-            await insert_conversation(pool, userID, thread_id_n, run['id'], message, 'user', user_ip, persona)
-            print('done with insert')
-            while True:
-                run = client.conversations.retrieve(
-                    thread_id=thread_id_n,
-                    run_id=run['id']
-                )
-
-                if run['status'] == "completed":
-                    print("Run completed. Message:", run['status'])
-                    break
-                elif run['status'] == "error":
-                    print("Run error", run['status'])
-                    break
-
-                await asyncio.sleep(1)
-
-            messages = client.conversations.list_messages(
-                thread_id=thread_id_n
+            # Create the run on OpenAI
+            assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
+            print('assistant id:', assistant_id_persona)
+            run = client.beta.threads.runs.create(
+                thread_id=thread_id_n,
+                #assistant_id="asst_yUIJI6tt54F4xyzr5cq2cxtw"
+                assistant_id=assistant_id_persona
+                
             )
-            message_content = messages['data'][0]['content']
+            
+            print('created run')
+            if run is not None:
+                # Now we have a run ID, we can log the user's message
+                await insert_conversation(pool, userID, thread_id_n, run.id, message, 'user', user_ip, persona)  # Replace 'user_ip' with actual IP if available
+                print('done with insert')
+                while True:
+                    run = client.beta.threads.runs.retrieve(
+                        thread_id=thread_id_n,
+                        run_id=run.id
+                    )
+            
+                    if run.status == "completed":
+                        print("Run completed. Message:", run.status)
+                        break
+                    elif run.status == "error":
+                        print("Run error", run.status)
+                        break
 
-            content_type = "other"
+                    await asyncio.sleep(1)   # Wait for 1 second before the next status check
 
-            await insert_conversation(pool, userID, thread_id_n, run['id'], message_content, 'bot', None, persona)
-            print("saved conversations for user:", userID)
+                messages = client.beta.threads.messages.list(
+                    thread_id=thread_id_n
+                )
+                message_content = messages.data[0].content[0].text.value
+            
+            
+                content_type = "other"
+                               
+
+                # Log OpenAI's response
+                await insert_conversation(pool, userID, thread_id_n, run.id, message_content, 'bot', None, persona)  # Same here for IP
+                print("saved conversations for user:", userID)
+            else:
+                print("Failed to create a run object in OpenAI.")
+                return "Error: Failed to create a run object."
+            recipe_id = None
+            return message_content, content_type, recipe_id
         else:
-            print("Failed to create a run object in OpenAI.")
-            return "Error: Failed to create a run object."
-        recipe_id = None
-        return message_content, content_type, recipe_id
-    else:
-        return "Error: Failed to create a new thread in OpenAI."
+            return "Error: Failed to create a new thread in OpenAI."
