@@ -1,4 +1,4 @@
-# Description: This file contains the function to send a message to the OpenAI chatbot.
+#openai_utils_send_message.py
 from openai import OpenAI
 import time
 import sys
@@ -15,20 +15,20 @@ from config import Config
 OPENAI_API_KEY = Config.OPENAI_API_KEY
 
 # Initialize OpenAI client
-openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
+openai_client = OpenAI()
+openai_client.api_key = Config.OPENAI_API_KEY
 
 #send the message    
 async def send_message(thread_id_n, message):
     try:
-        response = openai_client.chat_create(
-            model="gpt-4",
-            messages=[
-                {"role": "user", "content": message}
-            ],
-            thread_id=thread_id_n
+        response = openai_client.beta.threads.messages.create(
+            thread_id_n,
+            role="user",
+            content=message
         )
-        # Extracting the response text from the response
-        response_text = response['choices'][0]['message']['content']
+        # Extracting the response text from the nested structure
+        response_text = response.content[0].text.value
+        
        
         return response_text
     except Exception as e:
