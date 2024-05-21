@@ -1,6 +1,4 @@
-#openai_utils_send_message.py
 from openai import OpenAI
-import time
 import sys
 import os
 # Get the directory of the current script
@@ -15,22 +13,21 @@ from config import Config
 OPENAI_API_KEY = Config.OPENAI_API_KEY
 
 # Initialize OpenAI client
-openai_client = OpenAI()
-openai_client.api_key = Config.OPENAI_API_KEY
+openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 
-#send the message    
-async def send_message(thread_id_n, message):
+async def create_thread_in_openai():
     try:
-        response = openai_client.beta.threads.messages.create(
-            thread_id_n,
-            role="user",
-            content=message
-        )
-        # Extracting the response text from the nested structure
-        response_text = response.content[0].text.value
-        
-       
-        return response_text
+        thread_response = openai_client.conversation_create()
+        thread_id_n = thread_response['id']
+        return thread_id_n
     except Exception as e:
-        print(f"Error in sending message: {e}")
-        return "Error in sending message."
+        print(f"Error in creating thread: {e}")
+        return None
+
+async def is_thread_valid(thread_id):
+    try:
+        my_thread = openai_client.conversation_retrieve(thread_id)
+        return True  # Assuming the thread is valid if no exception occurred
+    except Exception as e:
+        print(f"Error checking thread validity: {e}")
+        return False
