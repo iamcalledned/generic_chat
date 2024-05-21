@@ -19,11 +19,14 @@ openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 # Send the message    
 async def send_message(thread_id_n, message):
     try:
-        response = openai_client.Completion.create(
+        response = openai_client.chat_completions.create(
             model="gpt-4",
-            prompt=message
+            messages=[
+                {"role": "user", "content": message}
+            ],
+            thread_id=thread_id_n
         )
-        response_text = response['choices'][0]['text']
+        response_text = response['choices'][0]['message']['content']
         return response_text
     except Exception as e:
         print(f"Error in sending message: {e}")
