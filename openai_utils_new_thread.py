@@ -18,14 +18,13 @@ openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 
 async def create_thread_in_openai():
     try:
-        thread_response = openai_client.conversations.create(
+        thread_response = openai_client.ChatCompletion.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "Initializing new thread."}
+                {"role": "system", "content": "Initialize new thread"}
             ]
         )
         thread_id_n = thread_response['id']
-        # print("Created new thread ID:", thread_id_n)
         return thread_id_n
     except Exception as e:
         print(f"Error in creating thread: {e}")
@@ -33,12 +32,8 @@ async def create_thread_in_openai():
 
 async def is_thread_valid(thread_id):
     try:
-        my_thread = openai_client.conversations.retrieve(thread_id)
-        # Add your logic here based on how OpenAI's response indicates a valid thread.
-        # This might depend on the response structure. For example:
-        # return 'status' in my_thread and my_thread['status'] == 'active'
-        # print("my thread", my_thread)
-        return True  # Assuming the thread is valid if no exception occurred
+        my_thread = openai_client.ChatCompletion.retrieve(thread_id)
+        return True
     except Exception as e:
         print(f"Error checking thread validity: {e}")
         return False
