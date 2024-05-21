@@ -11,7 +11,7 @@ sys.path.append(os.path.join(parent_directory, 'database'))
 sys.path.append(os.path.join(parent_directory, 'config'))
 from openai_utils_new_thread import create_thread_in_openai, is_thread_valid
 from openai_utils_send_message import send_message
-from openai import OpenAI
+import openai
 
 from chat_bot_database import get_active_thread_for_user, insert_thread, insert_conversation, create_db_pool, get_user_id
 import datetime
@@ -32,8 +32,7 @@ logging.basicConfig(
 )
 
 # Initialize OpenAI client
-openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
-client = OpenAI(api_key=Config.OPENAI_API_KEY)
+openai.api_key = Config.OPENAI_API_KEY
 
 async def generate_answer(pool, username, message, user_ip, uuid, persona):
     print("username:", username)
@@ -72,37 +71,38 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
 
         assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
         print('assistant id:', assistant_id_persona)
-        run = client.Completion.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",
-            prompt=message
+            messages=[{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": message}]
         )
 
-        print('created run')
-        if run is not None:
-            await insert_conversation(pool, userID, thread_id_n, run['id'], message, 'user', user_ip, persona)
+        print('created response')
+        if response:
+            await insert_conversation(pool, userID, thread_id_n, response['id'], message, 'user', user_ip, persona)
             print('done with insert')
-            while True:
-                run = client.Completion.retrieve(id=run['id'])
 
-                if run['status'] == "completed":
-                    print("Run completed. Message:", run['status'])
+            while True:
+                response = openai.ChatCompletion.retrieve(id=response['id'])
+
+                if response['status'] == "completed":
+                    print("Response completed. Message:", response['status'])
                     break
-                elif run['status'] == "error":
-                    print("Run error", run['status'])
+                elif response['status'] == "error":
+                    print("Response error", response['status'])
                     break
 
                 await asyncio.sleep(1)
 
-            messages = client.Completion.list_messages(id=thread_id_n)
-            message_content = messages['choices'][0]['text']
+            messages = openai.ChatCompletion.list(id=thread_id_n)
+            message_content = messages['choices'][0]['message']['content']
 
             content_type = "other"
 
-            await insert_conversation(pool, userID, thread_id_n, run['id'], message_content, 'bot', None, persona)
+            await insert_conversation(pool, userID, thread_id_n, response['id'], message_content, 'bot', None, persona)
             print("saved conversations for user:", userID)
         else:
-            print("Failed to create a run object in OpenAI.")
-            return "Error: Failed to create a run object."
+            print("Failed to create a response object in OpenAI.")
+            return "Error: Failed to create a response object."
         recipe_id = None
         return message_content, content_type, recipe_id
     else:
