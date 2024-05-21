@@ -1,4 +1,6 @@
+# Description: This file contains the function to send a message to the OpenAI chatbot.
 from openai import OpenAI
+import time
 import sys
 import os
 # Get the directory of the current script
@@ -15,19 +17,20 @@ OPENAI_API_KEY = Config.OPENAI_API_KEY
 # Initialize OpenAI client
 openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 
-async def create_thread_in_openai():
+#send the message    
+async def send_message(thread_id_n, message):
     try:
-        thread_response = openai_client.conversation_create()
-        thread_id_n = thread_response['id']
-        return thread_id_n
+        response = openai_client.chat_create(
+            model="gpt-4",
+            messages=[
+                {"role": "user", "content": message}
+            ],
+            thread_id=thread_id_n
+        )
+        # Extracting the response text from the response
+        response_text = response['choices'][0]['message']['content']
+       
+        return response_text
     except Exception as e:
-        print(f"Error in creating thread: {e}")
-        return None
-
-async def is_thread_valid(thread_id):
-    try:
-        my_thread = openai_client.conversation_retrieve(thread_id)
-        return True  # Assuming the thread is valid if no exception occurred
-    except Exception as e:
-        print(f"Error checking thread validity: {e}")
-        return False
+        print(f"Error in sending message: {e}")
+        return "Error in sending message."

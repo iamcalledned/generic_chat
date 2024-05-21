@@ -1,3 +1,4 @@
+# Description: This file contains utility functions to create a new thread in OpenAI and check if a thread is valid.
 from openai import OpenAI
 import sys
 import os
