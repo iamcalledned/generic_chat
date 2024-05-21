@@ -1,5 +1,5 @@
 #send_message
-import openai
+from openai import OpenAI
 import sys
 import os
 # Get the directory of the current script
@@ -11,16 +11,19 @@ sys.path.append(os.path.join(parent_directory, 'database'))
 sys.path.append(os.path.join(parent_directory, 'config'))
 from config import Config
 
-openai.api_key = Config.OPENAI_API_KEY
+OPENAI_API_KEY = Config.OPENAI_API_KEY
+
+# Initialize OpenAI client
+openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 
 # Send the message    
 async def send_message(thread_id_n, message):
     try:
-        response = openai.ChatCompletion.create(
+        response = openai_client.Completion.create(
             model="gpt-4",
-            messages=[{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": message}]
+            prompt=message
         )
-        response_text = response['choices'][0]['message']['content']
+        response_text = response['choices'][0]['text']
         return response_text
     except Exception as e:
         print(f"Error in sending message: {e}")
