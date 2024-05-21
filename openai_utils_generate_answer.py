@@ -112,12 +112,8 @@ async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Ad
                 first_message = raw_json[0]
                 print("first message:", first_message)
 
-
-
-
-                # Print message content
-                for message in messages.data:
-                    print("message content:", message.content[0].text.value)        
+          
+                
             
                 content_type = "other"
                                
