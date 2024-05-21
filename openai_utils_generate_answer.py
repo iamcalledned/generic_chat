@@ -13,11 +13,11 @@ from openai_utils_new_thread import create_thread_in_openai, is_thread_valid
 from openai_utils_send_message import send_message
 from openai import OpenAI
 
-from chat_bot_database import get_active_thread_for_user, insert_thread, insert_conversation, create_db_pool, get_user_id
+from chat_bot_database import get_active_thread_for_user, insert_thread, insert_conversation, create_db_pool ,get_user_id
 import datetime
 import logging
 import asyncio
-import aiomysql
+import aiomysql 
 from config import Config
 import re
 
@@ -27,7 +27,7 @@ OPENAI_API_KEY = Config.OPENAI_API_KEY
 log_file_path = '/home/ned/projects/generic_chat/generate_answer_logs.txt'
 logging.basicConfig(
     filename=log_file_path,
-    level=logging.DEBUG,
+    level=logging.DEBUG,  # Adjust the log level as needed (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
@@ -72,11 +72,13 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
 
         assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
         print('assistant id:', assistant_id_persona)
-        run = client.ChatCompletion.create(
+        run = client.conversations.create(
             model="gpt-4",
             messages=[
                 {"role": "user", "content": message}
-            ]
+            ],
+            thread_id=thread_id_n,
+            assistant_id=assistant_id_persona
         )
 
         print('created run')
@@ -84,7 +86,10 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
             await insert_conversation(pool, userID, thread_id_n, run['id'], message, 'user', user_ip, persona)
             print('done with insert')
             while True:
-                run = client.ChatCompletion.retrieve(id=run['id'])
+                run = client.conversations.retrieve(
+                    thread_id=thread_id_n,
+                    run_id=run['id']
+                )
 
                 if run['status'] == "completed":
                     print("Run completed. Message:", run['status'])
@@ -95,8 +100,10 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
 
                 await asyncio.sleep(1)
 
-            messages = client.ChatCompletion.list_messages(id=thread_id_n)
-            message_content = messages['choices'][0]['message']['content']
+            messages = client.conversations.list_messages(
+                thread_id=thread_id_n
+            )
+            message_content = messages['data'][0]['content']
 
             content_type = "other"
 
