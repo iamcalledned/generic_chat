@@ -108,14 +108,14 @@ async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Ad
                 message_content = messages.data[0].content[0].text.value
                 
                 # Convert to a serializable format
-                raw_json = [message.to_dict() for message in messages]
+                raw_json = [message.to_dict() for message in messages.data]
 
                 # Print raw JSON response
                 print("Raw JSON response:", json.dumps(raw_json, indent=4))
 
                 # Print message content
-                for message in messages:
-                    print("message content:", message['content'][0]['text']['value'])            
+                for message in messages.data:
+                    print("message content:", message.content[0].text.value)        
             
                 content_type = "other"
                                
