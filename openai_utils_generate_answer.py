@@ -54,7 +54,7 @@ def process_message_content(raw_message):
             link = f'<a href="/path/to/your/files/{file_id}">{citation_text}</a>'
             start_index = annotation['start_index']
             end_index = annotation['end_index']
-            content = content[:start_index] + link + content[end_index:]
+            content = content[:start_index] + content[end_index:]
     
     return content
 
