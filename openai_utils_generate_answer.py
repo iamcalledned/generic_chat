@@ -105,7 +105,13 @@ async def generate_answer(pool,username, message, user_ip, uuid, persona):  # Ad
                     thread_id=thread_id_n
                 )
                 message_content = messages.data[0].content[0].text.value
-                print("message content:", message_content)
+                    # Print raw JSON response
+                raw_json = messages
+                print("Raw JSON response:", json.dumps(raw_json, indent=4))
+
+                # Print message content
+                for message in messages['data']:
+                    print("message content:", message['content'][0]['text']['value'])
             
             
                 content_type = "other"
