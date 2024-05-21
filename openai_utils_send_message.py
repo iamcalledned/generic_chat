@@ -19,11 +19,12 @@ openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 # Send the message    
 async def send_message(thread_id_n, message):
     try:
-        response = openai_client.ChatCompletion.create(
+        response = openai_client.chat_completions.create(
             model="gpt-4",
             messages=[
                 {"role": "user", "content": message}
-            ]
+            ],
+            thread_id=thread_id_n
         )
         response_text = response['choices'][0]['message']['content']
         return response_text

@@ -72,7 +72,7 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
 
         assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
         print('assistant id:', assistant_id_persona)
-        run = client.ChatCompletion.create(
+        run = client.chat_completions.create(
             model="gpt-4",
             messages=[
                 {"role": "user", "content": message}
@@ -84,7 +84,7 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
             await insert_conversation(pool, userID, thread_id_n, run['id'], message, 'user', user_ip, persona)
             print('done with insert')
             while True:
-                run = client.ChatCompletion.retrieve(id=run['id'])
+                run = client.chat_completions.retrieve(id=run['id'])
 
                 if run['status'] == "completed":
                     print("Run completed. Message:", run['status'])
@@ -95,7 +95,7 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
 
                 await asyncio.sleep(1)
 
-            messages = client.ChatCompletion.list_messages(id=thread_id_n)
+            messages = client.chat_completions.list_messages(id=thread_id_n)
             message_content = messages['choices'][0]['message']['content']
 
             content_type = "other"

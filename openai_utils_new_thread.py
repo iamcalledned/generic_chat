@@ -18,7 +18,7 @@ openai_client = OpenAI(api_key=Config.OPENAI_API_KEY)
 
 async def create_thread_in_openai():
     try:
-        response = openai_client.ChatCompletion.create(
+        response = openai_client.chat_completions.create(
             model="gpt-4",
             messages=[{"role": "system", "content": "New thread initialization"}]
         )
@@ -30,7 +30,7 @@ async def create_thread_in_openai():
 
 async def is_thread_valid(thread_id):
     try:
-        my_thread = openai_client.ChatCompletion.retrieve(id=thread_id)
+        my_thread = openai_client.chat_completions.retrieve(id=thread_id)
         return True
     except Exception as e:
         print(f"Error checking thread validity: {e}")
