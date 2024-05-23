@@ -48,6 +48,7 @@ async def create_pool():
 
 
 #fuction to direct access websocket from backend
+# Function to restrict access to localhost
 def verify_localhost(request: Request):
     client_host = request.client.host
     if client_host != "127.0.0.1":
@@ -55,7 +56,8 @@ def verify_localhost(request: Request):
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access forbidden: This endpoint is restricted to local access only."
         )
-    
+
+# Endpoint to directly generate an answer
 @router.post("/generate_answer_direct")
 async def generate_answer_direct(
     request: Request,
