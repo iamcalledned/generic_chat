@@ -28,17 +28,29 @@ html, body {
     flex-direction: column;
     justify-content: flex-end;
     height: 95%;
+    border-radius: 10px; /* Add rounded corners */
+    overflow: hidden; /* Ensure content does not overflow */
 }
 
 #messages {
     overflow-y: auto;
     flex-grow: 1;
-    padding: 10px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     white-space: pre-wrap;
     word-wrap: break-word;
+    background: #f0f0f0; /* Light background color */
+}
+
+.message {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin-bottom: 10px;
 }
 
 .message.user {
@@ -46,10 +58,6 @@ html, body {
     color: white;
     align-self: flex-end;
     margin-right: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
 }
 
 .message.user::after {
@@ -71,10 +79,6 @@ html, body {
     color: black;
     align-self: flex-start;
     margin-left: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
 }
 
 .message.bot::after {
@@ -125,8 +129,10 @@ html, body {
 
 .input-group {
     display: flex;
-    padding: 0 10px 10px 10px;
+    padding: 10px;
     align-items: center;
+    background: #f0f0f0; /* Matching the background of the messages */
+    border-top: 1px solid #ddd; /* Subtle border */
 }
 
 #message-input {
@@ -143,8 +149,13 @@ html, body {
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+#message-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
+}
+
 #send-button {
-    padding: 10px 15px;
+    padding: 10px 20px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -152,19 +163,20 @@ html, body {
     cursor: pointer;
     font-size: 16px;
     line-height: 1.6;
-    transition: background-color 0.3s ease;
+    margin-left: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 #send-button:hover {
     background-color: #0056b3;
-    box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
+    box-shadow: 0 4px 8px rgba(50, 50, 250, 0.5);
 }
 
 @media (max-width: 768px) {
     #chat-container {
         height: 90vh;
         width: 95%;
-        margin: 5px auto 10px auto;
+        margin: 5px auto;
     }
 }
 
@@ -175,6 +187,7 @@ html, body {
     align-items: center;
     padding: 10px;
     background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
 }
 
 .hamburger-menu {
@@ -272,4 +285,18 @@ button {
 button:hover {
     background-color: #0056b3;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.notification-bubble {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
 }
