@@ -33,6 +33,6 @@ class Config:
         "Glenda": "asst_cgxnYmrSbd8SSdcJux0LrZfh",
         "Ned": "asst_RE88l2N9AIxFA1niUmyQlqEC",
         "Adin": "asst_qv5bn65Nt41C7hVMBYw0m8xC",
-        "General": "asst_eGvQbtW0KpEuDkfefHgJBEWH",
+        "general": "asst_eGvQbtW0KpEuDkfefHgJBEWH",
         # Add more mappings as needed
     }
