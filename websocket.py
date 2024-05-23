@@ -70,6 +70,9 @@ async def generate_answer_direct(
 ):
     uuid = str(uuid4())
     user_ip = client_ip  # Use the provided IP or a default value
+    print("User IP:", user_ip)
+    print("username:", username)
+    print("persona:", persona)
     response_text, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
     response = {
         'response': response_text,
