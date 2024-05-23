@@ -52,7 +52,7 @@ async def create_pool():
 def verify_localhost(request: Request):
     client_host = request.client.host
     print("Client host:", client_host)
-    if client_host != "127.0.0.1":
+    if client_host != "192.168.86.56":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access forbidden: This endpoint is restricted to local access only."
@@ -65,7 +65,7 @@ async def generate_answer_direct(
     username: str = Body(...),
     message: str = Body(...),
     persona: str = Body(...),
-    client_ip: str = Body("127.0.0.1"),
+    client_ip: str = Body("192.168.86.56"),
     verify: None = Depends(verify_localhost)
 ):
     uuid = str(uuid4())
