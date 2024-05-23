@@ -133,6 +133,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
    
     username = None
+    session_id = None
 
     async def ping_client():
         while True:
