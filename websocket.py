@@ -11,8 +11,7 @@ from starlette.endpoints import WebSocketEndpoint
 from openai_utils_generate_answer import generate_answer
 from config import Config
 from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before
-from fastapi import APIRouter
-from fastapi import Request
+from fastapi import APIRouter, Request, Depends, HTTPException, status
 
 import redis
 from redis.exceptions import RedisError
@@ -46,6 +45,37 @@ logging.basicConfig(
 # Async function to create a connection pool
 async def create_pool():
     return await create_db_pool()
+
+
+#fuction to direct access websocket from backend
+def verify_localhost(request: Request):
+    client_host = request.client.host
+    if client_host != "127.0.0.1":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access forbidden: This endpoint is restricted to local access only."
+        )
+    
+@router.post("/generate_answer_direct")
+async def generate_answer_direct(
+    request: Request,
+    username: str = Body(...),
+    message: str = Body(...),
+    persona: str = Body(...),
+    client_ip: str = Body("127.0.0.1"),
+    verify: None = Depends(verify_localhost)
+):
+    uuid = str(uuid4())
+    user_ip = client_ip  # Use the provided IP or a default value
+    response_text, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
+    response = {
+        'response': response_text,
+        'type': content_type,
+        'recipe_id': recipe_id
+    }
+    return response
+
+app.include_router(router)
 
 
 @router.post("/logout")
