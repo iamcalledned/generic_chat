@@ -6,6 +6,8 @@
     <title>Chatbot</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="manifest" href="/manifest.json">
+    <!-- Google AdSense script -->
+    <script data-ad-client="ca-pub-XXXXXX" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 <body>
     <div id="chat-container">
@@ -22,11 +24,24 @@
                     <li class="menu-item" id="logout">Logout</li>
                 </ul>
             </div>
-        <!--    <img src="what_to_grill_image_round.png" alt="Logo" class="chat-logo"> -->
         </header>
+
+        <!-- Ad Placeholder at the top of the messages -->
+        <div class="ad-container">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-XXXXXX"
+                data-ad-slot="XXXXXX"
+                data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
         <div id="messages">
             <!-- Chat messages will be dynamically added here -->
         </div>
+        
         <!-- Typing indicator -->
         <div id="typing-container">
             <span id="typing-text">Timmy is typing</span>
@@ -36,12 +51,26 @@
                 <div class="dot"></div>
             </div>
         </div>
+        
         <!-- Input field -->
         <div class="input-group">
             <textarea id="message-input" placeholder="Type your message..."></textarea>
             <button id="send-button">Send</button>
         </div>
+        
+        <!-- Ad Placeholder at the bottom of the chat container -->
+        <div class="ad-container">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-XXXXXX"
+                data-ad-slot="XXXXXX"
+                data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
     </div>
+    
     <!-- Persona Selection Dropdown (hidden initially) -->
     <div id="personaSelection">
         <label for="personaDropdown">Who do you want to talk to today?:</label>
@@ -49,8 +78,7 @@
             <option value="Timmy">Timmy</option>
             <option value="Ned">Ned</option>
             <option value="Adin">Adin Ballou</option>
-            
-               <!-- Add more personas as needed -->
+            <!-- Add more personas as needed -->
         </select>
         <button onclick="sendPersona()">Submit</button>
     </div>
