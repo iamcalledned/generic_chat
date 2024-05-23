@@ -102,7 +102,7 @@ async def startup_event():
     print("Database pool created")
 
     print("connections at startup:", connections)
-    print(f"Server is running on {app.state.host}:{app.state.port}")
+    
 
 # Function to schedule session data cleanup
 async def clear_session_data_after_timeout(session_id, username):
