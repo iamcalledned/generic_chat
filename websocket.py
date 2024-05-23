@@ -51,6 +51,7 @@ async def create_pool():
 # Function to restrict access to localhost
 def verify_localhost(request: Request):
     client_host = request.client.host
+    print("Client host:", client_host)
     if client_host != "127.0.0.1":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
