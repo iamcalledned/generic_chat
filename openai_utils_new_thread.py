@@ -23,7 +23,7 @@ async def create_thread_in_openai():
     try:
         thread_response = openai_client.beta.threads.create()
         thread_id_n = thread_response.id
-        #print("Created new thread ID:", thread_id_n)
+        print("Created new thread ID:", thread_id_n)
         return thread_id_n
     except Exception as e:
         print(f"Error in creating thread: {e}")
