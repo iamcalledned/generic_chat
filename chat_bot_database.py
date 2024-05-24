@@ -66,7 +66,13 @@ async def insert_thread(pool, thread_id, userID, is_active, created_time, person
 async def get_active_thread_for_user(pool, userID, persona):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
-            sql = '''SELECT ThreadID FROM threads WHERE UserID = %s AND persona = %s'''
+            sql = '''
+                SELECT ThreadID 
+                FROM threads 
+                WHERE UserID = %s AND persona = %s 
+                ORDER BY CreatedTime DESC 
+                LIMIT 1
+            '''
             await cur.execute(sql, (userID, persona))
             return await cur.fetchone()
 
