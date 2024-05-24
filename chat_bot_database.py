@@ -26,6 +26,14 @@ DB_CONFIG = {
 }
 
 pool = None
+#added tweet database
+async def insert_tweet(pool, tweet_id, tweet_text, created_at):
+    async with pool.acquire() as conn:
+        async with conn.cursor() as cur:
+            sql = '''INSERT INTO tweets (tweet_id, tweet_text, created_at) VALUES (%s, %s, %s)'''
+            await cur.execute(sql, (tweet_id, tweet_text, created_at))
+            await conn.commit()
+            print("Tweet inserted successfully")
 
 async def create_db_pool():
     return await aiomysql.create_pool(
