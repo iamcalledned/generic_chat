@@ -30,7 +30,8 @@ async def create_thread_in_openai():
         return None
 
 async def is_thread_valid(thread_id):
-    #print("tring to find thread for:", thread_id)
+
+    print("tring to find thread for:", thread_id)
     try:
         #print("trying....")
         my_thread = openai_client.beta.threads.retrieve(thread_id)
