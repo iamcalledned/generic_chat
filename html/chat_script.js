@@ -125,7 +125,12 @@ function initializeWebSocket() {
             } else if (msg.action === 'select_persona') {
                 showPersonaSelection();
             } else if (msg.action === 'conversation_list') {
+                    if (msg.thread){
                         showOverlay(msg.threads);
+                    } else {
+                        console.error('Threads data is missing from the WebSocket message');
+                    }
+                    showConversationList();
             } else {
                 hideTypingIndicator();
                 let messageElement;
@@ -147,10 +152,11 @@ function initializeWebSocket() {
         };
     }
 }
-function showOverlay(threadID, createdTime) {
-    // Populate the overlay with the threadID and createdTime
+// Function to show the overlay
+function showOverlay(threads) {
     const threadsList = document.getElementById('threadsList');
     threadsList.innerHTML = ''; // Clear any existing content
+
     // Populate the list with threads
     threads.forEach(thread => {
         const threadItem = document.createElement('div');

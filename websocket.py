@@ -243,8 +243,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     threadID, createdTime = active_thread
                     await websocket.send_text(json.dumps({
                         'action': 'conversation_list',
-                        'threadID': threadID,
-                        'createdTime': createdTime
+                        'threads': [{
+                            'threadID': threadID,
+                            'createdTime': createdTime
+                                    }]
                 }))
              
  
