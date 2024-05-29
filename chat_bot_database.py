@@ -138,7 +138,7 @@ async def get_recent_messages(pool, user_id, persona, active_thread, limit=10):
             ORDER BY Timestamp DESC
             LIMIT %s;
             '''
-            await cur.execute(sql, (user_id, persona, limit))
+            await cur.execute(sql, (user_id, persona, active_thread, limit))
             rows = await cur.fetchall()
             # Convert each row to a dict and format datetime objects
             return [dict(row, Timestamp=row['Timestamp'].isoformat()) for row in rows]
