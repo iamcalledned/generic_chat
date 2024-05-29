@@ -257,7 +257,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 message = data_dict.get('message', '')
                 
                 uuid = str(uuid4())
-                
+                print("persona:", persona)
                 
                 user_ip = client_ip
                 print(f"User IP: {user_ip}")
