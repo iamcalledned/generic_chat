@@ -111,7 +111,7 @@ function initializeWebSocket() {
                 window.location.href = '/login';
             } else if (msg.action === 'select_persona') {
                 showPersonaSelection();
-            } else if (msg.action === 'clear_conversations') {
+            } else if (msg.action === 'conversation_list') {
                 showOverlay(msg.threadID, msg.createdTime);
             } else {
                 hideTypingIndicator();
