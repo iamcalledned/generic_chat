@@ -130,7 +130,9 @@ function initializeWebSocket() {
                 }
             } else if (msg.action === 'threads_deactivated') {
                 console.log('Threads deactivated:', msg.threadIDs);
-                showPersonaSelection()
+                window.location.reload();
+                
+
             } else {
                 hideTypingIndicator();
                 let messageElement;
