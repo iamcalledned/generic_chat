@@ -77,7 +77,9 @@ async def get_active_thread_for_user(pool, userID, persona):
             sql = '''
                 SELECT ThreadID 
                 FROM threads 
-                WHERE UserID = %s AND persona = %s 
+                WHERE UserID = %s 
+                AND persona = %s 
+                AND IsActive = 1
                 ORDER BY CreatedTime DESC 
                 LIMIT 1
             '''
