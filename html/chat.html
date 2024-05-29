@@ -6,26 +6,28 @@
     <title>Chatbot</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Google AdSense script -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5492267670756478"
      crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="chat-container">
         <header class="chat-header">
-            <img src="avatar.png" alt="Chatbot Avatar" class="chat-avatar">
-            <h1 class="chat-title">Welcome to Fun Chatbot!</h1>
+            <!-- Hamburger Menu Button -->
             <button class="hamburger-menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
+
             <div class="options-menu">
                 <ul class="menu-items">
                     <li class="menu-item" id="logout">Logout</li>
                 </ul>
             </div>
         </header>
+
+        <!-- Ad Placeholder at the top of the messages -->
         <div class="ad-container">
             <ins class="adsbygoogle"
                 style="display:inline-block;width:100%;height:90px"
@@ -35,7 +37,12 @@
                 (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
         </div>
-        <div id="messages"></div>
+
+        <div id="messages">
+            <!-- Chat messages will be dynamically added here -->
+        </div>
+        
+        <!-- Typing indicator -->
         <div id="typing-container">
             <span id="typing-text">Timmy is typing</span>
             <div class="typing-indicator">
@@ -44,10 +51,14 @@
                 <div class="dot"></div>
             </div>
         </div>
+        
+        <!-- Input field -->
         <div class="input-group">
             <textarea id="message-input" placeholder="Type your message..."></textarea>
-            <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+            <button id="send-button">Send</button>
         </div>
+        
+        <!-- Ad Placeholder at the bottom of the chat container -->
         <div class="ad-container">
             <ins class="adsbygoogle"
                 style="display:inline-block;width:100%;height:90px"
@@ -58,15 +69,19 @@
             </script>
         </div>
     </div>
+    
+    <!-- Persona Selection Dropdown (hidden initially) -->
     <div id="personaSelection">
         <label for="personaDropdown">Who do you want to talk to today?:</label>
         <select id="personaDropdown">
             <option value="Timmy">Timmy</option>
             <option value="Ned">Ned</option>
             <option value="Adin">Adin Ballou</option>
+            <!-- Add more personas as needed -->
         </select>
         <button onclick="sendPersona()">Submit</button>
     </div>
+
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -82,7 +97,7 @@
     </script>
     <script type="text/javascript">
         var sessionId = "{{ sessionId }}";
-        var chatbot = "charlie";
+        var chatbot = "charlie"; // This is the variable you want to pass
     </script>
     <script src="chat_script.js"></script>
 </body>
