@@ -237,6 +237,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 userID = await get_user_id(app.state.pool, username)
                 persona = data_dict.get('persona')
                 active_thread = await get_active_thread_for_delete(app.state.pool, userID, persona)
+                print('active thread:', active_thread)
                 if active_thread:
                     threadID, createdTime = active_thread
                     await websocket.send_text(json.dumps({
