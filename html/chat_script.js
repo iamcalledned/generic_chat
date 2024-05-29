@@ -113,7 +113,6 @@ function initializeWebSocket() {
                 showPersonaSelection();
             } else if (msg.action === 'clear_conversations') {
                 showOverlay(msg.threadID, msg.createdTime);
-                showConversationList();
             } else {
                 hideTypingIndicator();
                 let messageElement;
