@@ -130,7 +130,6 @@ function initializeWebSocket() {
                     } else {
                         console.error('Threads data is missing from the WebSocket message');
                     }
-                    showConversationList();
             } else {
                 hideTypingIndicator();
                 let messageElement;
