@@ -240,15 +240,20 @@ async def websocket_endpoint(websocket: WebSocket):
                 active_thread = await get_active_thread_for_delete(app.state.pool, userID, persona)
                 print('active thread:', active_thread)
                 if active_thread:
-                    print('active thread:', active_thread)
-                    threadID, createdTime = active_thread
+                    threadID = active_thread['ThreadID']
+                    createdTime = active_thread['createdTime'].isoformat()  # Convert datetime to string
                     await websocket.send_text(json.dumps({
                         'action': 'conversation_list',
                         'threads': [{
                             'threadID': threadID,
                             'createdTime': createdTime
-                                    }]
-                }))
+                        }]
+                    }))
+                else:
+                    await websocket.send_text(json.dumps({
+                        'action': 'conversation_list',
+                        'threads': []
+                    }))
              
  
                 continue
