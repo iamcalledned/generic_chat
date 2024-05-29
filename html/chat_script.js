@@ -4,6 +4,11 @@ let reconnectInterval = 1000;
 const MAX_RECONNECT_INTERVAL = 30000;
 let persona = "";
 
+document.querySelector('.hamburger-menu').addEventListener('click', function() {
+    document.querySelector('.options-menu').classList.toggle('show');
+});
+
+
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
     if (socket && socket.readyState === WebSocket.OPEN) {
