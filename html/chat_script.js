@@ -30,13 +30,11 @@ document.getElementById('deleteSelectedBtn').addEventListener('click', function(
     }
 });
 
-
 document.getElementById('clear_conversations').addEventListener('click', function() {
     if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ action: 'clear_conversations' }));
     }
 });
-
 
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
@@ -125,11 +123,11 @@ function initializeWebSocket() {
             } else if (msg.action === 'select_persona') {
                 showPersonaSelection();
             } else if (msg.action === 'conversation_list') {
-                    if (msg.thread){
-                        showOverlay(msg.threads);
-                    } else {
-                        console.error('Threads data is missing from the WebSocket message');
-                    }
+                if (msg.threads) {
+                    showOverlay(msg.threads);
+                } else {
+                    console.error('Threads data is missing from the WebSocket message');
+                }
             } else {
                 hideTypingIndicator();
                 let messageElement;
@@ -151,6 +149,7 @@ function initializeWebSocket() {
         };
     }
 }
+
 // Function to show the overlay
 function showOverlay(threads) {
     const threadsList = document.getElementById('threadsList');
