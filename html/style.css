@@ -1,7 +1,4 @@
-/* Include Roboto font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-
-/* Reset default margin and padding for the entire document */
 html, body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -15,12 +12,9 @@ html, body {
     box-sizing: border-box;
     background: linear-gradient(to right, #6dd5ed, #2193b0);
 }
-
 *, *:before, *:after {
     box-sizing: inherit;
 }
-
-/* Chat container styles */
 #chat-container {
     width: 100%;
     max-width: 600px;
@@ -32,17 +26,14 @@ html, body {
     flex-direction: column;
     justify-content: flex-end;
     height: 95%;
+    border-radius: 10px;
 }
-
-/* Ad container styles */
 .ad-container {
     width: 100%;
     display: flex;
     justify-content: center;
     padding: 10px 0;
 }
-
-/* Message container styles */
 #messages {
     overflow-y: auto;
     flex-grow: 1;
@@ -53,8 +44,6 @@ html, body {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
-
-/* Message styles */
 .message.user {
     background-color: #07777a;
     color: white;
@@ -64,8 +53,8 @@ html, body {
     padding: 10px 15px;
     border: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeInRight 0.3s ease-in-out;
 }
-
 .message.bot {
     background-color: #aaeaec;
     color: black;
@@ -75,8 +64,8 @@ html, body {
     padding: 10px 15px;
     border: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeInLeft 0.3s ease-in-out;
 }
-
 .message-bubble {
     background-color: #aaeaec;
     color: black;
@@ -84,58 +73,52 @@ html, body {
     margin-left: 10px;
     border-radius: 20px;
     padding: 10px 15px;
+    animation: fadeInLeft 0.3s ease-in-out;
 }
-
 .message-bubble.recipe-message {
     border-color: #4CAF50;
     background-color: #ebf8f2;
 }
-
 .message-bubble.shopping-list-message {
     border-color: #99af4c;
     background-color: #ebf8f2;
 }
-
-/* Typing indicator container styles */
 #typing-container {
     display: flex;
     align-items: center;
     padding: 5px 10px;
     margin-bottom: 10px;
 }
-
 #typing-text {
     font-size: 0.8em;
     color: #555;
     margin-right: 5px;
 }
-
 .typing-indicator {
     display: flex;
     align-items: center;
 }
-
 .dot {
     width: 8px;
     height: 8px;
     margin: 0 2px;
     background-color: black;
     border-radius: 50%;
-    animation: slide 1s infinite alternate;
+    animation: bounce 1s infinite alternate;
 }
-
-@keyframes slide {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(20px); }
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-10px);
+    }
 }
-
-/* Input group styles */
 .input-group {
     display: flex;
     padding: 0 10px 10px 10px;
     align-items: center;
 }
-
 #message-input {
     flex-grow: 2;
     padding: 10px;
@@ -149,12 +132,10 @@ html, body {
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
-
 #message-input:focus {
     border-color: #007bff;
     box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
 }
-
 #send-button {
     padding: 10px 15px;
     flex-grow: 0;
@@ -169,13 +150,10 @@ html, body {
     line-height: 1.6;
     transition: background-color 0.3s ease;
 }
-
 #send-button:hover {
     background-color: #0056b3;
     box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
 }
-
-/* Media query for smaller screens */
 @media (max-width: 768px) {
     #chat-container {
         height: 90vh;
@@ -185,21 +163,17 @@ html, body {
         display: flex;
         flex-direction: column;
     }
-
     #messages {
         flex-grow: 1;
         overflow-y: auto;
     }
-
     .recipe-title {
         max-width: 100px;
     }
-
     .input-group {
         margin-bottom: 10px;
     }
 }
-
 .chat-header {
     position: relative;
     display: flex;
@@ -208,7 +182,6 @@ html, body {
     padding: 10px;
     background-color: #f5f5f5;
 }
-
 .hamburger-menu {
     position: absolute;
     left: 10px;
@@ -224,7 +197,6 @@ html, body {
     cursor: pointer;
     padding: 0;
 }
-
 .hamburger-menu span {
     display: block;
     height: 3px;
@@ -232,7 +204,6 @@ html, body {
     background: #333;
     border-radius: 3px;
 }
-
 .options-menu {
     display: none;
     position: absolute;
@@ -243,12 +214,10 @@ html, body {
     z-index: 1000;
     width: 100%;
 }
-
 .options-menu.show {
     display: block;
     background-color: rgb(255, 255, 255);
 }
-
 .notification-bubble {
     position: fixed;
     bottom: 20px;
@@ -262,7 +231,6 @@ html, body {
     display: none;
     z-index: 1000;
 }
-
 .tooltip {
     position: absolute;
     top: -35px;
@@ -274,7 +242,6 @@ html, body {
     font-size: 12px;
     z-index: 1000;
 }
-
 #personaSelection {
     display: flex;
     flex-direction: column;
@@ -299,7 +266,6 @@ html, body {
     visibility: hidden;
     transition: visibility 0s linear 0.3s, opacity 0.3s linear;
 }
-
 #personaDropdown {
     width: calc(100% - 20px);
     padding: 10px;
@@ -309,7 +275,6 @@ html, body {
     background-color: #f8f8f8;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
 button {
     background-color: #007bff;
     color: white;
@@ -322,14 +287,32 @@ button {
     letter-spacing: 0.5px;
     transition: background-color 0.3s ease;
 }
-
 button:hover {
     background-color: #0056b3;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-
 #personaSelection.show {
     opacity: 1;
     visibility: visible;
     transition: visibility 0s linear 0s, opacity 0.3s linear;
+}
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
