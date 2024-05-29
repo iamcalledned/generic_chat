@@ -134,7 +134,7 @@ async def get_recent_messages(pool, user_id, persona, active_thread, limit=10):
             SELECT Message, MessageType, Timestamp  FROM conversations
             WHERE userID = %s
             AND   persona = %s
-            AND   active_thread = %s
+            AND   ThreadID = %s
             ORDER BY Timestamp DESC
             LIMIT %s;
             '''
