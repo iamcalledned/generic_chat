@@ -23,8 +23,17 @@
             <div class="options-menu">
                 <ul class="menu-items">
                     <li class="menu-item" id="logout">Logout</li>
-                    <li class="menu-item" id="Clear_conversation">Clear Conversation</li>
+                    <li class="menu-item" id="clear_conversations">Clear Conversation</li>
                 </ul>
+            </div>
+            <!-- Overlay structure -->
+            <div id="overlay" class="overlay">
+                <div class="overlay-content">
+                    <span class="close-btn" id="closeBtn">&times;</span>
+                    <h2>Coversations to clear</h2>
+                    <p id="threadID"></p>
+                    <p id="createdTime"></p>
+                </div>
             </div>
         </header>
 

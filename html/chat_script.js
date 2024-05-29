@@ -13,6 +13,18 @@ document.getElementById('logout').addEventListener('click', function() {
     window.location.href = '/login'; // Adjust the URL as needed
 });
 
+document.getElementById('closeBtn').addEventListener('click', function() {
+    document.getElementById('overlay').style.display = 'none';
+});
+
+
+document.getElementById('clear_conversations').addEventListener('click', function() {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ action: 'clear_conversations' }));
+    }
+});
+
+
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
     if (socket && socket.readyState === WebSocket.OPEN) {
@@ -99,6 +111,9 @@ function initializeWebSocket() {
                 window.location.href = '/login';
             } else if (msg.action === 'select_persona') {
                 showPersonaSelection();
+            } else if (msg.action === 'clear_conversations') {
+                showOverlay(msg.threadID, msg.createdTime);
+                showConversationList();
             } else {
                 hideTypingIndicator();
                 let messageElement;
@@ -119,6 +134,14 @@ function initializeWebSocket() {
             console.error('WebSocket Error:', error);
         };
     }
+}
+function showOverlay(threadID, createdTime) {
+    // Populate the overlay with the threadID and createdTime
+    document.getElementById('threadID').textContent = `Thread ID: ${threadID}`;
+    document.getElementById('createdTime').textContent = `Created Time: ${createdTime}`;
+
+    // Display the overlay
+    document.getElementById('overlay').style.display = 'block';
 }
 
 function sendMessage() {
