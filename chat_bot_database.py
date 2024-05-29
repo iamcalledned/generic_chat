@@ -90,7 +90,8 @@ async def get_active_thread_for_delete(pool, userID, persona):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
             sql = '''
-                SELECT ThreadID 
+                SELECT  ThreadID
+                       ,createdTime 
                 FROM threads 
                 WHERE UserID = %s 
                 AND persona = %s 
