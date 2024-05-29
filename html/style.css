@@ -250,6 +250,7 @@ html, body {
   .options-menu.show {
     display: block; /* This makes the menu visible when the 'show' class is added */
     background-color: rgb(255, 255, 255); /* This is just for testing, you can remove it later */
+    cursor: pointer;
 }
 
 .notification-bubble {
