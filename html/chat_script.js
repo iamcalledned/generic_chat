@@ -17,6 +17,19 @@ document.getElementById('closeBtn').addEventListener('click', function() {
     document.getElementById('overlay').style.display = 'none';
 });
 
+// Event listener for the delete button
+document.getElementById('deleteSelectedBtn').addEventListener('click', function() {
+    const selectedThreadIDs = Array.from(document.querySelectorAll('#threadsList input:checked')).map(input => input.value);
+    if (selectedThreadIDs.length > 0) {
+        // Send a WebSocket message to delete selected threads
+        socket.send(JSON.stringify({ action: 'delete_selected_threads', threadIDs: selectedThreadIDs }));
+        // Optionally, close the overlay
+        document.getElementById('overlay').style.display = 'none';
+    } else {
+        alert('Please select at least one thread to delete.');
+    }
+});
+
 
 document.getElementById('clear_conversations').addEventListener('click', function() {
     if (socket && socket.readyState === WebSocket.OPEN) {
@@ -112,7 +125,7 @@ function initializeWebSocket() {
             } else if (msg.action === 'select_persona') {
                 showPersonaSelection();
             } else if (msg.action === 'conversation_list') {
-                showOverlay(msg.threadID, msg.createdTime);
+                        showOverlay(msg.threads);
             } else {
                 hideTypingIndicator();
                 let messageElement;
@@ -136,8 +149,24 @@ function initializeWebSocket() {
 }
 function showOverlay(threadID, createdTime) {
     // Populate the overlay with the threadID and createdTime
-    document.getElementById('threadID').textContent = `Thread ID: ${threadID}`;
-    document.getElementById('createdTime').textContent = `Created Time: ${createdTime}`;
+    const threadsList = document.getElementById('threadsList');
+    threadsList.innerHTML = ''; // Clear any existing content
+    // Populate the list with threads
+    threads.forEach(thread => {
+        const threadItem = document.createElement('div');
+        threadItem.className = 'thread-item';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = thread.threadID;
+
+        const label = document.createElement('label');
+        label.textContent = `Thread ID: ${thread.threadID}, Created Time: ${thread.createdTime}`;
+
+        threadItem.appendChild(checkbox);
+        threadItem.appendChild(label);
+        threadsList.appendChild(threadItem);
+    });
 
     // Display the overlay
     document.getElementById('overlay').style.display = 'block';

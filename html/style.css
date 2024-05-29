@@ -338,6 +338,7 @@ button:hover {
     transition: visibility 0s linear 0s, opacity 0.3s linear;
 }
 /* The overlay background */
+/* The overlay background */
 .overlay {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -383,3 +384,19 @@ button:hover {
     cursor: pointer;
 }
 
+/* Style for the list of threads */
+#threadsList {
+    text-align: left;
+    margin-top: 20px;
+}
+
+/* Style for the individual list items */
+.thread-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.thread-item input {
+    margin-right: 10px;
+}
