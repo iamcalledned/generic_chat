@@ -8,6 +8,10 @@ document.querySelector('.hamburger-menu').addEventListener('click', function() {
     document.querySelector('.options-menu').classList.toggle('show');
 });
 
+document.getElementById('logout').addEventListener('click', function() {
+    sessionStorage.clear();
+    window.location.href = '/login'; // Adjust the URL as needed
+});
 
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
