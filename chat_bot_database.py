@@ -127,13 +127,14 @@ async def get_conversations_by_run(pool, run_id):
             await cur.execute(sql, (run_id,))
             return await cur.fetchall()
 
-async def get_recent_messages(pool, user_id, persona, limit=10):
+async def get_recent_messages(pool, user_id, persona, active_thread, limit=10):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
             sql = '''
             SELECT Message, MessageType, Timestamp  FROM conversations
             WHERE userID = %s
             AND   persona = %s
+            AND   active_thread = %s
             ORDER BY Timestamp DESC
             LIMIT %s;
             '''
