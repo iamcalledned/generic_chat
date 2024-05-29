@@ -224,15 +224,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 print('getting recent messages')
                 active_thread = await get_active_thread_for_user(app.state.pool, userID, persona)
                 print('active thread:', active_thread)
-                threadID = active_thread['ThreadID']
-                recent_messages = await get_recent_messages(app.state.pool, userID, persona, threadID)
-                print('recent messages:', recent_messages)
-                await websocket.send_text(json.dumps({
+                if active_thread:
+                    threadID = active_thread['ThreadID']
+                    recent_messages = await get_recent_messages(app.state.pool, userID, persona, threadID)
+                    print('recent messages:', recent_messages)
+                    await websocket.send_text(json.dumps({
                     'action': 'recent_messages',
                     'messages': recent_messages
-                
                 }))
-
                 continue    
                 
 
