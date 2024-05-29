@@ -283,12 +283,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     'action': 'threads_deactivated',
                     'threadIDs': thread_ids
                 }))
-
-                await websocket.send_text(json.dumps({
-                    'action': 'select_persona'
-                }))
-                print('sent persona request')
-                
  
                 continue
 
