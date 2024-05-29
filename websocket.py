@@ -235,6 +235,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             if 'action' in data_dict and data_dict['action'] == 'clear_conversations': 
                 userID = await get_user_id(app.state.pool, username)
+                print('userID:', userID)
                 persona = data_dict.get('persona')
                 active_thread = await get_active_thread_for_delete(app.state.pool, userID, persona)
                 print('active thread:', active_thread)
