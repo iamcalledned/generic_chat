@@ -85,6 +85,21 @@ async def get_active_thread_for_user(pool, userID, persona):
             '''
             await cur.execute(sql, (userID, persona))
             return await cur.fetchone()
+        
+async def get_active_thread_for_delete(pool, userID, persona):
+    async with pool.acquire() as conn:
+        async with conn.cursor() as cur:
+            sql = '''
+                SELECT ThreadID 
+                FROM threads 
+                WHERE UserID = %s 
+                AND persona = %s 
+                AND IsActive = 1
+                ORDER BY CreatedTime DESC 
+                         '''
+            await cur.execute(sql, (userID, persona))
+            return await cur.fetchone()
+
 
 async def deactivate_thread(pool, thread_id):
     """Mark a thread as inactive"""
