@@ -233,7 +233,9 @@ html, body {
     border-radius: 3px;
 }
 
+
 .options-menu {
+    /* ... existing styles ... */
     display: none;
     position: absolute;
     left: 0;
@@ -242,11 +244,12 @@ html, body {
     border: 1px solid #ddd;
     z-index: 1000;
     width: 100%;
-}
+    /* ... other styles ... */
+  }
 
-.options-menu.show {
-    display: block;
-    background-color: rgb(255, 255, 255);
+  .options-menu.show {
+    display: block; /* This makes the menu visible when the 'show' class is added */
+    background-color: rgb(255, 255, 255); /* This is just for testing, you can remove it later */
 }
 
 .notification-bubble {
