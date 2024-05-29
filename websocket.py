@@ -10,7 +10,7 @@ from starlette.endpoints import WebSocketEndpoint
 
 from openai_utils_generate_answer import generate_answer
 from config import Config
-from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before
+from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before, get_active_thread_for_delete
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Request, Depends, status, Body
 
 import redis
@@ -231,6 +231,21 @@ async def websocket_endpoint(websocket: WebSocket):
                         'action': 'older_messages',
                         'messages': older_messages
                         }))
+                continue
+
+            if 'action' in data_dict and data_dict['action'] == 'clear_conversations': 
+                userID = await get_user_id(app.state.pool, username)
+                persona = data_dict.get('persona')
+                active_thread = await get_active_thread_for_delete(app.state.pool, userID, persona)
+                if active_thread:
+                    threadID, createdTime = active_thread
+                    await websocket.send_text(json.dumps({
+                        'action': 'conversation_list',
+                        'threadID': threadID,
+                        'createdTime': createdTime
+                }))
+             
+ 
                 continue
 
             
