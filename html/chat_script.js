@@ -13,6 +13,12 @@ document.getElementById('logout').addEventListener('click', function() {
     window.location.href = '/login'; // Adjust the URL as needed
 });
 
+document.getElementById('switch_persona').addEventListener('click', function() {
+    window.location.reload();
+});
+
+
+
 document.getElementById('closeBtn').addEventListener('click', function() {
     document.getElementById('overlay').style.display = 'none';
 });
