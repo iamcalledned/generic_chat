@@ -10,7 +10,7 @@ from starlette.endpoints import WebSocketEndpoint
 
 from openai_utils_generate_answer import generate_answer
 from config import Config
-from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before, get_active_thread_for_delete
+from chat_bot_database import create_db_pool, get_user_info_by_session_id, save_recipe_to_db, clear_user_session_id, get_user_id, favorite_recipe, get_saved_recipes_for_user, un_favorite_recipe, get_recent_messages, get_messages_before, get_active_thread_for_delete, deactivate_thread
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Request, Depends, status, Body
 
 import redis
@@ -257,6 +257,19 @@ async def websocket_endpoint(websocket: WebSocket):
              
  
                 continue
+
+            
+            if 'action' in data_dict and data_dict['action'] == 'delete_selected_threads': 
+                thread_ids = data_dict['threadIDs']
+                for thread_id in thread_ids:
+                    await deactivate_thread(app.state.pool, thread_id)
+                await websocket.send_text(json.dumps({
+                    'action': 'threads_deactivated',
+                    'threadIDs': thread_ids
+                }))
+ 
+                continue
+
 
             
             if 'action' in data_dict and data_dict['action'] == 'chat_message':

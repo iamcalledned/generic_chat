@@ -128,6 +128,8 @@ function initializeWebSocket() {
                 } else {
                     console.error('Threads data is missing from the WebSocket message');
                 }
+            } else if (msg.action === 'threads_deactivated') {
+                console.log('Threads deactivated:', msg.threadIDs);
             } else {
                 hideTypingIndicator();
                 let messageElement;
