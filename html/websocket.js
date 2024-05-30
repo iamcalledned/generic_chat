@@ -1,4 +1,4 @@
-const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
+export const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
 let socket;
 let reconnectInterval = 1000;
 const MAX_RECONNECT_INTERVAL = 30000;
