@@ -1,13 +1,12 @@
 import asyncio
 import json
 import logging
+import ssl
 from uuid import uuid4
 import traceback
-from fastapi import (FastAPI, 
-                     WebSocket, 
-                     WebSocketDisconnect, 
-                     HTTPException)
 
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from starlette.endpoints import WebSocketEndpoint
 
 from openai_utils_generate_answer import generate_answer
 from config import Config
@@ -22,22 +21,16 @@ from db_functions import (
     get_active_thread_for_user
     )
 
-from fastapi import (
-     FastAPI, 
-     WebSocket, 
-     WebSocketDisconnect, 
-     HTTPException, 
-     APIRouter, 
-     Request, 
-     Depends, 
-     status, 
-     Body )
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Request, Depends, status, Body
 
 import redis
+from redis.exceptions import RedisError
 
+import spacy
+import re
 from starlette.websockets import WebSocket
-
-
+from datetime import datetime
+import httpx
 
 # Initialize Redis client
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -276,6 +269,8 @@ async def websocket_endpoint(websocket: WebSocket):
                         'action': 'conversation_list',
                         'threads': []
                     }))
+             
+ 
                 continue
 
             
