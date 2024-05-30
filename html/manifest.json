@@ -1,14 +1,14 @@
 {
-    "short_name": "WhattoGrill",
-    "name": "WhattoGrill chatbot app",
+    "short_name": "TalkToNed",
+    "name": "TalkToNed - Chatbot",
     "icons": [
       {
-        "src": "what_to_grill_image_round_pwa.small.png",
+        "src": "talk_to_ned.png",
         "type": "image/png",
         "sizes": "192x192"
       },
       {
-        "src": "what_to_grill_image_round_pwa.large.png",
+        "src": "talk_to_ned_large.png",
         "type": "image/png",
         "sizes": "512x512"
       }
