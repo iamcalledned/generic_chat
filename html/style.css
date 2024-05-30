@@ -71,7 +71,8 @@ html, body {
     width: 100%;
 }
 
-.options-menu.show {
+.hamburger-menu:hover + .options-menu,
+.options-menu:hover {
     display: block;
 }
 
