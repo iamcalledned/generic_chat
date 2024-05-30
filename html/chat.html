@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="/manifest.json">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5492267670756478" crossorigin="anonymous"></script>
 </head>
@@ -12,7 +12,7 @@
     <div id="chat-container">
         <header class="chat-header">
             <!-- Hamburger Menu Button -->
-            <button class="hamburger-menu">
+            <button class="hamburger-menu" id="hamburgerMenu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -90,17 +90,6 @@
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
-                    console.log('Service Worker registered with scope: ', registration.scope);
-                }, function(err) {
-                    console.log('Service Worker registration failed: ', err);
-                });
-            });
-        }
-    </script>
     <script src="chat_script.js"></script>
 </body>
 </html>

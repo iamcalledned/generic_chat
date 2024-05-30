@@ -71,8 +71,7 @@ html, body {
     width: 100%;
 }
 
-.hamburger-menu:hover + .options-menu,
-.options-menu:hover {
+.options-menu.show {
     display: block;
 }
 
@@ -322,4 +321,23 @@ button:hover {
 
 .thread-item input {
     margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .options-menu {
+        position: static;
+        display: none;
+    }
+
+    .hamburger-menu.active + .options-menu {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        width: 100%;
+    }
 }

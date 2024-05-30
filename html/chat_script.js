@@ -6,6 +6,7 @@ let persona = "";
 
 document.querySelector('.hamburger-menu').addEventListener('click', function() {
     document.querySelector('.options-menu').classList.toggle('show');
+    document.querySelector('.hamburger-menu').classList.toggle('active');
 });
 
 document.getElementById('logout').addEventListener('click', function() {
@@ -146,10 +147,6 @@ function initializeWebSocket() {
             } else if (msg.action === 'threads_deactivated') {
                 console.log('Threads deactivated:', msg.threadIDs);
                 window.location.reload();
-            } else if (msg.action === 'no_active_thread') {
-                console.log('No active thread:', msg.message);
-                clearMessages(); // Clear old messages
-                alert(msg.message); // Optionally display a message to the user
             } else {
                 hideTypingIndicator();
                 let messageElement;
@@ -185,7 +182,7 @@ function initializeWebSocket() {
 
 function showOverlay(threads) {
     const threadsList = document.getElementById('threadsList');
-    threadsList.innerHTML = '';
+    threadsList.innerHTML = ''; // Clear any existing content
 
     threads.forEach(thread => {
         const threadItem = document.createElement('div');
@@ -206,34 +203,43 @@ function showOverlay(threads) {
     document.getElementById('overlay').style.display = 'block';
 }
 
-function sendMessage() {
-    const message = document.getElementById('message-input').value;
-    if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: 'chat_message', message: message }));
-        document.getElementById('message-input').value = '';
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message user';
-        messageElement.textContent = 'You: ' + message;
-        document.getElementById('messages').appendChild(messageElement);
-        showTypingIndicator();
-        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-    } else {
-        console.error('WebSocket is not open. ReadyState:', socket.readyState);
+function reconnectWebSocket() {
+    if (!socket || socket.readyState === WebSocket.CLOSED) {
+        initializeWebSocket();
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function loadMoreMessages() {
+    const lastMessageTimestamp = getOldestMessageTimestamp();
+    if (lastMessageTimestamp && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: 'load_more_messages',
+            last_loaded_timestamp: lastMessageTimestamp
+        }));
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     initializeWebSocket();
     document.getElementById('send-button').addEventListener('click', sendMessage);
-    document.getElementById('message-input').addEventListener('keypress', function(e) {
-        if (e.which == 13) {
+    document.getElementById('message-input').addEventListener('keypress', function (e) {
+        if (e.which === 13) {
             sendMessage();
             return false;
         }
     });
     hideTypingIndicator();
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const optionsMenu = document.querySelector('.options-menu');
+        if (!hamburgerMenu.contains(event.target) && !optionsMenu.contains(event.target)) {
+            optionsMenu.classList.remove('show');
+            hamburgerMenu.classList.remove('active');
+        }
+    });
+
+    document.addEventListener('click', function (event) {
         if (event.target.classList.contains('save-recipe-button')) {
             const recipeId = event.target.dataset.recipeId;
             if (socket.readyState === WebSocket.OPEN) {
@@ -251,25 +257,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    document.getElementById('messages').addEventListener('scroll', function() {
+    document.getElementById('messages').addEventListener('scroll', function () {
         if (this.scrollTop === 0) {
             loadMoreMessages();
         }
     });
 });
 
-function reconnectWebSocket() {
-    if (!socket || socket.readyState === WebSocket.CLOSED) {
-        initializeWebSocket();
-    }
-}
-
-function loadMoreMessages() {
-    const lastMessageTimestamp = getOldestMessageTimestamp();
-    if (lastMessageTimestamp && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({
-            action: 'load_more_messages',
-            last_loaded_timestamp: lastMessageTimestamp
-        }));
+function sendMessage() {
+    const message = document.getElementById('message-input').value;
+    if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ action: 'chat_message', message: message }));
+        document.getElementById('message-input').value = '';
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message user';
+        messageElement.textContent = 'You: ' + message;
+        document.getElementById('messages').appendChild(messageElement);
+        showTypingIndicator();
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    } else {
+        console.error('WebSocket is not open. ReadyState:', socket.readyState);
     }
 }
