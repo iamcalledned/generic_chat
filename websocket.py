@@ -66,6 +66,7 @@ async def create_pool():
 
 #fuction to direct access websocket from backend
 # Function to restrict access to localhost
+
 def verify_localhost(request: Request):
     client_host = request.client.host
     print("Client host:", client_host)
@@ -147,11 +148,9 @@ async def websocket_endpoint(websocket: WebSocket):
     cookies = websocket.cookies
     session_id_from_cookies = cookies.get('session_id')
     print('sessionID from cookies;', session_id_from_cookies)
-        # Obtain client IP address
-    client_host, client_port = websocket.client
-    client_ip = client_host
-    print(f"Client IP: {client_ip}")
-    print("connections at websocket_endpoint:", connections)
+    client_ip = websocket.client
+    print(f"Client IP: {client_ip} logged in.")
+    
 
    
     username = None
@@ -171,12 +170,9 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         initial_data = await websocket.receive_text()
         initial_data = json.loads(initial_data)
-        #session_id_redis = initial_data.get('session_id', '')
-        session_id = session_id_from_cookies
-        #print('sessionID from REdis:', session_id_redis)
-        print('sessionID from cookies;', session_id)
         
-    
+        session_id = session_id_from_cookies
+            
 
         if session_id:
             session_data = redis_client.get(session_id)
@@ -187,7 +183,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Renew the session expiry time upon successful connection
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
                 
-                 # First, ask the user to select a persona
+        
                 await websocket.send_text(json.dumps({
                     'action': 'select_persona'
                 }))
@@ -195,8 +191,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
             else:
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
-                print('hit else 1')
-                #await websocket.send_text(json.dumps({'error': 'Session ID required'}))
+        
                 return
 
         while True:
@@ -204,7 +199,6 @@ async def websocket_endpoint(websocket: WebSocket):
             data_dict = json.loads(data)
             print('data: ', data_dict)
             message = data_dict.get('message', '')
-            #session_id = data_dict.get('session_id', '')
             session_id = session_id_from_cookies
             
                 # Validate session_id
@@ -223,13 +217,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 
                 userID = await get_user_id(app.state.pool, username)
-                print('getting recent messages')
                 active_thread = await get_active_thread_for_user(app.state.pool, userID, persona)
-                print('active thread:', active_thread)
+                print('getting recent messages for active thread:', active_thread)
                 if active_thread:
                     threadID = active_thread['ThreadID']
                     recent_messages = await get_recent_messages(app.state.pool, userID, persona, threadID)
-                    print('recent messages:', recent_messages)
                     await websocket.send_text(json.dumps({
                     'action': 'recent_messages',
                     'messages': recent_messages
