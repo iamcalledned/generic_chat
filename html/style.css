@@ -174,7 +174,7 @@ html, body {
 }
 
 #message-input {
-    flex-grow: 2;
+    flex-grow: 1;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 18px;
@@ -183,6 +183,7 @@ html, body {
     resize: none;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
+    margin-right: 10px; /* Add some space between input and button */
 }
 
 #message-input:focus {
@@ -192,7 +193,9 @@ html, body {
 
 #send-button {
     padding: 10px 15px;
-    margin-left: 10px;
+    flex-shrink: 0; /* Prevent the button from shrinking */
+    width: auto; /* Adjust the width */
+    min-width: 100px; /* Set a minimum width */
     background-color: #007bff;
     color: white;
     border: none;
