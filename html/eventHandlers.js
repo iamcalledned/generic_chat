@@ -1,3 +1,4 @@
+// eventHandlers.js
 import { initializeWebSocket, sendPersona, sendMessage } from './websocket.js';
 import { clearMessages, loadMoreMessages, showOverlay, hideTypingIndicator } from './uiHelpers.js';
 
