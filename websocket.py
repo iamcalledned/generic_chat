@@ -10,7 +10,7 @@ from starlette.endpoints import WebSocketEndpoint
 
 from openai_utils_generate_answer import generate_answer
 from config import Config
-from chat_bot_database import (
+from db_functions import (
     create_db_pool, 
     clear_user_session_id, 
     get_user_id, 
