@@ -1,4 +1,6 @@
 //websocket.js
+import { handleWebSocketMessage } from './eventHandlers.js';
+
 const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
 let socket;
 let reconnectInterval = 1000;
