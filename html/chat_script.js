@@ -150,25 +150,9 @@ function initializeWebSocket() {
             } else {
                 hideTypingIndicator();
                 let messageElement;
-                if (msg.type === 'recipe') {
-                    messageElement = document.createElement('div');
-                    messageElement.className = 'message-bubble recipe-message';
-                    messageElement.innerHTML = msg.response;
-                    const printButton = document.createElement('button');
-                    printButton.className = 'print-recipe-button';
-                    printButton.dataset.recipeId = msg.recipe_id;
-                    printButton.textContent = 'Print Recipe';
-                    const saveButton = document.createElement('button');
-                    saveButton.className = 'save-recipe-button';
-                    saveButton.dataset.recipeId = msg.recipe_id;
-                    saveButton.textContent = 'Save Recipe';
-                    messageElement.appendChild(saveButton);
-                    messageElement.appendChild(printButton);
-                } else {
-                    messageElement = document.createElement('div');
-                    messageElement.className = 'message bot';
-                    messageElement.innerHTML = msg.response;
-                }
+                messageElement = document.createElement('div');
+                messageElement.className = 'message bot';
+                messageElement.innerHTML = msg.response;
                 document.getElementById('messages').appendChild(messageElement);
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
@@ -239,24 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.addEventListener('click', function (event) {
-        if (event.target.classList.contains('save-recipe-button')) {
-            const recipeId = event.target.dataset.recipeId;
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ action: 'save_recipe', content: recipeId }));
-            } else {
-                console.error('WebSocket is not open.');
-            }
-        } else if (event.target.classList.contains('print-recipe-button')) {
-            const recipeId = event.target.dataset.recipeId;
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ action: 'print_recipe', content: recipeId }));
-            } else {
-                console.error('WebSocket is not open.');
-            }
-        }
-    });
-
+    
     document.getElementById('messages').addEventListener('scroll', function () {
         if (this.scrollTop === 0) {
             loadMoreMessages();
