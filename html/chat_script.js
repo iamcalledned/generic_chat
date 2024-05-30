@@ -15,6 +15,7 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
+    clearMessages(); // Clear old messages when switching persona
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -99,7 +100,10 @@ function displayMoreMessages(messages) {
         document.getElementById('messages').prepend(messageElement);
     });
 }
-
+function clearMessages() {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ''; // Clear all messages
+}
 function getOldestMessageTimestamp() {
     const oldestMessage = document.querySelector('#messages .message:first-child');
     return oldestMessage ? oldestMessage.dataset.timestamp : null;
