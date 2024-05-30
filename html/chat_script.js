@@ -58,6 +58,11 @@ function hideTypingIndicator() {
     document.getElementById('typing-container').style.display = 'none';
 }
 
+function clearMessages() {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ''; // Clear all messages
+}
+
 function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
         let messageElement;
@@ -100,10 +105,7 @@ function displayMoreMessages(messages) {
         document.getElementById('messages').prepend(messageElement);
     });
 }
-function clearMessages() {
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = ''; // Clear all messages
-}
+
 function getOldestMessageTimestamp() {
     const oldestMessage = document.querySelector('#messages .message:first-child');
     return oldestMessage ? oldestMessage.dataset.timestamp : null;
@@ -144,6 +146,10 @@ function initializeWebSocket() {
             } else if (msg.action === 'threads_deactivated') {
                 console.log('Threads deactivated:', msg.threadIDs);
                 window.location.reload();
+            } else if (msg.action === 'no_active_thread') {
+                console.log('No active thread:', msg.message);
+                clearMessages(); // Clear old messages
+                alert(msg.message); // Optionally display a message to the user
             } else {
                 hideTypingIndicator();
                 let messageElement;
