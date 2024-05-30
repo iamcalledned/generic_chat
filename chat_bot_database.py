@@ -143,16 +143,18 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
             # Convert each row to a dict and format datetime objects
             return [dict(row, Timestamp=row['Timestamp'].isoformat()) for row in rows]
         
-async def get_messages_before(pool, user_id, last_loaded_timestamp, limit=3):
+async def get_messages_before(pool, user_id, last_loaded_timestamp, threadID, limit=3):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
             sql = '''
             SELECT Message, MessageType, Timestamp  FROM conversations
-            WHERE userID = %s AND Timestamp < %s
+            WHERE userID = %s 
+            AND Timestamp < %s
+            and ThreadID = %s
             ORDER BY Timestamp DESC
             LIMIT %s;
             '''
-            await cur.execute(sql, (user_id, last_loaded_timestamp, limit))
+            await cur.execute(sql, (user_id, last_loaded_timestamp, threadID, limit))
             rows = await cur.fetchall()
             # Convert rows to dictionaries and format datetime
             return [dict(row, Timestamp=row['Timestamp'].isoformat()) for row in rows]

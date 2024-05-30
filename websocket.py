@@ -244,7 +244,9 @@ async def websocket_endpoint(websocket: WebSocket):
             if 'action' in data_dict and data_dict['action'] == 'load_more_messages': 
                 userID = await get_user_id(app.state.pool, username)
                 last_loaded_timestamp = data_dict.get('last_loaded_timestamp')
-                older_messages = await get_messages_before(app.state.pool, userID, last_loaded_timestamp)
+                active_thread = await get_active_thread_for_user(app.state.pool, userID, persona)
+                threadID = active_thread['ThreadID']
+                older_messages = await get_messages_before(app.state.pool, userID, last_loaded_timestamp, threadID)
                 await websocket.send_text(json.dumps({
                         'action': 'older_messages',
                         'messages': older_messages
