@@ -1,5 +1,4 @@
-// eventHandlers.js
-import { sendMessage, sendPersona } from './websocket.js';
+import { sendMessage } from './websocket.js';
 import { clearMessages, loadMoreMessages, showOverlay } from './uiHelpers.js';
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -67,7 +67,8 @@ function handleWebSocketMessage(event) {
     }
 }
 
-export function sendPersona(selectedPersona) {
+export function sendPersona() {
+    const selectedPersona = document.getElementById('personaDropdown').value;
     persona = selectedPersona;
     if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({
