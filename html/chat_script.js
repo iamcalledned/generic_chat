@@ -10,26 +10,21 @@ document.querySelector('.hamburger-menu').addEventListener('click', function() {
 
 document.getElementById('logout').addEventListener('click', function() {
     sessionStorage.clear();
-    window.location.href = '/login'; // Adjust the URL as needed
+    window.location.href = '/login';
 });
 
 document.getElementById('switch_persona').addEventListener('click', function() {
-    window.location.reload();
+    document.getElementById('personaSelection').classList.add('show');
 });
-
-
 
 document.getElementById('closeBtn').addEventListener('click', function() {
     document.getElementById('overlay').style.display = 'none';
 });
 
-// Event listener for the delete button
 document.getElementById('deleteSelectedBtn').addEventListener('click', function() {
     const selectedThreadIDs = Array.from(document.querySelectorAll('#threadsList input:checked')).map(input => input.value);
     if (selectedThreadIDs.length > 0) {
-        // Send a WebSocket message to delete selected threads
         socket.send(JSON.stringify({ action: 'delete_selected_threads', threadIDs: selectedThreadIDs }));
-        // Optionally, close the overlay
         document.getElementById('overlay').style.display = 'none';
     } else {
         alert('Please select at least one thread to delete.');
@@ -54,52 +49,60 @@ function sendPersona() {
     document.getElementById('personaSelection').classList.remove('show');
 }
 
-function showPersonaSelection() {
-    $('#personaSelection').addClass('show');
-}
-
 function showTypingIndicator() {
-    $('#typing-container').show();
+    document.getElementById('typing-container').style.display = 'flex';
 }
 
 function hideTypingIndicator() {
-    $('#typing-container').hide();
+    document.getElementById('typing-container').style.display = 'none';
 }
 
 function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
         let messageElement;
         if (message.MessageType === 'user') {
-            messageElement = $('<div class="message user">').text('You: ' + message.Message);
+            messageElement = document.createElement('div');
+            messageElement.className = 'message user';
+            messageElement.textContent = 'You: ' + message.Message;
         } else if (message.MessageType === 'bot') {
-            messageElement = $('<div class="message bot">').text(persona + ': ' + message.Message);
+            messageElement = document.createElement('div');
+            messageElement.className = 'message bot';
+            messageElement.textContent = persona + ': ' + message.Message;
         } else {
-            messageElement = $('<div class="message">').text(message.Message);
+            messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.textContent = message.Message;
         }
-        messageElement.attr('data-timestamp', message.Timestamp);
-        $('#messages').append(messageElement);
+        messageElement.dataset.timestamp = message.Timestamp;
+        document.getElementById('messages').appendChild(messageElement);
     });
-    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 }
 
 function displayMoreMessages(messages) {
     messages.forEach(function(message) {
         let messageElement;
         if (message.MessageType === 'user') {
-            messageElement = $('<div class="message user">').text('You: ' + message.Message);
+            messageElement = document.createElement('div');
+            messageElement.className = 'message user';
+            messageElement.textContent = 'You: ' + message.Message;
         } else if (message.MessageType === 'bot') {
-            messageElement = $('<div class="message bot">').text(persona + ': ' + message.Message);
+            messageElement = document.createElement('div');
+            messageElement.className = 'message bot';
+            messageElement.textContent = persona + ': ' + message.Message;
         } else {
-            messageElement = $('<div class="message">').text(message.Message);
+            messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.textContent = message.Message;
         }
-        messageElement.attr('data-timestamp', message.Timestamp);
-        $('#messages').prepend(messageElement);
+        messageElement.dataset.timestamp = message.Timestamp;
+        document.getElementById('messages').prepend(messageElement);
     });
 }
 
 function getOldestMessageTimestamp() {
-    const oldestMessage = $('#messages .message:first');
-    return oldestMessage.data('timestamp');
+    const oldestMessage = document.querySelector('#messages .message:first-child');
+    return oldestMessage ? oldestMessage.dataset.timestamp : null;
 }
 
 function initializeWebSocket() {
@@ -127,7 +130,7 @@ function initializeWebSocket() {
             } else if (msg.action === 'force_logout' || msg.action === 'redirect_login') {
                 window.location.href = '/login';
             } else if (msg.action === 'select_persona') {
-                showPersonaSelection();
+                document.getElementById('personaSelection').classList.add('show');
             } else if (msg.action === 'conversation_list') {
                 if (msg.threads) {
                     showOverlay(msg.threads);
@@ -137,21 +140,30 @@ function initializeWebSocket() {
             } else if (msg.action === 'threads_deactivated') {
                 console.log('Threads deactivated:', msg.threadIDs);
                 window.location.reload();
-                
-
             } else {
                 hideTypingIndicator();
                 let messageElement;
                 if (msg.type === 'recipe') {
-                    messageElement = $('<div class="message-bubble recipe-message">').html(msg.response);
-                    const printButton = $('<button class="print-recipe-button" data-recipe-id="' + msg.recipe_id + '">Print Recipe</button>');
-                    const saveButton = $('<button class="save-recipe-button" data-recipe-id="' + msg.recipe_id + '">Save Recipe</button>');
-                    messageElement.append(saveButton, printButton);
+                    messageElement = document.createElement('div');
+                    messageElement.className = 'message-bubble recipe-message';
+                    messageElement.innerHTML = msg.response;
+                    const printButton = document.createElement('button');
+                    printButton.className = 'print-recipe-button';
+                    printButton.dataset.recipeId = msg.recipe_id;
+                    printButton.textContent = 'Print Recipe';
+                    const saveButton = document.createElement('button');
+                    saveButton.className = 'save-recipe-button';
+                    saveButton.dataset.recipeId = msg.recipe_id;
+                    saveButton.textContent = 'Save Recipe';
+                    messageElement.appendChild(saveButton);
+                    messageElement.appendChild(printButton);
                 } else {
-                    messageElement = $('<div class="message bot">').html(msg.response);
+                    messageElement = document.createElement('div');
+                    messageElement.className = 'message bot';
+                    messageElement.innerHTML = msg.response;
                 }
-                $('#messages').append(messageElement);
-                $('#messages').scrollTop($('#messages')[0].scrollHeight);
+                document.getElementById('messages').appendChild(messageElement);
+                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
         };
 
@@ -161,12 +173,10 @@ function initializeWebSocket() {
     }
 }
 
-// Function to show the overlay
 function showOverlay(threads) {
     const threadsList = document.getElementById('threadsList');
-    threadsList.innerHTML = ''; // Clear any existing content
+    threadsList.innerHTML = '';
 
-    // Populate the list with threads
     threads.forEach(thread => {
         const threadItem = document.createElement('div');
         threadItem.className = 'thread-item';
@@ -183,27 +193,29 @@ function showOverlay(threads) {
         threadsList.appendChild(threadItem);
     });
 
-    // Display the overlay
     document.getElementById('overlay').style.display = 'block';
 }
 
 function sendMessage() {
-    const message = $('#message-input').val();
+    const message = document.getElementById('message-input').value;
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ action: 'chat_message', message: message }));
-        $('#message-input').val('');
-        $('#messages').append($('<div class="message user">').text('You: ' + message));
+        document.getElementById('message-input').value = '';
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message user';
+        messageElement.textContent = 'You: ' + message;
+        document.getElementById('messages').appendChild(messageElement);
         showTypingIndicator();
-        $('#messages').scrollTop($('#messages')[0].scrollHeight);
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     } else {
         console.error('WebSocket is not open. ReadyState:', socket.readyState);
     }
 }
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     initializeWebSocket();
-    $('#send-button').click(sendMessage);
-    $('#message-input').keypress(function(e) {
+    document.getElementById('send-button').addEventListener('click', sendMessage);
+    document.getElementById('message-input').addEventListener('keypress', function(e) {
         if (e.which == 13) {
             sendMessage();
             return false;
@@ -211,25 +223,25 @@ $(document).ready(function() {
     });
     hideTypingIndicator();
 
-    $(document).on('click', '.save-recipe-button', function() {
-        const recipeId = $(this).data('recipe-id');
-        if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({ action: 'save_recipe', content: recipeId }));
-        } else {
-            console.error('WebSocket is not open.');
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('save-recipe-button')) {
+            const recipeId = event.target.dataset.recipeId;
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({ action: 'save_recipe', content: recipeId }));
+            } else {
+                console.error('WebSocket is not open.');
+            }
+        } else if (event.target.classList.contains('print-recipe-button')) {
+            const recipeId = event.target.dataset.recipeId;
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({ action: 'print_recipe', content: recipeId }));
+            } else {
+                console.error('WebSocket is not open.');
+            }
         }
     });
 
-    $(document).on('click', '.print-recipe-button', function() {
-        const recipeId = $(this).data('recipe-id');
-        if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({ action: 'print_recipe', content: recipeId }));
-        } else {
-            console.error('WebSocket is not open.');
-        }
-    });
-
-    $('#messages').scroll(function() {
+    document.getElementById('messages').addEventListener('scroll', function() {
         if (this.scrollTop === 0) {
             loadMoreMessages();
         }

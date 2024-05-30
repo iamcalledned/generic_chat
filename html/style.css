@@ -1,17 +1,14 @@
-/* Include Roboto font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-/* Reset default margin and padding for the entire document */
 html, body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    padding-top: 20px;
     background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100% - 20px);
+    height: 100vh;
     box-sizing: border-box;
     background: linear-gradient(to right, #6dd5ed, #2193b0);
 }
@@ -20,21 +17,83 @@ html, body {
     box-sizing: inherit;
 }
 
-/* Chat container styles */
 #chat-container {
     width: 100%;
     max-width: 600px;
-    margin: 0;
     background: #fff;
-    border: 1px solid #ddd;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    height: 95%;
+    overflow: hidden;
 }
 
-/* Ad container styles */
+.chat-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+}
+
+.hamburger-menu span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: #333;
+    border-radius: 3px;
+}
+
+.options-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 100%;
+}
+
+.options-menu.show {
+    display: block;
+}
+
+.menu-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background-color: #f5f5f5;
+}
+
 .ad-container {
     width: 100%;
     display: flex;
@@ -42,7 +101,6 @@ html, body {
     padding: 10px 0;
 }
 
-/* Message container styles */
 #messages {
     overflow-y: auto;
     flex-grow: 1;
@@ -54,7 +112,6 @@ html, body {
     word-wrap: break-word;
 }
 
-/* Message styles */
 .message.user {
     background-color: #07777a;
     color: white;
@@ -62,7 +119,6 @@ html, body {
     margin-right: 10px;
     border-radius: 20px;
     padding: 10px 15px;
-    border: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -73,32 +129,11 @@ html, body {
     margin-left: 10px;
     border-radius: 20px;
     padding: 10px 15px;
-    border: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.message-bubble {
-    background-color: #aaeaec;
-    color: black;
-    align-self: flex-start;
-    margin-left: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-}
-
-.message-bubble.recipe-message {
-    border-color: #4CAF50;
-    background-color: #ebf8f2;
-}
-
-.message-bubble.shopping-list-message {
-    border-color: #99af4c;
-    background-color: #ebf8f2;
-}
-
-/* Typing indicator container styles */
 #typing-container {
-    display: flex;
+    display: none;
     align-items: center;
     padding: 5px 10px;
     margin-bottom: 10px;
@@ -129,11 +164,12 @@ html, body {
     100% { transform: translateX(20px); }
 }
 
-/* Input group styles */
 .input-group {
     display: flex;
-    padding: 0 10px 10px 10px;
+    padding: 10px;
     align-items: center;
+    border-top: 1px solid #ddd;
+    background-color: #fff;
 }
 
 #message-input {
@@ -142,9 +178,7 @@ html, body {
     border: 1px solid #ddd;
     border-radius: 18px;
     font-size: 16px;
-    line-height: 1.6;
     min-height: 50px;
-    overflow-y: auto;
     resize: none;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -157,16 +191,13 @@ html, body {
 
 #send-button {
     padding: 10px 15px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    width: auto;
+    margin-left: 10px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
-    line-height: 1.6;
     transition: background-color 0.3s ease;
 }
 
@@ -175,133 +206,30 @@ html, body {
     box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
 }
 
-/* Media query for smaller screens */
 @media (max-width: 768px) {
     #chat-container {
         height: 90vh;
         width: 95%;
-        margin-top: 0;
-        margin: 5px auto 10px auto;
-        display: flex;
-        flex-direction: column;
+        margin: 0 auto;
     }
-
-    #messages {
-        flex-grow: 1;
-        overflow-y: auto;
-    }
-
-    .recipe-title {
-        max-width: 100px;
-    }
-
-    .input-group {
-        margin-bottom: 10px;
-    }
-}
-
-.chat-header {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background-color: #f5f5f5;
-}
-
-.hamburger-menu {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 30px;
-    height: 25px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-}
-
-.hamburger-menu span {
-    display: block;
-    height: 3px;
-    width: 100%;
-    background: #333;
-    border-radius: 3px;
-}
-
-
-.options-menu {
-    /* ... existing styles ... */
-    display: none;
-    position: absolute;
-    left: 0;
-    top: 100%;
-    background: white;
-    border: 1px solid #ddd;
-    z-index: 1000;
-    width: 100%;
-    /* ... other styles ... */
-  }
-
-  .options-menu.show {
-    display: block; /* This makes the menu visible when the 'show' class is added */
-    background-color: rgb(255, 255, 255); /* This is just for testing, you can remove it later */
-    cursor: pointer;
-}
-
-.notification-bubble {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-    display: none;
-    z-index: 1000;
-}
-
-.tooltip {
-    position: absolute;
-    top: -35px;
-    right: 0;
-    background-color: #333;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 12px;
-    z-index: 1000;
 }
 
 #personaSelection {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #ffffff;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     width: 340px;
-    height: auto;
     border: 1px solid #eaeaea;
-    transition: all 0.3s ease;
-    opacity: 0;
-    visibility: hidden;
-    transition: visibility 0s linear 0.3s, opacity 0.3s linear;
 }
 
 #personaDropdown {
@@ -312,6 +240,10 @@ html, body {
     border-radius: 5px;
     background-color: #f8f8f8;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#personaSelection.show {
+    display: flex;
 }
 
 button {
@@ -332,27 +264,17 @@ button:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-#personaSelection.show {
-    opacity: 1;
-    visibility: visible;
-    transition: visibility 0s linear 0s, opacity 0.3s linear;
-}
-/* The overlay background */
-/* The overlay background */
 .overlay {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Overlay content */
 .overlay-content {
     position: relative;
     top: 25%;
@@ -366,7 +288,6 @@ button:hover {
     text-align: center;
 }
 
-/* Close button */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -381,16 +302,13 @@ button:hover {
 .close-btn:focus {
     color: black;
     text-decoration: none;
-    cursor: pointer;
 }
 
-/* Style for the list of threads */
 #threadsList {
     text-align: left;
     margin-top: 20px;
 }
 
-/* Style for the individual list items */
 .thread-item {
     display: flex;
     align-items: center;
