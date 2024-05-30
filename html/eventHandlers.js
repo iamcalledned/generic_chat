@@ -1,9 +1,8 @@
 // eventHandlers.js
-import { initializeWebSocket, sendPersona, sendMessage } from './websocket.js';
-import { clearMessages, loadMoreMessages, showOverlay, hideTypingIndicator } from './uiHelpers.js';
+import { sendMessage, sendPersona } from './websocket.js';
+import { clearMessages, loadMoreMessages, showOverlay } from './uiHelpers.js';
 
 document.addEventListener('DOMContentLoaded', function () {
-    initializeWebSocket();
     document.getElementById('send-button').addEventListener('click', () => {
         const message = document.getElementById('message-input').value;
         sendMessage(message);
@@ -63,6 +62,4 @@ document.addEventListener('DOMContentLoaded', function () {
             hamburgerMenu.classList.remove('active');
         }
     });
-
-    hideTypingIndicator();
 });
