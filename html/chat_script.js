@@ -16,7 +16,7 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
-    clearMessages(); // Clear old messages when switching persona
+    //clearMessages(); // Clear old messages when switching persona
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -49,6 +49,7 @@ function sendPersona() {
     }
     document.getElementById('typing-text').innerText = persona + ' is typing...';
     document.getElementById('personaSelection').classList.remove('show');
+    clearMessages(); // Clear old messages when switching persona
 }
 
 function showTypingIndicator() {
