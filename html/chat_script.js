@@ -21,10 +21,12 @@ hamburgerMenu.addEventListener('mouseenter', function() {
 });
 
 hamburgerMenu.addEventListener('mouseleave', function() {
-    if (!optionsMenu.classList.contains('show-on-click')) {
-        optionsMenu.classList.remove('show');
-        hamburgerMenu.classList.remove('active');
-    }
+    setTimeout(function() {
+        if (!optionsMenu.matches(':hover')) {
+            optionsMenu.classList.remove('show');
+            hamburgerMenu.classList.remove('active');
+        }
+    }, 300); // Small delay to allow moving the mouse to the options menu
 });
 
 optionsMenu.addEventListener('mouseenter', function() {
@@ -33,10 +35,12 @@ optionsMenu.addEventListener('mouseenter', function() {
 });
 
 optionsMenu.addEventListener('mouseleave', function() {
-    if (!optionsMenu.classList.contains('show-on-click')) {
-        optionsMenu.classList.remove('show');
-        hamburgerMenu.classList.remove('active');
-    }
+    setTimeout(function() {
+        if (!hamburgerMenu.matches(':hover')) {
+            optionsMenu.classList.remove('show');
+            hamburgerMenu.classList.remove('active');
+        }
+    }, 300); // Small delay to ensure smooth hover transition
 });
 
 // Close menu when clicking outside
