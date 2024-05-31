@@ -142,19 +142,28 @@ html, body {
     max-width: 60%; /* Adjust width to make it look better */
 }
 
-.message.user::after {
+.message.user::after,
+.message.user::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    right: -20px; /* Adjust as needed */
-    width: 0;
-    height: 0;
-    border: 20px solid transparent;
-    border-left-color: #07777a;
-    border-right: 0;
-    border-bottom: 0;
-    margin-top: -10px;
-    margin-right: -20px;
+    border-radius: 50%;
+    background: #07777a; /* Same color as the message background */
+}
+
+.message.user::after {
+    width: 20px;
+    height: 20px;
+    bottom: -10px;
+    right: 10px;
+    z-index: 1; /* Ensure it stays on top */
+}
+
+.message.user::before {
+    width: 12px;
+    height: 12px;
+    bottom: -16px;
+    right: 16px;
+    z-index: 0; /* Ensure it stays below */
 }
 
 .message.bot {
@@ -169,19 +178,28 @@ html, body {
     max-width: 60%; /* Adjust width to make it look better */
 }
 
-.message.bot::after {
+.message.bot::after,
+.message.bot::before {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: -20px; /* Adjust as needed */
-    width: 0;
-    height: 0;
-    border: 20px solid transparent;
-    border-right-color: #aaeaec;
-    border-left: 0;
-    border-bottom: 0;
-    margin-top: -10px;
-    margin-left: -20px;
+    border-radius: 50%;
+    background: #aaeaec; /* Same color as the message background */
+}
+
+.message.bot::after {
+    width: 20px;
+    height: 20px;
+    bottom: -10px;
+    left: 10px;
+    z-index: 1; /* Ensure it stays on top */
+}
+
+.message.bot::before {
+    width: 12px;
+    height: 12px;
+    bottom: -16px;
+    left: 16px;
+    z-index: 0; /* Ensure it stays below */
 }
 
 
