@@ -32,8 +32,10 @@ html, body {
     position: relative;
     display: flex;
     align-items: center;
-    padding: 10px;
-    background-color: #f5f5f5;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1;
 }
@@ -55,7 +57,7 @@ html, body {
     display: block;
     height: 3px;
     width: 100%;
-    background: #333;
+    background: white;
     border-radius: 3px;
 }
 
@@ -105,7 +107,7 @@ html, body {
 #messages {
     overflow-y: auto;
     flex-grow: 1;
-    padding: 10px;
+    padding: 10px 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -113,30 +115,41 @@ html, body {
     word-wrap: break-word;
 }
 
+.message {
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
 .message.user {
-    background-color: #07777a;
+    background-color: #007bff;
     color: white;
     align-self: flex-end;
-    margin-right: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .message.bot {
-    background-color: #aaeaec;
+    background-color: #e0e0e0;
     color: black;
     align-self: flex-start;
-    margin-left: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #typing-container {
     display: none;
     align-items: center;
-    padding: 5px 10px;
+    padding: 5px 20px;
     margin-bottom: 10px;
 }
 
@@ -157,17 +170,17 @@ html, body {
     margin: 0 2px;
     background-color: black;
     border-radius: 50%;
-    animation: slide 1s infinite alternate;
+    animation: blink 1s infinite alternate;
 }
 
-@keyframes slide {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(20px); }
+@keyframes blink {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
 }
 
 .input-group {
     display: flex;
-    padding: 10px;
+    padding: 10px 20px;
     align-items: center;
     border-top: 1px solid #ddd;
     background-color: #fff;
@@ -183,7 +196,7 @@ html, body {
     resize: none;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
-    margin-right: 10px; /* Add some space between input and button */
+    margin-right: 10px;
 }
 
 #message-input:focus {
@@ -193,9 +206,6 @@ html, body {
 
 #send-button {
     padding: 10px 15px;
-    flex-shrink: 0; /* Prevent the button from shrinking */
-    width: auto; /* Adjust the width */
-    min-width: 100px; /* Set a minimum width */
     background-color: #007bff;
     color: white;
     border: none;
