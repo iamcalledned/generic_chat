@@ -223,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    
     document.getElementById('messages').addEventListener('scroll', function () {
         if (this.scrollTop === 0) {
             loadMoreMessages();
