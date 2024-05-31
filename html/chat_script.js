@@ -4,9 +4,50 @@ let reconnectInterval = 1000;
 const MAX_RECONNECT_INTERVAL = 30000;
 let persona = "";
 
-document.querySelector('.hamburger-menu').addEventListener('click', function() {
-    document.querySelector('.options-menu').classList.toggle('show');
-    document.querySelector('.hamburger-menu').classList.toggle('active');
+const hamburgerMenu = document.querySelector('.hamburger-menu');
+const optionsMenu = document.querySelector('.options-menu');
+
+// Click event for mobile
+hamburgerMenu.addEventListener('click', function() {
+    optionsMenu.classList.toggle('show');
+    hamburgerMenu.classList.toggle('active');
+    optionsMenu.classList.add('show-on-click');
+});
+
+// Hover events for desktop
+hamburgerMenu.addEventListener('mouseenter', function() {
+    optionsMenu.classList.add('show');
+    hamburgerMenu.classList.add('active');
+});
+
+hamburgerMenu.addEventListener('mouseleave', function() {
+    if (!optionsMenu.classList.contains('show-on-click')) {
+        optionsMenu.classList.remove('show');
+        hamburgerMenu.classList.remove('active');
+    }
+});
+
+optionsMenu.addEventListener('mouseenter', function() {
+    optionsMenu.classList.add('show');
+    hamburgerMenu.classList.add('active');
+});
+
+optionsMenu.addEventListener('mouseleave', function() {
+    if (!optionsMenu.classList.contains('show-on-click')) {
+        optionsMenu.classList.remove('show');
+        hamburgerMenu.classList.remove('active');
+    }
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    if (!hamburgerMenu.contains(event.target) && !optionsMenu.contains(event.target)) {
+        optionsMenu.classList.remove('show');
+        hamburgerMenu.classList.remove('active');
+        optionsMenu.classList.remove('show-on-click');
+    } else if (hamburgerMenu.contains(event.target)) {
+        optionsMenu.classList.toggle('show-on-click');
+    }
 });
 
 document.getElementById('logout').addEventListener('click', function() {
@@ -16,7 +57,7 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
-    //clearMessages(); // Clear old messages when switching persona
+    clearMessages(); // Clear old messages when switching persona
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -216,11 +257,10 @@ document.addEventListener('DOMContentLoaded', function () {
     hideTypingIndicator();
 
     document.addEventListener('click', function (event) {
-        const hamburgerMenu = document.querySelector('.hamburger-menu');
-        const optionsMenu = document.querySelector('.options-menu');
         if (!hamburgerMenu.contains(event.target) && !optionsMenu.contains(event.target)) {
             optionsMenu.classList.remove('show');
             hamburgerMenu.classList.remove('active');
+            optionsMenu.classList.remove('show-on-click');
         }
     });
 
