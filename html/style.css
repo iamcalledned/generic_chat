@@ -139,13 +139,14 @@ html, body {
     padding: 10px 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative; /* Needed for the pseudo-elements */
+    max-width: 60%; /* Adjust width to make it look better */
 }
 
 .message.user::after {
     content: '';
     position: absolute;
-    right: -10px; /* Positioning of the tail */
-    top: 10px; /* Positioning of the tail */
+    right: -10px; /* Adjusted positioning of the tail */
+    top: 15px; /* Adjusted positioning of the tail */
     width: 0;
     height: 0;
     border-left: 10px solid #07777a; /* Color of the tail */
@@ -162,13 +163,14 @@ html, body {
     padding: 10px 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative; /* Needed for the pseudo-elements */
+    max-width: 60%; /* Adjust width to make it look better */
 }
 
 .message.bot::after {
     content: '';
     position: absolute;
-    left: -10px; /* Positioning of the tail */
-    top: 10px; /* Positioning of the tail */
+    left: -10px; /* Adjusted positioning of the tail */
+    top: 15px; /* Adjusted positioning of the tail */
     width: 0;
     height: 0;
     border-right: 10px solid #aaeaec; /* Color of the tail */
