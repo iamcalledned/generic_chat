@@ -131,51 +131,18 @@ html, body {
 }
 
 .message.user {
-    background-color: #07777a;
+    background-color: #007bff;
     color: white;
     align-self: flex-end;
     margin-right: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative; /* Needed for the pseudo-elements */
-}
-
-.message.user::after {
-    content: '';
-    position: absolute;
-    right: -10px; /* Positioning of the tail */
-    top: 10px; /* Positioning of the tail */
-    width: 0;
-    height: 0;
-    border-left: 10px solid #07777a; /* Color of the tail */
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
 }
 
 .message.bot {
-    background-color: #aaeaec;
+    background-color: #f0f0f0;
     color: black;
     align-self: flex-start;
     margin-left: 10px;
-    border-radius: 20px;
-    padding: 10px 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative; /* Needed for the pseudo-elements */
 }
-
-.message.bot::after {
-    content: '';
-    position: absolute;
-    left: -10px; /* Positioning of the tail */
-    top: 10px; /* Positioning of the tail */
-    width: 0;
-    height: 0;
-    border-right: 10px solid #aaeaec; /* Color of the tail */
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-}
-
 
 @keyframes fadeIn {
     from {
