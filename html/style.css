@@ -198,8 +198,8 @@ html, body {
 }
 
 #message-input {
-    flex-grow: 1;
-    padding: 10px;
+    flex-grow: 2; /* Increase the flex-grow value to make the input box larger */
+    padding: 15px; /* Increase padding for a larger input area */
     border: 1px solid #ddd;
     border-radius: 18px;
     font-size: 16px;
@@ -216,7 +216,10 @@ html, body {
 }
 
 #send-button {
-    padding: 10px 15px;
+    padding: 10px 15px; /* Adjust padding to make the button smaller */
+    flex-shrink: 0; /* Prevent the button from shrinking */
+    width: auto; /* Adjust the width */
+    min-width: 80px; /* Set a minimum width */
     background-color: #007bff;
     color: white;
     border: none;
@@ -230,6 +233,7 @@ html, body {
     background-color: #0056b3;
     box-shadow: 0 0 8px rgba(50, 50, 250, 0.5);
 }
+
 
 @media (max-width: 768px) {
     #chat-container {
