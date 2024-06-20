@@ -1,4 +1,3 @@
-# generate_answer.py
 import time
 import sys
 import os
