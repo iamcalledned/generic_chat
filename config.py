@@ -34,6 +34,6 @@ class Config:
         "Ned": "asst_RE88l2N9AIxFA1niUmyQlqEC",
         "Adin": "asst_qv5bn65Nt41C7hVMBYw0m8xC",
         "general": "asst_eGvQbtW0KpEuDkfefHgJBEWH",
-        "recipe": "asst_ODqZJkwekTSZwZT554Sabqm2",
+        "recipe": "asst_ODqZJkwekTSZwZT554Sabqm2"
         # Add more mappings as needed
     }
