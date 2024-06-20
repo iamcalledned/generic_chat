@@ -77,7 +77,8 @@ async def generate_answer_direct(
     print("User IP:", user_ip)
     print("username:", username)
     print("persona:", persona)
-    response_text, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
+    response_json, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
+    response_text = format_response(response_json, content_type)
     response = {
         'response': response_text,
         'type': content_type,
@@ -129,6 +130,23 @@ async def verify_session_id(session_id: str):
     if not session_id or not redis_client.exists(session_id):
         return False
     return True
+
+def format_response(response_json, content_type):
+    if content_type == 'recipe':
+        response_text = f"A recipe for: {response_json['title']}\n"
+        response_text += f"Prep time: {response_json['prep_time']}\n"
+        response_text += f"Cook time: {response_json['cook_time']}\n"
+        response_text += f"Total time: {response_json['total_time']}\n"
+        response_text += f"Servings: {response_json['servings']}\n"
+        response_text += "Ingredients:\n" + "\n".join(response_json['ingredients']) + "\n"
+        response_text += "Instructions:\n" + "\n".join(response_json['instructions']) + "\n"
+    elif content_type == 'shopping_list':
+        response_text = "Shopping List:\n"
+        for department, items in response_json['departments'].items():
+            response_text += f"{department}:\n" + "\n".join(items) + "\n"
+    else:
+        response_text = response_json.get('message', '')
+    return response_text
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -274,7 +292,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 print("persona:", persona)
                 user_ip = client_ip
                 print(f"User IP: {user_ip}")
-                response_text, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
+                response_json, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
+                response_text = format_response(response_json, content_type)
                 response = {
                     'response': response_text,
                     'type': content_type,
@@ -322,3 +341,4 @@ async def validate_session(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
