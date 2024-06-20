@@ -122,11 +122,11 @@ function displayRecentMessages(messages) {
         } else if (message.MessageType === 'bot') {
             messageElement = document.createElement('div');
             messageElement.className = 'message bot';
-            messageElement.textContent = persona + ': ' + message.Message;
+            messageElement.innerHTML = persona + ': ' + message.Message;
         } else {
             messageElement = document.createElement('div');
             messageElement.className = 'message';
-            messageElement.textContent = message.Message;
+            messageElement.innerHTML = message.Message;
         }
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').appendChild(messageElement);
@@ -144,11 +144,11 @@ function displayMoreMessages(messages) {
         } else if (message.MessageType === 'bot') {
             messageElement = document.createElement('div');
             messageElement.className = 'message bot';
-            messageElement.textContent = persona + ': ' + message.Message;
+            messageElement.innerHTML = persona + ': ' + message.Message;
         } else {
             messageElement = document.createElement('div');
             messageElement.className = 'message';
-            messageElement.textContent = message.Message;
+            messageElement.innerHTML = message.Message;
         }
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').prepend(messageElement);
@@ -197,10 +197,9 @@ function initializeWebSocket() {
                 window.location.reload();
             } else {
                 hideTypingIndicator();
-                let messageElement;
-                messageElement = document.createElement('div');
+                let messageElement = document.createElement('div');
                 messageElement.className = 'message bot';
-                messageElement.innerHTML = msg.response;
+                messageElement.innerHTML = msg.response;  // Use innerHTML to render HTML content
                 document.getElementById('messages').appendChild(messageElement);
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
