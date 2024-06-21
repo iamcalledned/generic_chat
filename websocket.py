@@ -238,25 +238,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     threadID = active_thread['ThreadID']
                     recent_messages = await get_recent_messages(app.state.pool, userID, persona, threadID)
                     print('recent messages:', recent_messages)
-                                      # Format the recent messages
-                    formatted_messages = []
-                    for message in recent_messages:
-                        if message['MessageType'] == 'recipe':
-                            content_type = 'recipe'
-                        elif message['MessageType'] == 'shopping_list':
-                            content_type = 'shopping_list'
-                        else:
-                            content_type = 'other'
-                        formatted_message = {
-                            'message': format_response(message, content_type),
-                            'MessageType': message['MessageType'],
-                            'Timestamp': message['Timestamp']
-                        }
-                        formatted_messages.append(formatted_message)
-
                     await websocket.send_text(json.dumps({
                         'action': 'recent_messages',
-                        'messages': formatted_messages
+                        'messages': recent_messages
                     }))
                 continue
 
