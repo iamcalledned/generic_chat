@@ -1,5 +1,6 @@
 import asyncio
 import json
+from db_functions import clear_user_session_id
 
 async def clear_session_data_after_timeout(session_id, username, redis_client, pool):
     try:
@@ -16,3 +17,8 @@ async def clear_session_data_after_timeout(session_id, username, redis_client, p
                 await websocket.send_text(json.dumps({'action': 'force_logout'}))
     except Exception as e:
         print(f"Error in session cleanup task for {username}: {e}")
+
+async def verify_session_id(session_id, redis_client):
+    if not session_id or not redis_client.exists(session_id):
+        return False
+    return True
