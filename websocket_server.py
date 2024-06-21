@@ -32,7 +32,7 @@ connections = {}
 tasks = {}  # Dictionary to track scheduled tasks for session cleanup
 
 log_file_path = Config.LOG_PATH
-LOG_FORMAT = 'WEBSOCKET - %(asctime)s - %(processName)s - %(name)s - %(levelname)s - %(message)s'
+LOG_FORMAT = 'WEBSOCKET - %(asctime)s - %(processName)s - %(name)s - %(levellevelname)s - %(message)s'
 
 logging.basicConfig(
     filename=log_file_path,
@@ -119,6 +119,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     username = None
     session_id = session_id_from_cookies
+    persona = None  # Initialize persona as None
 
     async def ping_client():
         while True:
@@ -173,6 +174,7 @@ async def websocket_endpoint(websocket: WebSocket):
             # Dispatch action to the appropriate handler
             action = data_dict.get('action')
             if action == 'persona_selected':
+                persona = data_dict.get('persona')  # Set the persona when selected
                 await handle_select_persona(websocket, data_dict, app.state.pool, username)
             elif action == 'pong':
                 await handle_pong(websocket, redis_client, session_id)
