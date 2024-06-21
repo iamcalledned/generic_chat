@@ -179,7 +179,7 @@ async def websocket_endpoint(websocket: WebSocket):
             elif action == 'pong':
                 await handle_pong(websocket, redis_client, session_id)
             elif action == 'load_more_messages':
-                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'])
+                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'],connection_data['persona'])
             elif action == 'clear_conversations':
                 print("hit clear conversation for user", connection_data['username'])
                 await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
