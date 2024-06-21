@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function sendMessage() {
     const message = document.getElementById('message-input').value;
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: 'chat_message', message: message }));
+        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona}));
         document.getElementById('message-input').value = '';
         const messageElement = document.createElement('div');
         messageElement.className = 'message user';
