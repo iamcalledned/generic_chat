@@ -296,7 +296,8 @@ function loadMoreMessages() {
     if (lastMessageTimestamp && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({
             action: 'load_more_messages',
-            last_loaded_timestamp: lastMessageTimestamp
+            last_loaded_timestamp: lastMessageTimestamp,
+            persona: persona
         }));
     }
 }
