@@ -172,6 +172,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # Dispatch action to the appropriate handler
             action = data_dict.get('action')
+            connection_data['persona'] = data_dict.get('persona')
             if action == 'persona_selected':
                 connection_data['persona'] = data_dict.get('persona')  # Set the persona when selected
                 await handle_select_persona(websocket, data_dict, app.state.pool, connection_data['username'])
