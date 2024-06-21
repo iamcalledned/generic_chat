@@ -38,6 +38,8 @@ client = OpenAI()
 
 def process_message_content(raw_message):
     content = raw_message['content'][0]['text']['value']
+    print("content:", content)
+    
     annotations = raw_message['content'][0]['text']['annotations']
 
     # Sort annotations by start_index in descending order to avoid indexing issues during replacement
