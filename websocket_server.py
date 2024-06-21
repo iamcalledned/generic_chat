@@ -186,6 +186,7 @@ async def websocket_endpoint(websocket: WebSocket):
             elif action == 'delete_selected_threads':
                 await handle_delete_selected_threads(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'chat_message':
+                print("connection data:", connection_data)
                 await handle_chat_message(websocket, data_dict, app.state.pool, connection_data['username'], client_ip, connection_data['persona'])
             else:
                 print("Invalid action:", data_dict)
