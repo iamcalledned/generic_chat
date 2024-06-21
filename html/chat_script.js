@@ -84,6 +84,56 @@ document.getElementById('clear_conversations').addEventListener('click', functio
     }
 });
 
+function printRecipe(button) {
+    const recipeContainer = button.parentNode.innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.open();
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Recipe</title>
+            <style>
+                body {
+                    font-family: 'Roboto', sans-serif;
+                    margin: 20px;
+                }
+                h2, h3 {
+                    margin: 10px 0;
+                }
+                p {
+                    margin: 10px 0;
+                }
+                ul, ol {
+                    padding-left: 20px;
+                    margin: 10px 0;
+                }
+                ul li, ol li {
+                    margin: 5px 0;
+                }
+                ul {
+                    list-style-type: disc;
+                }
+                ol {
+                    list-style-type: decimal;
+                }
+                .ingredients, .instructions {
+                    background: #f9f9f9;
+                    padding: 10px;
+                    border-radius: 10px;
+                    margin: 10px 0;
+                }
+            </style>
+        </head>
+        <body onload="window.print();window.close()">
+            ${recipeContainer}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+
+
+
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
     clearMessages(); // Clear old messages when switching persona
@@ -204,6 +254,7 @@ function initializeWebSocket() {
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
         };
+        
 
         socket.onerror = function(error) {
             console.error('WebSocket Error:', error);
