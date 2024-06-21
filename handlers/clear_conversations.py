@@ -1,12 +1,12 @@
 import json
 from db_functions import get_user_id, get_active_thread_for_delete
 
-async def handle_clear_conversations(websocket, data_dict, pool, username):
+async def handle_clear_conversations(websocket, data_dict, pool, username, connection_data['persona']):
     userID = await get_user_id(pool, username)
     print("userID: ", userID)
-    active_thread = await get_active_thread_for_delete(pool, userID, data_dict.get('persona'))
+    active_thread = await get_active_thread_for_delete(pool, userID, connection_data['persona'])
     print("active_thread: ", active_thread)
-    print("persona: ", data_dict.get('persona'))
+    print("persona: ", connection_data['persona'])
     if active_thread:
         threadID = active_thread['ThreadID']
         createdTime = active_thread['createdTime'].isoformat()  # Convert datetime to string

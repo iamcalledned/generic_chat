@@ -182,7 +182,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'clear_conversations':
                 print("hit clear conversation for user", connection_data['username'])
-                await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'])
+                await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
             elif action == 'delete_selected_threads':
                 await handle_delete_selected_threads(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'chat_message':
