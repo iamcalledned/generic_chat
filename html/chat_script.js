@@ -80,7 +80,7 @@ document.getElementById('deleteSelectedBtn').addEventListener('click', function(
 
 document.getElementById('clear_conversations').addEventListener('click', function() {
     if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: 'clear_conversations' }));
+        socket.send(JSON.stringify({ action: 'clear_conversations', persona: persona }));
     }
 });
 
