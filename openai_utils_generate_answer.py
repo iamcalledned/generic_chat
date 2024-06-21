@@ -91,6 +91,7 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
         print('created run')
         if run is not None:
             await insert_conversation(pool, userID, thread_id_n, run.id, message, 'user', user_ip, persona)
+            print("message:", message)
             print('done with insert')
             while True:
                 run = client.beta.threads.runs.retrieve(
