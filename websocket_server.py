@@ -32,7 +32,7 @@ connections = {}
 tasks = {}  # Dictionary to track scheduled tasks for session cleanup
 
 log_file_path = Config.LOG_PATH
-LOG_FORMAT = 'WEBSOCKET - %(asctime)s - %(processName)s - %(name)s - %(levellevelname)s - %(message)s'
+LOG_FORMAT = 'WEBSOCKET - %(asctime)s - %(processName)s - %(name)s - %(levelname)s - %(message)s'
 
 logging.basicConfig(
     filename=log_file_path,
@@ -117,9 +117,9 @@ async def websocket_endpoint(websocket: WebSocket):
     print(f"Client IP: {client_ip}")
     print("connections at websocket_endpoint:", connections)
 
-    username = None
     session_id = session_id_from_cookies
-    persona = None  # Initialize persona as None
+    connection_data = {'username': None, 'persona': None}  # Initialize connection-specific data
+    connections[session_id] = connection_data
 
     async def ping_client():
         while True:
@@ -141,7 +141,7 @@ async def websocket_endpoint(websocket: WebSocket):
             session_data = redis_client.get(session_id)
             if session_data:
                 session_data = json.loads(session_data)
-                username = session_data['username']
+                connection_data['username'] = session_data['username']
                 # Renew the session expiry time upon successful connection
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
 
@@ -160,7 +160,6 @@ async def websocket_endpoint(websocket: WebSocket):
             data = await websocket.receive_text()
             data_dict = json.loads(data)
             print('data: ', data_dict)
-            message = data_dict.get('message', '')
 
             # Validate session_id
             if not session_id or not redis_client.exists(session_id):
@@ -174,36 +173,36 @@ async def websocket_endpoint(websocket: WebSocket):
             # Dispatch action to the appropriate handler
             action = data_dict.get('action')
             if action == 'persona_selected':
-                persona = data_dict.get('persona')  # Set the persona when selected
-                await handle_select_persona(websocket, data_dict, app.state.pool, username)
+                connection_data['persona'] = data_dict.get('persona')  # Set the persona when selected
+                await handle_select_persona(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'pong':
                 await handle_pong(websocket, redis_client, session_id)
             elif action == 'load_more_messages':
-                await handle_load_more_messages(websocket, data_dict, app.state.pool, username)
+                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'clear_conversations':
-                await handle_clear_conversations(websocket, data_dict, app.state.pool, username)
+                await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'delete_selected_threads':
-                await handle_delete_selected_threads(websocket, data_dict, app.state.pool, username)
+                await handle_delete_selected_threads(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'chat_message':
-                await handle_chat_message(websocket, data_dict, app.state.pool, username, client_ip, persona)
+                await handle_chat_message(websocket, data_dict, app.state.pool, connection_data['username'], client_ip, connection_data['persona'])
             else:
                 print("Invalid action:", data_dict)
 
     except WebSocketDisconnect:
-        print(f"WebSocket disconnected for user {username}")
+        print(f"WebSocket disconnected for user {connection_data['username']}")
         print(f"Connections: {connections}")
         print(f"sessionid:", session_id)
 
         # Attempt to clear user data from Redis
         if session_id:
             # Schedule the task instead of immediate deletion
-            task = asyncio.create_task(clear_session_data_after_timeout(session_id, username, redis_client, app.state.pool))
+            task = asyncio.create_task(clear_session_data_after_timeout(session_id, connection_data['username'], redis_client, app.state.pool))
             tasks[session_id] = task
 
-        connections.pop(username, None)
+        connections.pop(session_id, None)
 
     except Exception as e:
-        print(f"Unhandled exception for user {username}: {e}")
+        print(f"Unhandled exception for user {connection_data['username']}: {e}")
         print("Exception Traceback: " + traceback.format_exc())
     finally:
         ping_task.cancel()
