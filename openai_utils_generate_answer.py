@@ -39,7 +39,7 @@ client = OpenAI()
 def process_message_content(raw_message):
     content = raw_message['content'][0]['text']['value']
     print("content:", content)
-    
+
     annotations = raw_message['content'][0]['text']['annotations']
 
     # Sort annotations by start_index in descending order to avoid indexing issues during replacement
@@ -124,9 +124,11 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
             try:
                 response_json = json.loads(processed_content)
                 content_type = response_json.get('type', 'other')
+                print("content type:", content_type)
             except json.JSONDecodeError:
                 response_json = {"type": "message", "message": processed_content}
                 content_type = "message"
+                print("processed content:", processed_content)
 
             await insert_conversation(pool, userID, thread_id_n, run.id, processed_content, 'bot', None, persona)
             print("saved conversations for user:", userID)
