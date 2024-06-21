@@ -120,17 +120,18 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
             print("first message:", first_message)
 
             processed_content = process_message_content(first_message)
+            content = processed_content = process_message_content(first_message)
             
             try:
                 response_json = json.loads(processed_content)
                 content_type = response_json.get('type', 'other')
-                print("content type:", content_type)
+                print("content type:", content_type)    
             except json.JSONDecodeError:
                 response_json = {"type": "message", "message": processed_content}
                 content_type = "message"
                 print("processed content:", processed_content)
 
-            await insert_conversation(pool, userID, thread_id_n, run.id, processed_content, 'bot', None, persona)
+            await insert_conversation(pool, userID, thread_id_n, run.id, content, 'bot', None, persona)
             print("saved conversations for user:", userID)
         else:
             print("Failed to create a run object in OpenAI.")
