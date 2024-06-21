@@ -1,32 +1,24 @@
 import asyncio
 import json
 import logging
-import ssl
 from uuid import uuid4
 import traceback
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Request, Depends, status, Body
 from starlette.websockets import WebSocket
-from openai_utils_generate_answer import generate_answer
 from config import Config
-from db_functions import (
-    create_db_pool, 
-    clear_user_session_id, 
-    get_user_id, 
-    get_recent_messages, 
-    get_messages_before, 
-    get_active_thread_for_delete, 
-    deactivate_thread, 
-    get_active_thread_for_user
+from db_functions import create_db_pool, get_user_id, get_active_thread_for_user, get_recent_messages
+from handlers import (
+    handle_chat_message,
+    handle_clear_conversations,
+    handle_delete_selected_threads,
+    handle_load_more_messages,
+    handle_pong,
+    handle_select_persona
 )
+from utilities import clear_session_data_after_timeout, verify_session_id, format_response
 
 import redis
-from redis.exceptions import RedisError
-
-import spacy
-import re
-from datetime import datetime
-import httpx
 
 # Initialize Redis client
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -108,54 +100,6 @@ async def startup_event():
     print("Database pool created")
     print("connections at startup:", connections)
 
-# Function to schedule session data cleanup
-async def clear_session_data_after_timeout(session_id, username):
-    try:
-        await asyncio.sleep(3600)  # wait an hour before cleaning
-        # Check if the session still exists before clearing
-        if redis_client.exists(session_id):
-            redis_client.delete(session_id)
-            await clear_user_session_id(app.state.pool, session_id)
-            print(f"Session data cleared for user {username}")
-
-            # Send a WebSocket message to the client to log out
-            if username in connections:
-                websocket = connections[username]
-                await websocket.send_text(json.dumps({'action': 'force_logout'}))
-    except Exception as e:
-        print(f"Error in session cleanup task for {username}: {e}")
-
-# Verify session ID function
-async def verify_session_id(session_id: str):
-    if not session_id or not redis_client.exists(session_id):
-        return False
-    return True
-
-def format_response(response_json, content_type):
-    if content_type == 'recipe':
-        response_text = f"<div class='recipe-container'><h2>A recipe for: {response_json['title']}</h2>"
-        response_text += f"<p><strong>Prep time:</strong> {response_json['prep_time']}</p>"
-        response_text += f"<p><strong>Cook time:</strong> {response_json['cook_time']}</p>"
-        response_text += f"<p><strong>Total time:</strong> {response_json['total_time']}</p>"
-        response_text += f"<p><strong>Servings:</strong> {response_json['servings']}</p>"
-        response_text += "<h3>Ingredients:</h3><ul>"
-        response_text += "".join(f"<li>{ingredient}</li>" for ingredient in response_json['ingredients'])
-        response_text += "</ul>"
-        response_text += "<h3>Instructions:</h3><ol>"
-        response_text += "".join(f"<li>{instruction}</li>" for instruction in response_json['instructions'])
-        response_text += "</ol>"
-        response_text += "<button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button></div>"
-    elif content_type == 'shopping_list':
-        response_text = "<h2>Shopping List:</h2>"
-        for department, items in response_json['departments'].items():
-            response_text += f"<h3>{department}:</h3><ul>"
-            response_text += "".join(f"<li>{item}</li>" for item in items)
-            response_text += "</ul>"
-    else:
-        response_text = f"<p>{response_json.get('message', '')}</p>"
-    return response_text
-
-
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     cookies = websocket.cookies
@@ -163,7 +107,7 @@ async def websocket_endpoint(websocket: WebSocket):
     print('sessionID from cookies:', session_id_from_cookies)
 
     # Verify session ID before accepting the WebSocket connection
-    if not await verify_session_id(session_id_from_cookies):
+    if not await verify_session_id(session_id_from_cookies, redis_client):
         await websocket.close(code=1008)
         return
 
@@ -173,8 +117,9 @@ async def websocket_endpoint(websocket: WebSocket):
     print(f"Client IP: {client_ip}")
     print("connections at websocket_endpoint:", connections)
 
-    username = None
     session_id = session_id_from_cookies
+    connection_data = {'username': None, 'persona': None}  # Initialize connection-specific data
+    connections[session_id] = connection_data
 
     async def ping_client():
         while True:
@@ -196,7 +141,7 @@ async def websocket_endpoint(websocket: WebSocket):
             session_data = redis_client.get(session_id)
             if session_data:
                 session_data = json.loads(session_data)
-                username = session_data['username']
+                connection_data['username'] = session_data['username']
                 # Renew the session expiry time upon successful connection
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
 
@@ -215,7 +160,6 @@ async def websocket_endpoint(websocket: WebSocket):
             data = await websocket.receive_text()
             data_dict = json.loads(data)
             print('data: ', data_dict)
-            message = data_dict.get('message', '')
 
             # Validate session_id
             if not session_id or not redis_client.exists(session_id):
@@ -226,117 +170,44 @@ async def websocket_endpoint(websocket: WebSocket):
             # Renew the session expiry time
             redis_client.expire(session_id, 3600)
 
-            # Wait for persona selection from the user
-            if data_dict.get('action') == 'persona_selected':
-                # Now that the persona is selected, you can fetch and send the recent messages
-                persona = data_dict.get('persona')
-                userID = await get_user_id(app.state.pool, username)
-                print('getting recent messages')
-                active_thread = await get_active_thread_for_user(app.state.pool, userID, persona)
-                print('active thread:', active_thread)
-                if active_thread:
-                    threadID = active_thread['ThreadID']
-                    recent_messages = await get_recent_messages(app.state.pool, userID, persona, threadID)
-                    print('recent messages:', recent_messages)
-                    await websocket.send_text(json.dumps({
-                        'action': 'recent_messages',
-                        'messages': recent_messages
-                    }))
-                continue
-
-            if data_dict.get('action') == 'pong':
-                redis_client.expire(session_id, 3600)  # Reset expiry to another hour
-                continue
-
-            if 'action' in data_dict and data_dict['action'] == 'load_more_messages':
-                userID = await get_user_id(app.state.pool, username)
-                last_loaded_timestamp = data_dict.get('last_loaded_timestamp')
-                active_thread = await get_active_thread_for_user(app.state.pool, userID, persona)
-                threadID = active_thread['ThreadID']
-                older_messages = await get_messages_before(app.state.pool, userID, last_loaded_timestamp, threadID)
-                await websocket.send_text(json.dumps({
-                    'action': 'older_messages',
-                    'messages': older_messages
-                }))
-                continue
-
-            if 'action' in data_dict and data_dict['action'] == 'clear_conversations':
-                userID = await get_user_id(app.state.pool, username)
-                print('userID:', userID)
-                print('persona:', persona)
-                active_thread = await get_active_thread_for_delete(app.state.pool, userID, persona)
-                print('active thread:', active_thread)
-                if active_thread:
-                    threadID = active_thread['ThreadID']
-                    createdTime = active_thread['createdTime'].isoformat()  # Convert datetime to string
-                    await websocket.send_text(json.dumps({
-                        'action': 'conversation_list',
-                        'threads': [{
-                            'threadID': threadID,
-                            'createdTime': createdTime
-                        }]
-                    }))
-                else:
-                    await websocket.send_text(json.dumps({
-                        'action': 'conversation_list',
-                        'threads': []
-                    }))
-                continue
-
-            if 'action' in data_dict and data_dict['action'] == 'delete_selected_threads':
-                thread_ids = data_dict['threadIDs']
-                for thread_id in thread_ids:
-                    await deactivate_thread(app.state.pool, thread_id)
-                await websocket.send_text(json.dumps({
-                    'action': 'threads_deactivated',
-                    'threadIDs': thread_ids
-                }))
-                continue
-
-            if 'action' in data_dict and data_dict['action'] == 'chat_message':
-                # Handle regular messages
-                message = data_dict.get('message', '')
-                uuid = str(uuid4())
-                print("persona:", persona)
-                user_ip = client_ip
-                print(f"User IP: {user_ip}")
-                response_json, content_type, recipe_id = await generate_answer(app.state.pool, username, message, user_ip, uuid, persona)
-                response_text = format_response(response_json, content_type)
-                response = {
-                    'response': response_text,
-                    'type': content_type,
-                    'recipe_id': recipe_id
-                }
-                await websocket.send_text(json.dumps(response))
-                continue
-
+            # Dispatch action to the appropriate handler
+            action = data_dict.get('action')
+            connection_data['persona'] = data_dict.get('persona')
+            if action == 'persona_selected':
+                connection_data['persona'] = data_dict.get('persona')  # Set the persona when selected
+                await handle_select_persona(websocket, data_dict, app.state.pool, connection_data['username'])
+            elif action == 'pong':
+                await handle_pong(websocket, redis_client, session_id)
+            elif action == 'load_more_messages':
+                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'],connection_data['persona'])
+            elif action == 'clear_conversations':
+                print("hit clear conversation for user", connection_data['username'])
+                await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
+            elif action == 'delete_selected_threads':
+                await handle_delete_selected_threads(websocket, data_dict, app.state.pool, connection_data['username'])
+            elif action == 'chat_message':
+                await handle_chat_message(websocket, data_dict, app.state.pool, connection_data['username'], client_ip, connection_data['persona'])
             else:
                 print("Invalid action:", data_dict)
 
     except WebSocketDisconnect:
-        print(f"WebSocket disconnected for user {username}")
+        print(f"WebSocket disconnected for user {connection_data['username']}")
         print(f"Connections: {connections}")
         print(f"sessionid:", session_id)
 
         # Attempt to clear user data from Redis
         if session_id:
             # Schedule the task instead of immediate deletion
-            task = asyncio.create_task(clear_session_data_after_timeout(session_id, username))
+            task = asyncio.create_task(clear_session_data_after_timeout(session_id, connection_data['username'], redis_client, app.state.pool))
             tasks[session_id] = task
 
-        connections.pop(username, None)
+        connections.pop(session_id, None)
 
     except Exception as e:
-        print(f"Unhandled exception for user {username}: {e}")
+        print(f"Unhandled exception for user {connection_data['username']}: {e}")
         print("Exception Traceback: " + traceback.format_exc())
     finally:
         ping_task.cancel()
-
-async def on_user_reconnect(username, session_id):
-    if session_id in tasks:
-        tasks[session_id].cancel()
-        del tasks[session_id]
-        print(f"Clear data task canceled for user {username}")
 
 @router.post("/validate_session")
 async def validate_session(request: Request):
@@ -350,4 +221,3 @@ async def validate_session(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
