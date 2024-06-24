@@ -21,6 +21,7 @@ async def handle_select_persona(websocket, data_dict, pool, username):
         print("processed content:", process_message_content)
 
         formatted_messages = await format_response(recent_messages, content_type)
+        print("formatted messages:", formatted_messages)
         await websocket.send_text(json.dumps({
             'action': 'recent_messages',
             'messages': formatted_messages
