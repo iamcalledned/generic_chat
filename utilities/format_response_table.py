@@ -1,3 +1,4 @@
+import json
 def format_response_table(response_json, content_type):
     if isinstance(response_json, str):
         response_json = json.loads(response_json)
