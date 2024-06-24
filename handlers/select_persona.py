@@ -1,6 +1,6 @@
 import json
 from db_functions import get_user_id, get_active_thread_for_user, get_recent_messages
-from utilities import format_response, process_message_content
+from utilities import format_response, process_message_content, format_response_table
 
 
 async def handle_select_persona(websocket, data_dict, pool, username):
@@ -13,7 +13,7 @@ async def handle_select_persona(websocket, data_dict, pool, username):
         print(recent_messages, content_type)
 
 
-    formatted_messages = await format_response(recent_messages, content_type)
+    formatted_messages = await format_response_table(recent_messages, content_type)
     print("formatted messages:", formatted_messages)
     await websocket.send_text(json.dumps({
         'action': 'recent_messages',
