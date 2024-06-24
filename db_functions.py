@@ -130,20 +130,22 @@ async def get_conversations_by_run(pool, run_id):
             await cur.execute(sql, (run_id,))
             return await cur.fetchall()
 
+import json
+
 async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
             sql = '''
-            SELECT Message, MessageType, Timestamp  FROM conversations
+            SELECT Message, MessageType, Timestamp FROM conversations
             WHERE userID = %s
-            AND   persona = %s
-            AND   ThreadID = %s
+            AND persona = %s
+            AND ThreadID = %s
             ORDER BY Timestamp DESC
             LIMIT %s;
             '''
             await cur.execute(sql, (user_id, persona, threadID, limit))
             rows = await cur.fetchall()
-            # Convert each row to a dict and format datetime objects
+
             recent_messages = []
             for row in rows:
                 message = row['Message']
@@ -153,18 +155,19 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
                     message_type = message_data.get('type')
                 except json.JSONDecodeError:
                     # If it's not JSON, leave the message as is
-                    message_type = 'message'
+                    message_data = message
+                    message_type = 'text'
 
                 # Append the processed message to the list
                 recent_messages.append({
-                    'Message': message,
+                    'Message': message_data,
                     'MessageType': row['MessageType'],
                     'Timestamp': row['Timestamp'].isoformat(),
                     'ContentType': message_type
                 })
 
-            return recent_messages, message_type
-            
+            return recent_messages
+
         
 async def get_messages_before(pool, user_id, last_loaded_timestamp, threadID, limit=3):
     async with pool.acquire() as conn:

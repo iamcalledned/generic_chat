@@ -1,6 +1,7 @@
-import json
 def format_response_table(response_json, content_type):
-    json.loads(response_json)
+    if isinstance(response_json, str):
+        response_json = json.loads(response_json)
+
     if content_type == 'recipe':
         response_text = f"<div class='recipe-container'><h2>A recipe for: {response_json['title']}</h2>"
         response_text += f"<p><strong>Prep time:</strong> {response_json['prep_time']}</p>"
