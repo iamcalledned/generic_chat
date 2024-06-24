@@ -144,7 +144,27 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
             await cur.execute(sql, (user_id, persona, threadID, limit))
             rows = await cur.fetchall()
             # Convert each row to a dict and format datetime objects
-            return [dict(row, Timestamp=row['Timestamp'].isoformat()) for row in rows]
+            recent_messages = []
+            for row in rows:
+                message = row['Message']
+                try:
+                    # Attempt to parse the message as JSON
+                    message_data = json.loads(message)
+                    message_type = message_data.get('type')
+                except json.JSONDecodeError:
+                    # If it's not JSON, leave the message as is
+                    message_type = 'message'
+
+                # Append the processed message to the list
+                recent_messages.append({
+                    'Message': message,
+                    'MessageType': row['MessageType'],
+                    'Timestamp': row['Timestamp'].isoformat(),
+                    'ContentType': message_type
+                })
+
+            return recent_messages, message_type
+            
         
 async def get_messages_before(pool, user_id, last_loaded_timestamp, threadID, limit=3):
     async with pool.acquire() as conn:
