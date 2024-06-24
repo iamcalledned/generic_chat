@@ -1,3 +1,4 @@
+import json
 def format_response(response_json, content_type):
     if content_type == 'recipe':
         response_text = f"<div class='recipe-container'><h2>A recipe for: {response_json['title']}</h2>"
