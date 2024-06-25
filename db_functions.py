@@ -122,6 +122,7 @@ async def insert_conversation(pool, userID, thread_id, run_id, message, message_
             await cur.execute(sql, (userID, thread_id, run_id, message, message_type, ip_address, persona))
             await conn.commit()
 
+
 async def get_conversations_by_run(pool, run_id):
     """Fetch all conversations for a given RunID"""
     async with pool.acquire() as conn:
@@ -151,18 +152,15 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
                 message = row['Message']
                 try:
                     if message:
-                        # Attempt to parse the message as JSON
                         message_data = json.loads(message)
                         message_type = message_data.get('type')
                     else:
                         message_data = ""
                         message_type = "text"
                 except json.JSONDecodeError:
-                    # If it's not JSON, leave the message as is
                     message_data = message
                     message_type = 'text'
 
-                # Append the processed message to the list
                 recent_messages.append({
                     'Message': message_data,
                     'MessageType': row['MessageType'],

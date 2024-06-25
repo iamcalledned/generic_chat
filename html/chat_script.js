@@ -61,7 +61,6 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
-    
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -132,8 +131,6 @@ function printRecipe(button) {
     printWindow.document.close();
 }
 
-
-
 function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
     clearMessages(); // Clear old messages when switching persona
@@ -163,46 +160,62 @@ function clearMessages() {
 }
 
 function displayRecentMessages(messages) {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ''; // Clear existing messages
+
     messages.reverse().forEach(function(message) {
-        let messageElement;
-        if (message.MessageType === 'user') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message user';
-            messageElement.textContent = 'You: ' + message.Message;
-        } else if (message.MessageType === 'bot') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message bot';
-            messageElement.innerHTML = persona + ': ' + message.Message;
-        } else {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.innerHTML = message.Message;
-        }
+        let messageElement = document.createElement('div');
+        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
+        messageElement.innerHTML = formatMessageContent(message);
         messageElement.dataset.timestamp = message.Timestamp;
-        document.getElementById('messages').appendChild(messageElement);
+        messagesContainer.appendChild(messageElement);
     });
-    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function displayMoreMessages(messages) {
+    const messagesContainer = document.getElementById('messages');
+
     messages.forEach(function(message) {
-        let messageElement;
-        if (message.MessageType === 'user') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message user';
-            messageElement.textContent = 'You: ' + message.Message;
-        } else if (message.MessageType === 'bot') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message bot';
-            messageElement.innerHTML = persona + ': ' + message.Message;
-        } else {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.innerHTML = message.Message;
-        }
+        let messageElement = document.createElement('div');
+        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
+        messageElement.innerHTML = formatMessageContent(message);
         messageElement.dataset.timestamp = message.Timestamp;
-        document.getElementById('messages').prepend(messageElement);
+        messagesContainer.prepend(messageElement);
     });
+}
+
+function formatMessageContent(message) {
+    const contentType = message.ContentType;
+
+    if (contentType === 'recipe') {
+        const recipe = message.Message;
+        let responseText = `<div class='recipe-container'><h2>${recipe.title}</h2>`;
+        responseText += `<p><strong>Prep time:</strong> ${recipe.prep_time}</p>`;
+        responseText += `<p><strong>Cook time:</strong> ${recipe.cook_time}</p>`;
+        responseText += `<p><strong>Total time:</strong> ${recipe.total_time}</p>`;
+        responseText += `<p><strong>Servings:</strong> ${recipe.servings}</p>`;
+        responseText += "<h3>Ingredients:</h3><ul>";
+        responseText += recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+        responseText += "</ul>";
+        responseText += "<h3>Instructions:</h3><ol>";
+        responseText += recipe.instructions.map(instruction => `<li>${instruction}</li>`).join('');
+        responseText += "</ol>";
+        responseText += "<button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button></div>";
+        return responseText;
+    } else if (contentType === 'shopping_list') {
+        const shoppingList = message.Message;
+        let responseText = "<h2>Shopping List:</h2>";
+        for (const [department, items] of Object.entries(shoppingList.departments)) {
+            responseText += `<h3>${department}:</h3><ul>`;
+            responseText += items.map(item => `<li>${item}</li>`).join('');
+            responseText += "</ul>";
+        }
+        return responseText;
+    } else {
+        return `<p>${message.Message.message}</p>`;
+    }
 }
 
 function getOldestMessageTimestamp() {
@@ -254,7 +267,6 @@ function initializeWebSocket() {
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
         };
-        
 
         socket.onerror = function(error) {
             console.error('WebSocket Error:', error);
@@ -331,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function sendMessage() {
     const message = document.getElementById('message-input').value;
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona}));
+        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona }));
         document.getElementById('message-input').value = '';
         const messageElement = document.createElement('div');
         messageElement.className = 'message user';

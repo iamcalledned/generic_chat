@@ -92,7 +92,8 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
 
         print('created run')
         if run is not None:
-            await insert_conversation(pool, userID, thread_id_n, run.id, message, 'user', user_ip, persona)
+            user_message_json = json.dumps({"type": "message", "message": message})
+            await insert_conversation(pool, userID, thread_id_n, run.id, user_message_json, 'user', user_ip, persona)
             print("message:", message)
             print('done with insert')
             while True:
@@ -120,7 +121,6 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
             print("first message:", first_message)
 
             processed_content = process_message_content(first_message)
-            content = processed_content = process_message_content(first_message)
             
             try:
                 response_json = json.loads(processed_content)
@@ -131,7 +131,7 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
                 content_type = "message"
                 print("processed content:", processed_content)
 
-            await insert_conversation(pool, userID, thread_id_n, run.id, content, 'bot', None, persona)
+            await insert_conversation(pool, userID, thread_id_n, run.id, json.dumps(response_json), 'bot', None, persona)
             print("saved conversations for user:", userID)
         else:
             print("Failed to create a run object in OpenAI.")
