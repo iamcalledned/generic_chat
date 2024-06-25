@@ -160,10 +160,37 @@ function clearMessages() {
 
 function formatMessageContent(message) {
     if (typeof message === 'string') {
-        return message;
-    } else {
-        return JSON.stringify(message, null, 2); // If message is an object, convert it to a string
+        try {
+            const parsedMessage = JSON.parse(message);
+            if (parsedMessage.type === 'recipe') {
+                return `
+                    <div class='recipe-container'>
+                        <h2>A recipe for: ${parsedMessage.title}</h2>
+                        <p><strong>Prep time:</strong> ${parsedMessage.prep_time}</p>
+                        <p><strong>Cook time:</strong> ${parsedMessage.cook_time}</p>
+                        <p><strong>Total time:</strong> ${parsedMessage.total_time}</p>
+                        <p><strong>Servings:</strong> ${parsedMessage.servings}</p>
+                        <h3>Ingredients:</h3>
+                        <ul>${parsedMessage.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}</ul>
+                        <h3>Instructions:</h3>
+                        <ol>${parsedMessage.instructions.map(instruction => `<li>${instruction}</li>`).join('')}</ol>
+                        <button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button>
+                    </div>`;
+            } else if (parsedMessage.type === 'message') {
+                return `<p>${parsedMessage.message}</p>`;
+            } else if (parsedMessage.type === 'shopping_list') {
+                let shoppingList = "<h2>Shopping List:</h2>";
+                for (const [department, items] of Object.entries(parsedMessage.departments)) {
+                    shoppingList += `<h3>${department}:</h3><ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+                }
+                return shoppingList;
+            }
+        } catch (error) {
+            // If parsing fails, return the original message as is
+            return message;
+        }
     }
+    return message;
 }
 
 function displayRecentMessages(messages) {
@@ -173,17 +200,13 @@ function displayRecentMessages(messages) {
         // Check the 'MessageType' to determine if it's from the user or the bot
         if (message.MessageType === 'user') {
             messageElement.className = 'message user';
-            messageElement.innerHTML = `<p>You: ${message.Message}</p>`;
+            messageElement.innerHTML = `<p>You: ${formatMessageContent(message.Message)}</p>`;
         } else if (message.MessageType === 'bot') {
             messageElement.className = 'message bot';
-            messageElement.innerHTML = `<p>Ned: ${message.Message}</p>`;
+            messageElement.innerHTML = `<p>Ned: ${formatMessageContent(message.Message)}</p>`;
         } else {
             messageElement.className = 'message';
-            if (message.startsWith('<div') || message.startsWith('<p>')) {
-                messageElement.innerHTML = message;
-            } else {
-                messageElement.innerHTML = `<p>${message}</p>`;
-            }
+            messageElement.innerHTML = formatMessageContent(message.Message);
         }
 
         // Add the timestamp as a data attribute
@@ -200,24 +223,21 @@ function displayRecentMessages(messages) {
 function displayMoreMessages(messages) {
     messages.forEach(function(message) {
         let messageElement = document.createElement('div');
-        if (message.startsWith('<div') || message.startsWith('<p>')) {
-            messageElement.innerHTML = message;
-        } else {
-            messageElement.innerHTML = `<p>${message}</p>`;
-        }
         messageElement.className = 'message';
+        messageElement.innerHTML = formatMessageContent(message.Message);
+
+        // Add the timestamp as a data attribute
+        if (message.Timestamp) {
+            messageElement.setAttribute('data-timestamp', message.Timestamp);
+        }
+
         document.getElementById('messages').prepend(messageElement);
     });
 }
 
 function getOldestMessageTimestamp() {
     const oldestMessage = document.querySelector('#messages .message:first-child');
-    if (oldestMessage) {
-        const timestamp = oldestMessage.getAttribute('data-timestamp');
-        console.log("Oldest message timestamp:", timestamp); // Log the timestamp for debugging
-        return timestamp ? timestamp : null;
-    }
-    return null;
+    return oldestMessage ? oldestMessage.dataset.timestamp : null;
 }
 
 function initializeWebSocket() {
