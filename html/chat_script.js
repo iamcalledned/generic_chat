@@ -188,7 +188,9 @@ function displayRecentMessages(messages) {
         }
 
         // Add the timestamp as a data attribute
-        messageElement.setAttribute('data-timestamp', message.Timestamp);
+        if (message.Timestamp) {
+            messageElement.setAttribute('data-timestamp', message.Timestamp);
+        }
 
         document.getElementById('messages').appendChild(messageElement);
     });
@@ -211,7 +213,11 @@ function displayMoreMessages(messages) {
 
 function getOldestMessageTimestamp() {
     const oldestMessage = document.querySelector('#messages .message:first-child');
-    return oldestMessage ? oldestMessage.dataset.timestamp : null;
+    if (oldestMessage) {
+        const timestamp = oldestMessage.getAttribute('data-timestamp');
+        return timestamp ? timestamp : null;
+    }
+    return null;
 }
 
 function initializeWebSocket() {
