@@ -17,3 +17,4 @@ async def handle_chat_message(websocket, data_dict, pool, username, client_ip, p
         'recipe_id': recipe_id
     }
     await websocket.send_text(json.dumps(response))
+

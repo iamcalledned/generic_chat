@@ -61,6 +61,7 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
+    
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -138,7 +139,8 @@ function sendPersona() {
         socket.send(JSON.stringify({
             action: 'persona_selected',
             persona: persona
-        }));
+        })
+    );
     }
     document.getElementById('typing-text').innerText = persona + ' is typing...';
     document.getElementById('personaSelection').classList.remove('show');
@@ -158,31 +160,11 @@ function clearMessages() {
     messagesContainer.innerHTML = ''; // Clear all messages
 }
 
-function formatMessageContent(message, contentType) {
-    if (contentType === 'recipe') {
-        return `
-            <div class='recipe-container'>
-                <h2>A recipe for: ${message.title}</h2>
-                <p><strong>Prep time:</strong> ${message.prep_time}</p>
-                <p><strong>Cook time:</strong> ${message.cook_time}</p>
-                <p><strong>Total time:</strong> ${message.total_time}</p>
-                <p><strong>Servings:</strong> ${message.servings}</p>
-                <h3>Ingredients:</h3>
-                <ul>${message.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}</ul>
-                <h3>Instructions:</h3>
-                <ol>${message.instructions.map(instruction => `<li>${instruction}</li>`).join('')}</ol>
-                <button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button>
-            </div>`;
-    } else if (contentType === 'shopping_list') {
-        let shoppingListHTML = '<h2>Shopping List:</h2>';
-        for (const department in message.departments) {
-            shoppingListHTML += `<h3>${department}:</h3><ul>`;
-            shoppingListHTML += message.departments[department].map(item => `<li>${item}</li>`).join('');
-            shoppingListHTML += '</ul>';
-        }
-        return shoppingListHTML;
-    } else if (contentType === 'message') {
-        return `<p>${message.message}</p>`;
+function formatMessageContent(message, type) {
+    if (type === 'recipe') {
+        return message;
+    } else if (type === 'shopping_list') {
+        return message;
     } else {
         return `<p>${message}</p>`;
     }
@@ -190,9 +172,20 @@ function formatMessageContent(message, contentType) {
 
 function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
-        let messageElement = document.createElement('div');
-        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        let messageElement;
+        if (message.MessageType === 'user') {
+            messageElement = document.createElement('div');
+            messageElement.className = 'message user';
+            messageElement.textContent = 'You: ' + message.Message;
+        } else if (message.MessageType === 'bot') {
+            messageElement = document.createElement('div');
+            messageElement.className = 'message bot';
+            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        } else {
+            messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        }
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').appendChild(messageElement);
     });
@@ -201,9 +194,20 @@ function displayRecentMessages(messages) {
 
 function displayMoreMessages(messages) {
     messages.forEach(function(message) {
-        let messageElement = document.createElement('div');
-        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        let messageElement;
+        if (message.MessageType === 'user') {
+            messageElement = document.createElement('div');
+            messageElement.className = 'message user';
+            messageElement.textContent = 'You: ' + message.Message;
+        } else if (message.MessageType === 'bot') {
+            messageElement = document.createElement('div');
+            messageElement.className = 'message bot';
+            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        } else {
+            messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        }
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').prepend(messageElement);
     });
@@ -230,6 +234,7 @@ function initializeWebSocket() {
 
         socket.onmessage = function(event) {
             const msg = JSON.parse(event.data);
+            console.log("Received message:", msg); // Log the received message for debugging
             if (msg.action === 'ping') {
                 socket.send(JSON.stringify({ action: 'pong' }));
             } else if (msg.action === 'recent_messages') {
