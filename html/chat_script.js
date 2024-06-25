@@ -181,8 +181,10 @@ function formatMessageContent(message, contentType) {
             responseText += "</ul>";
         });
         return responseText;
-    } else {
+    } else if (contentType === 'message') {
         return `<p>${message.message || message}</p>`;
+    } else {
+        return `<p>${message}</p>`;
     }
 }
 
@@ -190,7 +192,11 @@ function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
         let messageElement = document.createElement('div');
         messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        if (message.ContentType && typeof message.Message === 'object') {
+            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        } else {
+            messageElement.innerHTML = `<p>${message.Message}</p>`;
+        }
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').appendChild(messageElement);
     });
@@ -201,7 +207,11 @@ function displayMoreMessages(messages) {
     messages.forEach(function(message) {
         let messageElement = document.createElement('div');
         messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        if (message.ContentType && typeof message.Message === 'object') {
+            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        } else {
+            messageElement.innerHTML = `<p>${message.Message}</p>`;
+        }
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').prepend(messageElement);
     });
