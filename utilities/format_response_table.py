@@ -1,12 +1,7 @@
 import json
 
-def format_response_table(response_json, content_type):
-    if isinstance(response_json, str):
-        try:
-            response_json = json.loads(response_json)
-        except json.JSONDecodeError:
-            return f"<p>{response_json}</p>"  # If it fails to parse, return it as plain text.
-
+def format_response_table(message_content, content_type):
+    response_json = json.loads(message_content)
     if content_type == 'recipe':
         response_text = f"<div class='recipe-container'><h2>A recipe for: {response_json['title']}</h2>"
         response_text += f"<p><strong>Prep time:</strong> {response_json['prep_time']}</p>"
