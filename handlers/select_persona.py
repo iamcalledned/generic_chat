@@ -9,14 +9,13 @@ async def handle_select_persona(websocket, data_dict, pool, username):
     active_thread = await get_active_thread_for_user(pool, userID, persona)
     
     recent_messages = []
-    content_type = "message"
     
     if active_thread:
         threadID = active_thread['ThreadID']
-        recent_messages, content_type = await get_recent_messages(pool, userID, persona, threadID)
-        print(recent_messages, content_type)
-    
-    formatted_messages = [format_response_table(message['Message'], message['ContentType']) for message in recent_messages]
+        recent_messages = await get_recent_messages(pool, userID, persona, threadID)
+        print(recent_messages)
+
+    formatted_messages = [format_response_table(message['Message'], message.get('ContentType', 'message')) for message in recent_messages]
     print("formatted messages:", formatted_messages)
     await websocket.send_text(json.dumps({
         'action': 'recent_messages',
