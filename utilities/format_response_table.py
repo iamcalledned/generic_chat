@@ -2,7 +2,10 @@ import json
 
 def format_response_table(message_content, content_type):
     if isinstance(message_content, str):
-        message_content = json.loads(message_content)
+        try:
+            message_content = json.loads(message_content)
+        except json.JSONDecodeError:
+            message_content = {"message": message_content}  # Treat as a simple message if JSON decoding fails
 
     if content_type == 'recipe':
         response_text = f"<div class='recipe-container'><h2>A recipe for: {message_content['title']}</h2>"

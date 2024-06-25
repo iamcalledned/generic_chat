@@ -137,7 +137,7 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
     async with pool.acquire() as conn:
         async with conn.cursor() as cur:
             sql = '''
-            SELECT Message, MessageType, Timestamp, ContentType FROM conversations
+            SELECT Message, MessageType, Timestamp FROM conversations
             WHERE userID = %s
             AND   persona = %s
             AND   ThreadID = %s
@@ -147,7 +147,16 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
             await cur.execute(sql, (user_id, persona, threadID, limit))
             rows = await cur.fetchall()
             # Convert each row to a dict and format datetime objects
-            return [dict(row, Timestamp=row['Timestamp'].isoformat()) for row in rows]
+            messages = [dict(row, Timestamp=row['Timestamp'].isoformat()) for row in rows]
+            
+            for message in messages:
+                try:
+                    content = json.loads(message['Message'])
+                    message['ContentType'] = content.get('type', 'message')
+                except json.JSONDecodeError:
+                    message['ContentType'] = 'message'
+            
+            return messages
 
         
 async def get_messages_before(pool, user_id, last_loaded_timestamp, threadID, limit=3):
