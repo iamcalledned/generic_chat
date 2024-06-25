@@ -150,9 +150,13 @@ async def get_recent_messages(pool, user_id, persona, threadID, limit=10):
             for row in rows:
                 message = row['Message']
                 try:
-                    # Attempt to parse the message as JSON
-                    message_data = json.loads(message)
-                    message_type = message_data.get('type')
+                    if message:
+                        # Attempt to parse the message as JSON
+                        message_data = json.loads(message)
+                        message_type = message_data.get('type')
+                    else:
+                        message_data = ""
+                        message_type = "text"
                 except json.JSONDecodeError:
                     # If it's not JSON, leave the message as is
                     message_data = message
