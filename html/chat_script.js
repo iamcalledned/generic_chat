@@ -61,7 +61,6 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
-    
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -215,6 +214,7 @@ function getOldestMessageTimestamp() {
     const oldestMessage = document.querySelector('#messages .message:first-child');
     if (oldestMessage) {
         const timestamp = oldestMessage.getAttribute('data-timestamp');
+        console.log("Oldest message timestamp:", timestamp); // Log the timestamp for debugging
         return timestamp ? timestamp : null;
     }
     return null;
@@ -304,6 +304,7 @@ function reconnectWebSocket() {
 function loadMoreMessages() {
     const lastMessageTimestamp = getOldestMessageTimestamp();
     if (lastMessageTimestamp && socket.readyState === WebSocket.OPEN) {
+        console.log("Requesting more messages before:", lastMessageTimestamp); // Log the request for debugging
         socket.send(JSON.stringify({
             action: 'load_more_messages',
             last_loaded_timestamp: lastMessageTimestamp,
