@@ -139,8 +139,7 @@ function sendPersona() {
         socket.send(JSON.stringify({
             action: 'persona_selected',
             persona: persona
-        })
-    );
+        }));
     }
     document.getElementById('typing-text').innerText = persona + ' is typing...';
     document.getElementById('personaSelection').classList.remove('show');
@@ -160,33 +159,23 @@ function clearMessages() {
     messagesContainer.innerHTML = ''; // Clear all messages
 }
 
-function formatMessageContent(message, type) {
-    if (type === 'recipe') {
-        return message;
-    } else if (type === 'shopping_list') {
+function formatMessageContent(message) {
+    if (typeof message === 'string') {
         return message;
     } else {
-        return `<p>${message}</p>`;
+        return JSON.stringify(message, null, 2); // If message is an object, convert it to a string
     }
 }
 
 function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
-        let messageElement;
-        if (message.MessageType === 'user') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message user';
-            messageElement.textContent = 'You: ' + message.Message;
-        } else if (message.MessageType === 'bot') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message bot';
-            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        let messageElement = document.createElement('div');
+        if (message.startsWith('<div') || message.startsWith('<p>')) {
+            messageElement.innerHTML = message;
         } else {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+            messageElement.innerHTML = `<p>${message}</p>`;
         }
-        messageElement.dataset.timestamp = message.Timestamp;
+        messageElement.className = 'message';
         document.getElementById('messages').appendChild(messageElement);
     });
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
@@ -194,21 +183,13 @@ function displayRecentMessages(messages) {
 
 function displayMoreMessages(messages) {
     messages.forEach(function(message) {
-        let messageElement;
-        if (message.MessageType === 'user') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message user';
-            messageElement.textContent = 'You: ' + message.Message;
-        } else if (message.MessageType === 'bot') {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message bot';
-            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        let messageElement = document.createElement('div');
+        if (message.startsWith('<div') || message.startsWith('<p>')) {
+            messageElement.innerHTML = message;
         } else {
-            messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+            messageElement.innerHTML = `<p>${message}</p>`;
         }
-        messageElement.dataset.timestamp = message.Timestamp;
+        messageElement.className = 'message';
         document.getElementById('messages').prepend(messageElement);
     });
 }
@@ -258,7 +239,7 @@ function initializeWebSocket() {
                 hideTypingIndicator();
                 let messageElement = document.createElement('div');
                 messageElement.className = 'message bot';
-                messageElement.innerHTML = formatMessageContent(msg.response, msg.type); // Use formatMessageContent to render HTML content
+                messageElement.innerHTML = formatMessageContent(msg.response); // Use formatMessageContent to render HTML content
                 document.getElementById('messages').appendChild(messageElement);
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
