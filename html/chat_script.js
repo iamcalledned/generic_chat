@@ -61,6 +61,7 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
+    
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -159,63 +160,51 @@ function clearMessages() {
     messagesContainer.innerHTML = ''; // Clear all messages
 }
 
-function displayRecentMessages(messages) {
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.innerHTML = ''; // Clear existing messages
-
-    messages.reverse().forEach(function(message) {
-        let messageElement = document.createElement('div');
-        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        messageElement.innerHTML = formatMessageContent(message);
-        messageElement.dataset.timestamp = message.Timestamp;
-        messagesContainer.appendChild(messageElement);
-    });
-
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function displayMoreMessages(messages) {
-    const messagesContainer = document.getElementById('messages');
-
-    messages.forEach(function(message) {
-        let messageElement = document.createElement('div');
-        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        messageElement.innerHTML = formatMessageContent(message);
-        messageElement.dataset.timestamp = message.Timestamp;
-        messagesContainer.prepend(messageElement);
-    });
-}
-
-function formatMessageContent(message) {
-    const contentType = message.ContentType;
-
+function formatMessageContent(message, contentType) {
     if (contentType === 'recipe') {
-        const recipe = message.Message;
-        let responseText = `<div class='recipe-container'><h2>${recipe.title}</h2>`;
-        responseText += `<p><strong>Prep time:</strong> ${recipe.prep_time}</p>`;
-        responseText += `<p><strong>Cook time:</strong> ${recipe.cook_time}</p>`;
-        responseText += `<p><strong>Total time:</strong> ${recipe.total_time}</p>`;
-        responseText += `<p><strong>Servings:</strong> ${recipe.servings}</p>`;
+        let responseText = `<div class='recipe-container'><h2>A recipe for: ${message.title}</h2>`;
+        responseText += `<p><strong>Prep time:</strong> ${message.prep_time}</p>`;
+        responseText += `<p><strong>Cook time:</strong> ${message.cook_time}</p>`;
+        responseText += `<p><strong>Total time:</strong> ${message.total_time}</p>`;
+        responseText += `<p><strong>Servings:</strong> ${message.servings}</p>`;
         responseText += "<h3>Ingredients:</h3><ul>";
-        responseText += recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
-        responseText += "</ul>";
-        responseText += "<h3>Instructions:</h3><ol>";
-        responseText += recipe.instructions.map(instruction => `<li>${instruction}</li>`).join('');
-        responseText += "</ol>";
-        responseText += "<button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button></div>";
+        responseText += message.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+        responseText += "</ul><h3>Instructions:</h3><ol>";
+        responseText += message.instructions.map(instruction => `<li>${instruction}</li>`).join('');
+        responseText += "</ol><button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button></div>";
         return responseText;
     } else if (contentType === 'shopping_list') {
-        const shoppingList = message.Message;
         let responseText = "<h2>Shopping List:</h2>";
-        for (const [department, items] of Object.entries(shoppingList.departments)) {
+        Object.entries(message.departments).forEach(([department, items]) => {
             responseText += `<h3>${department}:</h3><ul>`;
             responseText += items.map(item => `<li>${item}</li>`).join('');
             responseText += "</ul>";
-        }
+        });
         return responseText;
     } else {
-        return `<p>${message.Message.message}</p>`;
+        return `<p>${message.message || message}</p>`;
     }
+}
+
+function displayRecentMessages(messages) {
+    messages.reverse().forEach(function(message) {
+        let messageElement = document.createElement('div');
+        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
+        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        messageElement.dataset.timestamp = message.Timestamp;
+        document.getElementById('messages').appendChild(messageElement);
+    });
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+}
+
+function displayMoreMessages(messages) {
+    messages.forEach(function(message) {
+        let messageElement = document.createElement('div');
+        messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
+        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
+        messageElement.dataset.timestamp = message.Timestamp;
+        document.getElementById('messages').prepend(messageElement);
+    });
 }
 
 function getOldestMessageTimestamp() {
@@ -343,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function sendMessage() {
     const message = document.getElementById('message-input').value;
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona }));
+        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona}));
         document.getElementById('message-input').value = '';
         const messageElement = document.createElement('div');
         messageElement.className = 'message user';
