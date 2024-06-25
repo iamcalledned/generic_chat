@@ -61,7 +61,6 @@ document.getElementById('logout').addEventListener('click', function() {
 
 document.getElementById('switch_persona').addEventListener('click', function() {
     document.getElementById('personaSelection').classList.add('show');
-    
 });
 
 document.getElementById('closeBtn').addEventListener('click', function() {
@@ -139,8 +138,7 @@ function sendPersona() {
         socket.send(JSON.stringify({
             action: 'persona_selected',
             persona: persona
-        })
-    );
+        }));
     }
     document.getElementById('typing-text').innerText = persona + ' is typing...';
     document.getElementById('personaSelection').classList.remove('show');
@@ -162,27 +160,29 @@ function clearMessages() {
 
 function formatMessageContent(message, contentType) {
     if (contentType === 'recipe') {
-        let responseText = `<div class='recipe-container'><h2>A recipe for: ${message.title}</h2>`;
-        responseText += `<p><strong>Prep time:</strong> ${message.prep_time}</p>`;
-        responseText += `<p><strong>Cook time:</strong> ${message.cook_time}</p>`;
-        responseText += `<p><strong>Total time:</strong> ${message.total_time}</p>`;
-        responseText += `<p><strong>Servings:</strong> ${message.servings}</p>`;
-        responseText += "<h3>Ingredients:</h3><ul>";
-        responseText += message.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
-        responseText += "</ul><h3>Instructions:</h3><ol>";
-        responseText += message.instructions.map(instruction => `<li>${instruction}</li>`).join('');
-        responseText += "</ol><button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button></div>";
-        return responseText;
+        return `
+            <div class='recipe-container'>
+                <h2>A recipe for: ${message.title}</h2>
+                <p><strong>Prep time:</strong> ${message.prep_time}</p>
+                <p><strong>Cook time:</strong> ${message.cook_time}</p>
+                <p><strong>Total time:</strong> ${message.total_time}</p>
+                <p><strong>Servings:</strong> ${message.servings}</p>
+                <h3>Ingredients:</h3>
+                <ul>${message.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}</ul>
+                <h3>Instructions:</h3>
+                <ol>${message.instructions.map(instruction => `<li>${instruction}</li>`).join('')}</ol>
+                <button class='print-recipe-button' onclick='printRecipe(this)'>Print Recipe</button>
+            </div>`;
     } else if (contentType === 'shopping_list') {
-        let responseText = "<h2>Shopping List:</h2>";
-        Object.entries(message.departments).forEach(([department, items]) => {
-            responseText += `<h3>${department}:</h3><ul>`;
-            responseText += items.map(item => `<li>${item}</li>`).join('');
-            responseText += "</ul>";
-        });
-        return responseText;
+        let shoppingListHTML = '<h2>Shopping List:</h2>';
+        for (const department in message.departments) {
+            shoppingListHTML += `<h3>${department}:</h3><ul>`;
+            shoppingListHTML += message.departments[department].map(item => `<li>${item}</li>`).join('');
+            shoppingListHTML += '</ul>';
+        }
+        return shoppingListHTML;
     } else if (contentType === 'message') {
-        return `<p>${message.message || message}</p>`;
+        return `<p>${message.message}</p>`;
     } else {
         return `<p>${message}</p>`;
     }
@@ -192,11 +192,7 @@ function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
         let messageElement = document.createElement('div');
         messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        if (message.ContentType && typeof message.Message === 'object') {
-            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
-        } else {
-            messageElement.innerHTML = `<p>${message.Message}</p>`;
-        }
+        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').appendChild(messageElement);
     });
@@ -207,11 +203,7 @@ function displayMoreMessages(messages) {
     messages.forEach(function(message) {
         let messageElement = document.createElement('div');
         messageElement.className = message.MessageType === 'user' ? 'message user' : 'message bot';
-        if (message.ContentType && typeof message.Message === 'object') {
-            messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
-        } else {
-            messageElement.innerHTML = `<p>${message.Message}</p>`;
-        }
+        messageElement.innerHTML = formatMessageContent(message.Message, message.ContentType);
         messageElement.dataset.timestamp = message.Timestamp;
         document.getElementById('messages').prepend(messageElement);
     });
@@ -261,7 +253,7 @@ function initializeWebSocket() {
                 hideTypingIndicator();
                 let messageElement = document.createElement('div');
                 messageElement.className = 'message bot';
-                messageElement.innerHTML = msg.response;  // Use innerHTML to render HTML content
+                messageElement.innerHTML = formatMessageContent(msg.response, msg.type); // Use formatMessageContent to render HTML content
                 document.getElementById('messages').appendChild(messageElement);
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
             }
@@ -342,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function sendMessage() {
     const message = document.getElementById('message-input').value;
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona}));
+        socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona }));
         document.getElementById('message-input').value = '';
         const messageElement = document.createElement('div');
         messageElement.className = 'message user';
