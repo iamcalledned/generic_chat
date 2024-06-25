@@ -170,14 +170,29 @@ function formatMessageContent(message) {
 function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
         let messageElement = document.createElement('div');
-        if (message.startsWith('<div') || message.startsWith('<p>')) {
-            messageElement.innerHTML = message;
+
+        // Check the 'MessageType' to determine if it's from the user or the bot
+        if (message.MessageType === 'user') {
+            messageElement.className = 'message user';
+            messageElement.innerHTML = `<p>You: ${message.Message}</p>`;
+        } else if (message.MessageType === 'bot') {
+            messageElement.className = 'message bot';
+            messageElement.innerHTML = `<p>Ned: ${message.Message}</p>`;
         } else {
-            messageElement.innerHTML = `<p>${message}</p>`;
+            messageElement.className = 'message';
+            if (message.startsWith('<div') || message.startsWith('<p>')) {
+                messageElement.innerHTML = message;
+            } else {
+                messageElement.innerHTML = `<p>${message}</p>`;
+            }
         }
-        messageElement.className = 'message';
+
+        // Add the timestamp as a data attribute
+        messageElement.setAttribute('data-timestamp', message.Timestamp);
+
         document.getElementById('messages').appendChild(messageElement);
     });
+
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 }
 
