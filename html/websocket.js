@@ -92,3 +92,17 @@ export function loadMoreMessages() {
         }));
     }
 }
+
+export function sendPersona() {
+    persona = document.getElementById('personaDropdown').value;
+    clearMessages(); // Clear old messages when switching persona
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            action: 'persona_selected',
+            persona: persona
+        }));
+    }
+    document.getElementById('typing-text').innerText = persona + ' is typing...';
+    document.getElementById('personaSelection').classList.remove('show');
+    clearMessages(); // Clear old messages when switching persona
+}

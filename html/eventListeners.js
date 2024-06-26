@@ -1,4 +1,4 @@
-import { sendMessage, loadMoreMessages } from './websocket.js';
+import { sendMessage, loadMoreMessages, sendPersona } from './websocket.js';
 import { printRecipe } from './utilities.js';
 
 export function addEventListeners() {
@@ -98,4 +98,6 @@ export function addEventListeners() {
             loadMoreMessages();
         }
     });
+
+    document.getElementById('personaDropdown').addEventListener('change', sendPersona);
 }
