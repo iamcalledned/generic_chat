@@ -117,10 +117,3 @@ export function formatMessageContent(message) {
         return `<p>${message.message}</p>`;
     }
 }
-export function createMessageElement(content, messageType) {
-    const messageElement = document.createElement('div');
-    messageElement.className = `message ${messageType}`;
-    messageElement.innerHTML = `<p>${content}</p>`;
-    return messageElement;
-}
-
