@@ -45,6 +45,9 @@ export function printRecipe(button) {
     `);
     printWindow.document.close();
 }
+// Attach to window object if needed globally
+window.printRecipe = printRecipe;
+
 
 export function formatMessageContent(message) {
     if (typeof message === 'string') {

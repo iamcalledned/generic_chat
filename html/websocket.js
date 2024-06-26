@@ -1,4 +1,5 @@
 import { clearMessages, displayRecentMessages, displayMoreMessages, hideTypingIndicator, showOverlay, formatMessageContent } from './ui.js';
+import { printRecipe } from './utilities.js';
 
 const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
 let socket;
