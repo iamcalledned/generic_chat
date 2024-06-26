@@ -13,18 +13,17 @@ export function clearMessages() {
 
 export function displayRecentMessages(messages) {
     messages.reverse().forEach(function(message) {
-        let messageElement = document.createElement('div');
         let formattedContent = formatMessageContent(message.Message);
-
+        let messageElement;
+        
         if (message.MessageType === 'user') {
-            messageElement.className = 'message user';
-            messageElement.innerHTML = `<p>You: ${formattedContent}</p>`;
+            formattedContent = `You: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'user');
         } else if (message.MessageType === 'bot') {
-            messageElement.className = 'message bot';
-            messageElement.innerHTML = `<p>Ned: ${formattedContent}</p>`;
+            formattedContent = `Ned: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'bot');
         } else {
-            messageElement.className = 'message';
-            messageElement.innerHTML = formattedContent;
+            messageElement = createMessageElement(formattedContent, '');
         }
 
         messageElement.setAttribute('data-timestamp', message.Timestamp);
@@ -36,18 +35,17 @@ export function displayRecentMessages(messages) {
 
 export function displayMoreMessages(messages) {
     messages.forEach(function(message) {
-        let messageElement = document.createElement('div');
         let formattedContent = formatMessageContent(message.Message);
-
+        let messageElement;
+        
         if (message.MessageType === 'user') {
-            messageElement.className = 'message user';
-            messageElement.innerHTML = `<p>You: ${formattedContent}</p>`;
+            formattedContent = `You: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'user');
         } else if (message.MessageType === 'bot') {
-            messageElement.className = 'message bot';
-            messageElement.innerHTML = `<p>Ned: ${formattedContent}</p>`;
+            formattedContent = `Ned: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'bot');
         } else {
-            messageElement.className = 'message';
-            messageElement.innerHTML = formattedContent;
+            messageElement = createMessageElement(formattedContent, '');
         }
 
         messageElement.setAttribute('data-timestamp', message.Timestamp);
@@ -117,6 +115,7 @@ export function formatMessageContent(message) {
         return `<p>${message.message}</p>`;
     }
 }
+
 export function createMessageElement(content, messageType) {
     const messageElement = document.createElement('div');
     messageElement.className = `message ${messageType}`;
