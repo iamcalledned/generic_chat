@@ -1,53 +1,87 @@
-export function printRecipe(button) {
-    const recipeContainer = button.parentNode.innerHTML;
-    const printWindow = window.open('', '_blank');
-    printWindow.document.open();
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Print Recipe</title>
-            <style>
-                body {
-                    font-family: 'Roboto', sans-serif;
-                    margin: 20px;
-                }
-                h2, h3 {
-                    margin: 10px 0;
-                }
-                p {
-                    margin: 10px 0;
-                }
-                ul, ol {
-                    padding-left: 20px;
-                    margin: 10px 0;
-                }
-                ul li, ol li {
-                    margin: 5px 0;
-                }
-                ul {
-                    list-style-type: disc;
-                }
-                ol {
-                    list-style-type: decimal;
-                }
-                .ingredients, .instructions {
-                    background: #f9f9f9;
-                    padding: 10px;
-                    border-radius: 10px;
-                    margin: 10px 0;
-                }
-            </style>
-        </head>
-        <body onload="window.print();window.close()">
-            ${recipeContainer}
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-}
-// Attach to window object if needed globally
-window.printRecipe = printRecipe;
+import { createMessageElement } from './ui.js';
 
+export function showTypingIndicator() {
+    document.getElementById('typing-container').style.display = 'flex';
+}
+
+export function hideTypingIndicator() {
+    document.getElementById('typing-container').style.display = 'none';
+}
+
+export function clearMessages() {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.innerHTML = ''; // Clear all messages
+}
+
+export function displayRecentMessages(messages) {
+    messages.reverse().forEach(function(message) {
+        let formattedContent = formatMessageContent(message.Message);
+        let messageElement;
+        
+        if (message.MessageType === 'user') {
+            formattedContent = `You: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'user');
+        } else if (message.MessageType === 'bot') {
+            formattedContent = `Ned: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'bot');
+        } else {
+            messageElement = createMessageElement(formattedContent, '');
+        }
+
+        messageElement.setAttribute('data-timestamp', message.Timestamp);
+        document.getElementById('messages').appendChild(messageElement);
+    });
+
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+}
+
+export function displayMoreMessages(messages) {
+    messages.forEach(function(message) {
+        let formattedContent = formatMessageContent(message.Message);
+        let messageElement;
+        
+        if (message.MessageType === 'user') {
+            formattedContent = `You: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'user');
+        } else if (message.MessageType === 'bot') {
+            formattedContent = `Ned: ${formattedContent}`;
+            messageElement = createMessageElement(formattedContent, 'bot');
+        } else {
+            messageElement = createMessageElement(formattedContent, '');
+        }
+
+        messageElement.setAttribute('data-timestamp', message.Timestamp);
+        document.getElementById('messages').prepend(messageElement);
+    });
+}
+
+export function getOldestMessageTimestamp() {
+    const oldestMessage = document.querySelector('#messages .message:first-child');
+    return oldestMessage ? oldestMessage.getAttribute('data-timestamp') : null;
+}
+
+export function showOverlay(threads) {
+    const threadsList = document.getElementById('threadsList');
+    threadsList.innerHTML = ''; // Clear any existing content
+
+    threads.forEach(thread => {
+        const threadItem = document.createElement('div');
+        threadItem.className = 'thread-item';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = thread.threadID;
+
+        const label = document.createElement('label');
+        label.textContent = `Thread ID: ${thread.threadID}, Created Time: ${thread.createdTime}`;
+
+        threadItem.appendChild(checkbox);
+        threadItem.appendChild(label);
+        threadsList.appendChild(threadItem);
+    });
+
+    document.getElementById('overlay').style.display = 'block';
+}
 
 export function formatMessageContent(message) {
     if (typeof message === 'string') {
@@ -83,3 +117,10 @@ export function formatMessageContent(message) {
         return `<p>${message.message}</p>`;
     }
 }
+export function createMessageElement(content, messageType) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${messageType}`;
+    messageElement.innerHTML = `<p>${content}</p>`;
+    return messageElement;
+}
+

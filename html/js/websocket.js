@@ -1,12 +1,4 @@
-import { clearMessages,
-         displayRecentMessages,
-         displayMoreMessages, 
-         hideTypingIndicator, 
-         showTypingIndicator,
-         showOverlay, 
-         formatMessageContent, 
-         getOldestMessageTimestamp 
-        } from './ui.js';
+import { clearMessages, displayRecentMessages, displayMoreMessages, hideTypingIndicator, showTypingIndicator, showOverlay, formatMessageContent, getOldestMessageTimestamp, createMessageElement } from './ui.js';
 import { printRecipe } from './utilities.js';
 
 const WEBSOCKET_URL = 'wss://www.iamcalledned.ai/ws';
@@ -70,9 +62,8 @@ function handleMessage(msg) {
         window.location.reload();
     } else {
         hideTypingIndicator();
-        let messageElement = document.createElement('div');
-        messageElement.className = 'message bot';
-        messageElement.innerHTML = formatMessageContent(msg.response);
+        const formattedContent = formatMessageContent(msg.response);
+        const messageElement = createMessageElement(formattedContent, 'bot');
         document.getElementById('messages').appendChild(messageElement);
         document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     }
@@ -86,9 +77,8 @@ export function sendMessage(message) {
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona }));
         document.getElementById('message-input').value = '';
-        const messageElement = document.createElement('div');
-        messageElement.className = 'message user';
-        messageElement.textContent = 'You: ' + message;
+        const formattedContent = `You: ${message}`;
+        const messageElement = createMessageElement(formattedContent, 'user');
         document.getElementById('messages').appendChild(messageElement);
         showTypingIndicator();
         document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
