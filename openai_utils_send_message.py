@@ -20,6 +20,7 @@ openai_client.api_key = Config.OPENAI_API_KEY
 
 #send the message    
 async def send_message(thread_id_n, message):
+    print("Sending message: " + message)
     try:
         response = openai_client.beta.threads.messages.create(
             thread_id_n,
