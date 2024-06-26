@@ -17,7 +17,7 @@ export function displayRecentMessages(messages) {
         let messageElement;
         
         if (message.MessageType === 'user') {
-            formattedContent = `You: ${formattedContent}`;
+            formattedContent = `You:${formattedContent}`;
             messageElement = createMessageElement(formattedContent, 'user');
         } else if (message.MessageType === 'bot') {
             formattedContent = `Ned: ${formattedContent}`;
