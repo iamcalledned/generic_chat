@@ -104,7 +104,7 @@ export function sendPersona() {
             persona: persona
         }));
     }
-    document.getElementById('typing-text').innerText = persona + ' is typing...;
+    document.getElementById('typing-text').innerText = persona + ' is typing...';
     document.getElementById('personaSelection').classList.remove('show');
     clearMessages(); // Clear old messages when switching persona
 }
