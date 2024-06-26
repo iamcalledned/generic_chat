@@ -99,5 +99,5 @@ export function addEventListeners() {
         }
     });
 
-    document.getElementById('personaDropdown').addEventListener('change', sendPersona);
+    document.getElementById('personaDropdownBtn').addEventListener('click', sendPersona);
 }
