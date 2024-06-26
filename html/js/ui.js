@@ -120,5 +120,6 @@ export function createMessageElement(content, messageType) {
     const messageElement = document.createElement('div');
     messageElement.className = `message ${messageType}`;
     messageElement.innerHTML = `<p>${content}</p>`;
+    console.log(`Created message element with classes: ${messageElement.className}`); // Log the class names
     return messageElement;
 }

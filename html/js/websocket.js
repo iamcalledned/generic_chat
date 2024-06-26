@@ -78,6 +78,7 @@ export function sendMessage(message) {
         document.getElementById('message-input').value = '';
         const formattedContent = `You: ${message}`;
         const messageElement = createMessageElement(formattedContent, 'user');
+        console.log(`Appended user message: ${messageElement.outerHTML}`); // Log the outerHTML of the appended element
         document.getElementById('messages').appendChild(messageElement);
         showTypingIndicator();
         document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
