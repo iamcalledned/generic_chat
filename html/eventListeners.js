@@ -1,4 +1,4 @@
-import { sendMessage, loadMoreMessages, sendPersona, getSocket } from './websocket.js';
+import { sendMessage, loadMoreMessages, sendPersona, getSocket, getPersona } from './websocket.js';
 import { printRecipe } from './utilities.js';
 
 export function addEventListeners() {
@@ -90,6 +90,7 @@ export function addEventListeners() {
 
     document.getElementById('clear_conversations').addEventListener('click', function() {
         const socket = getSocket();
+        const persona = getPersona();
         if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ action: 'clear_conversations', persona: persona }));
         }

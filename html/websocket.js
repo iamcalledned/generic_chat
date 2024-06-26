@@ -110,7 +110,11 @@ export function sendPersona() {
     clearMessages(); // Clear old messages when switching persona
 }
 
-// New function to get the socket instance
+// New functions to get the socket and persona instances
 export function getSocket() {
     return socket;
+}
+
+export function getPersona() {
+    return persona;
 }
