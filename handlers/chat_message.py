@@ -12,7 +12,7 @@ async def handle_chat_message(websocket, data_dict, pool, username, client_ip, p
     response_text = format_response(response_json, content_type)
     print("Response text:", response_text)
     response = {
-        'response': response_text,
+        'response': response_json,
         'type': content_type,
         'recipe_id': recipe_id
     }
