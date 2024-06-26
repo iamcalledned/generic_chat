@@ -12,7 +12,7 @@ export function initializeWebSocket() {
         socket = new WebSocket(WEBSOCKET_URL);
 
         socket.onopen = function() {
-            socket.send(JSON.stringify({ action: 'load_messages' }));
+        //*    socket.send(JSON.stringify({ action: 'load_messages' }));
             reconnectInterval = 1000;
         };
 
