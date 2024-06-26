@@ -71,6 +71,10 @@ function handleMessage(msg) {
 }
 
 export function sendMessage(message) {
+    console.log('sendMessage called with message:', message); // Debug log
+    console.log('socket state:', socket.readyState); // Debug log
+    console.log('persona:', persona); // Debug log
+
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona }));
         document.getElementById('message-input').value = '';
@@ -81,7 +85,7 @@ export function sendMessage(message) {
         showTypingIndicator();
         document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
     } else {
-        console.error('WebSocket is not open. ReadyState:', socket.readyState);
+        console.error('WebSocket is not open or message is empty. ReadyState:', socket.readyState);
     }
 }
 
@@ -105,7 +109,7 @@ export function sendPersona() {
             persona: persona
         }));
     }
-    document.getElementById('typing-text').innerText = persona + ' is typing...';
+    document.getElementById('typing-text').innerText = persona + ' is typing...;
     document.getElementById('personaSelection').classList.remove('show');
     clearMessages(); // Clear old messages when switching persona
 }
