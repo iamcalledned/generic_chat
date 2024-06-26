@@ -123,6 +123,16 @@ html, body {
     word-wrap: break-word;
 }
 
+.message p {
+    margin: 10px 0;
+    color: #666; /* Default color for all messages */
+}
+
+.message.user p {
+    color: white !important; /* Ensure this rule takes precedence */
+}
+
+
 .message {
     max-width: 75%;
     padding: 12px 20px;
