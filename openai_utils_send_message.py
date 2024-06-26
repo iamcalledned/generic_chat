@@ -29,6 +29,7 @@ async def send_message(thread_id_n, message):
         )
         # Extracting the response text from the nested structure
         response_text = response.content[0].text.value
+        print("Response text:", response_text)
         
        
         return response_text

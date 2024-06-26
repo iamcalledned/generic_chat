@@ -81,7 +81,8 @@ async def generate_answer(pool, username, message, user_ip, uuid, persona):
         await insert_thread(pool, thread_id_n, userID, True, current_time, persona)
 
     if thread_id_n:
-        #response_text = await send_message(thread_id_n, message)
+        print("message", message)
+        response_text = await send_message(thread_id_n, message)
 
         assistant_id_persona = Config.PERSONA_ASSISTANT_MAPPING.get(persona)
         print('assistant id:', assistant_id_persona)
