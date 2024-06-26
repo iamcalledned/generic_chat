@@ -40,7 +40,6 @@ function reconnectWebSocket() {
 
 function handleMessage(msg) {
     console.log("Received message:", msg);
-    // Add specific message handling logic here
     if (msg.action === 'ping') {
         socket.send(JSON.stringify({ action: 'pong' }));
     } else if (msg.action === 'recent_messages') {
@@ -70,9 +69,9 @@ function handleMessage(msg) {
 }
 
 export function sendMessage(message) {
-    console.log('sendMessage called with message:', message); // Debug log
-    console.log('socket state:', socket.readyState); // Debug log
-    console.log('persona:', persona); // Debug log
+    console.log('sendMessage called with message:', message);
+    console.log('socket state:', socket.readyState);
+    console.log('persona:', persona);
 
     if (message.trim().length > 0 && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({ action: 'chat_message', message: message, persona: persona }));
@@ -100,7 +99,7 @@ export function loadMoreMessages() {
 
 export function sendPersona() {
     persona = document.getElementById('personaDropdown').value;
-    clearMessages(); // Clear old messages when switching persona
+    clearMessages();
     if (socket && socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({
             action: 'persona_selected',
@@ -109,10 +108,9 @@ export function sendPersona() {
     }
     document.getElementById('typing-text').innerText = persona + ' is typing...';
     document.getElementById('personaSelection').classList.remove('show');
-    clearMessages(); // Clear old messages when switching persona
+    clearMessages();
 }
 
-// New functions to get the socket and persona instances
 export function getSocket() {
     return socket;
 }
