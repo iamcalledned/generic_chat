@@ -8,7 +8,8 @@ export function addEventListeners() {
     });
 
     document.getElementById('message-input').addEventListener('keypress', function (e) {
-        if (e.which === 13) {
+        if (e.which === 13 || e.keyCode === 13) {
+            e.preventDefault(); // Prevent the default action of adding a new line
             const message = document.getElementById('message-input').value;
             sendMessage(message);
             return false;
