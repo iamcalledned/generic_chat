@@ -109,3 +109,8 @@ export function sendPersona() {
     document.getElementById('personaSelection').classList.remove('show');
     clearMessages(); // Clear old messages when switching persona
 }
+
+// New function to get the socket instance
+export function getSocket() {
+    return socket;
+}

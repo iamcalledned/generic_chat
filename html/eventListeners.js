@@ -1,4 +1,4 @@
-import { sendMessage, loadMoreMessages, sendPersona } from './websocket.js';
+import { sendMessage, loadMoreMessages, sendPersona, getSocket } from './websocket.js';
 import { printRecipe } from './utilities.js';
 
 export function addEventListeners() {
@@ -79,7 +79,8 @@ export function addEventListeners() {
 
     document.getElementById('deleteSelectedBtn').addEventListener('click', function() {
         const selectedThreadIDs = Array.from(document.querySelectorAll('#threadsList input:checked')).map(input => input.value);
-        if (selectedThreadIDs.length > 0) {
+        const socket = getSocket();
+        if (selectedThreadIDs.length > 0 && socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ action: 'delete_selected_threads', threadIDs: selectedThreadIDs }));
             document.getElementById('overlay').style.display = 'none';
         } else {
@@ -88,6 +89,7 @@ export function addEventListeners() {
     });
 
     document.getElementById('clear_conversations').addEventListener('click', function() {
+        const socket = getSocket();
         if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({ action: 'clear_conversations', persona: persona }));
         }
