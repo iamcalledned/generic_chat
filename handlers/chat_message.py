@@ -9,8 +9,8 @@ async def handle_chat_message(websocket, data_dict, pool, username, client_ip, p
     print("persona from handle_chat_message:", persona)
     response_json, content_type, recipe_id = await generate_answer(pool, username, message, client_ip, uuid, persona)
     print("Raw response JSON:", json.dumps(response_json, indent=2))
-    response_text = format_response(response_json, content_type)
-    print("Response text:", response_text)
+    #response_text = format_response(response_json, content_type)
+    #print("Response text:", response_text)
     response = {
         'response': response_json,
         'type': content_type,
