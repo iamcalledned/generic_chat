@@ -1,4 +1,14 @@
-import { createMessageElement } from './ui.js';
+export function printRecipe(buttonElement) {
+    const recipeContainer = buttonElement.closest('.recipe-container');
+    if (recipeContainer) {
+        const printContents = recipeContainer.innerHTML;
+        const originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.reload(); // Reload the page to restore the original contents
+    }
+}
 
 export function showTypingIndicator() {
     document.getElementById('typing-container').style.display = 'flex';
