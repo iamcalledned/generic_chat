@@ -147,39 +147,43 @@ async def callback(request: Request, code: str, state: str):
         logging.error(f"Error deleting code verifier: {e}")
         print(f"Error deleting code verifier: {e}")
 
-    decoded_token = None
     try:
         tokens = await exchange_code_for_token(code, code_verifier)
-        if tokens:
-            id_token = tokens['id_token']
+    except Exception as e:
+        logging.error(f"Error exchanging code for token: {e}")
+        print(f"Error exchanging code for token: {e}")
+
+    if tokens:
+        id_token = tokens['id_token']
+        try:
             decoded_token = await validate_token(id_token)
-    except Exception as e:
-        logging.error(f"Error exchanging code for token or validating token: {e}")
-        print(f"Error exchanging code for token or validating token: {e}")
+        except Exception as e:
+            logging.error(f"Error validating token: {e}")
+            print(f"Error validating token: {e}")
 
-    if not decoded_token:
-        raise HTTPException(status_code=400, detail="Token validation failed")
+        # Create a session ID and store it in Redis
+        session_id = os.urandom(24).hex()
+        session_data = {
+            'email': decoded_token.get('email', 'unknown'),
+            'username': decoded_token.get('cognito:username', 'unknown'),
+            'name': decoded_token.get('name', 'unknown'),
+            'session_id': session_id
+        }
 
-    # Create a session ID and store it in Redis
-    session_id = os.urandom(24).hex()
-    session_data = {
-        'email': decoded_token.get('email', 'unknown'),
-        'username': decoded_token.get('cognito:username', 'unknown'),
-        'name': decoded_token.get('name', 'unknown'),
-        'session_id': session_id
-    }
+        try:
+            redis_client.set(session_id, json.dumps(session_data), ex=3600)  # ex is expiry time in seconds
+        except Exception as e:
+            logging.error(f"Error saving session data to Redis: {e}")
+            print(f"Error saving session data to Redis: {e}")
 
-    try:
-        redis_client.set(session_id, json.dumps(session_data), ex=3600)  # ex is expiry time in seconds
-    except Exception as e:
-        logging.error(f"Error saving session data to Redis: {e}")
-        print(f"Error saving session data to Redis: {e}")
+        # Generate a JWT token
+        jwt_token = create_jwt_token({"session_id": session_id})
 
-    # Generate a JWT token
-    jwt_token = create_jwt_token({"session_id": session_id})
+        # Return the JWT token in the response
+        return JSONResponse(content={"token": jwt_token})
 
-    # Return the JWT token in the response
-    return JSONResponse(content={"token": jwt_token})
+    else:
+        return 'Error during token exchange.', 400
 
 ##################################################################
 ######!!!!     End callback endpoint   !!!!!######################
