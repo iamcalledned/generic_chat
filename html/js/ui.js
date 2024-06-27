@@ -90,7 +90,7 @@ export function formatMessageContent(message) {
         }
     }
     if (message.type === 'recipe') {
-        let responseText = `<div class='recipe-container'><h2>${message.title}</h2>`;
+        let responseText = `<div class='recipe-container'><h2>A recipe for: ${message.title}</h2>`;
         responseText += `<p><strong>Prep time:</strong> ${message.prep_time}</p>`;
         responseText += `<p><strong>Cook time:</strong> ${message.cook_time}</p>`;
         responseText += `<p><strong>Total time:</strong> ${message.total_time}</p>`;
