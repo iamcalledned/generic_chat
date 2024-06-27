@@ -1,7 +1,8 @@
 import asyncio
 import logging
-from utilities.db import create_db_pool, delete_old_verifiers
+from utils.db import create_db_pool, delete_old_verifiers
 from config import Config
+from main import app  # Import the app instance from main.py
 
 log_file_path = Config.LOG_PATH
 LOG_FORMAT = 'LOGIN-PROCESS -  %(asctime)s - %(processName)s - %(name)s - %(levelname)s - %(message)s'

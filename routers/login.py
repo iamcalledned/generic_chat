@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Request, HTTPException
 from starlette.responses import RedirectResponse
-from utilities.verifier import generate_code_verifier_and_challenge, save_code_verifier, get_code_verifier, delete_code_verifier
-from utilities.token import exchange_code_for_token, validate_token
+from utils.verifier import generate_code_verifier_and_challenge, save_code_verifier, get_code_verifier, delete_code_verifier
+from utils.token import exchange_code_for_token, validate_token
 from config import Config
+from main import app  # Import the app instance from main.py
 import os
 import datetime
 import logging
