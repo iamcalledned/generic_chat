@@ -121,3 +121,27 @@ export function getSocket() {
 export function getPersona() {
     return persona;
 }
+
+// Initialize event listeners when the script loads
+document.getElementById('send-button').onclick = () => {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    if (message.length > 0) {
+        sendMessage(message);
+        messageInput.value = '';
+    }
+};
+
+document.getElementById('message-input').onkeypress = (event) => {
+    if (event.key === 'Enter') {
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim();
+        if (message.length > 0) {
+            sendMessage(message);
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+};
+
+initializeWebSocket();

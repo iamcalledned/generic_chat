@@ -1,15 +1,6 @@
 export function printRecipe(buttonElement) {
     const recipeContainer = buttonElement.closest('.recipe-container');
     if (recipeContainer) {
-        // Create a hidden print container if it doesn't exist
-        let printContainer = document.getElementById('printContainer');
-        if (!printContainer) {
-            printContainer = document.createElement('div');
-            printContainer.id = 'printContainer';
-            printContainer.style.display = 'none';
-            document.body.appendChild(printContainer);
-        }
-
         const printContents = recipeContainer.innerHTML;
 
         const styles = `
@@ -36,10 +27,18 @@ export function printRecipe(buttonElement) {
             </style>
         `;
 
-        printContainer.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
-
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(printContainer.innerHTML);
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Recipe</title>
+                    ${styles}
+                </head>
+                <body>
+                    <div class="recipe-container">${printContents}</div>
+                </body>
+            </html>
+        `);
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
