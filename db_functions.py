@@ -279,13 +279,13 @@ async def save_code_verifier(pool, state: str, code_verifier: str, client_ip: st
         async with conn.cursor() as cur:
             await cur.execute("INSERT INTO verifier_store (state, code_verifier, client_ip, login_timestamp) VALUES (%s, %s, %s, %s)", (state, code_verifier, client_ip, login_timestamp))
 
-# Retrieve the code_verifier using the state
-async def get_code_verifier(pool, state: str) -> str:
+async def get_code_verifier(pool, state):
     async with pool.acquire() as conn:
-        async with conn.cursor() as cur:
-            await cur.execute("SELECT code_verifier FROM verifier_store WHERE state = %s", (state,))
-            result = await cur.fetchone()
+        async with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            await cursor.execute("SELECT code_verifier FROM code_verifiers WHERE state=%s", (state,))
+            result = await cursor.fetchone()
             return result['code_verifier'] if result else None
+
         
 # delete the code verifier
 async def delete_code_verifier(pool, state: str) -> str:

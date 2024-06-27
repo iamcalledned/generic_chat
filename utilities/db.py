@@ -11,6 +11,7 @@ async def create_db_pool():
         db=Config.DB_NAME,
         charset="utf8mb4",
         autocommit=True,
+        cursorclass=pymysql.cursors.DictCursor  # Ensure DictCursor is used here
     )
 
 async def get_data_from_db(session_id, pool):
