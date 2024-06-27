@@ -2,6 +2,7 @@ import httpx
 import jwt
 from jwt.algorithms import RSAAlgorithm
 from config import Config
+import json
 
 async def exchange_code_for_token(code, code_verifier):
     token_url = f"{Config.COGNITO_DOMAIN}/oauth2/token"
