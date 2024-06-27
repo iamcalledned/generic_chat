@@ -1,16 +1,22 @@
 import asyncio
 import json
 import logging
-import traceback
 from uuid import uuid4
+import traceback
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Request, Depends, status, Body
 from starlette.websockets import WebSocket
-
 from config import Config
-from utils.db_functions import create_db_pool, verify_session_id
-from handlers import handle_chat_message, handle_clear_conversations, handle_delete_selected_threads, handle_load_more_messages, handle_pong, handle_select_persona
-from utils.utilities import clear_session_data_after_timeout, format_response
+from db_functions import create_db_pool, get_user_id, get_active_thread_for_user, get_recent_messages
+from handlers import (
+    handle_chat_message,
+    handle_clear_conversations,
+    handle_delete_selected_threads,
+    handle_load_more_messages,
+    handle_pong,
+    handle_select_persona
+)
+from utilities import clear_session_data_after_timeout, verify_session_id, format_response
 
 import redis
 
@@ -115,9 +121,6 @@ async def websocket_endpoint(websocket: WebSocket):
     connection_data = {'username': None, 'persona': None}  # Initialize connection-specific data
     connections[session_id] = connection_data
 
-    # Store connection in Redis
-    redis_client.hset('active_users', session_id, json.dumps(connection_data))
-
     async def ping_client():
         while True:
             try:
@@ -139,8 +142,6 @@ async def websocket_endpoint(websocket: WebSocket):
             if session_data:
                 session_data = json.loads(session_data)
                 connection_data['username'] = session_data['username']
-                # Update Redis with username
-                redis_client.hset('active_users', session_id, json.dumps(connection_data))
                 # Renew the session expiry time upon successful connection
                 redis_client.expire(session_id, 3600)  # Reset expiry to another hour
 
@@ -178,7 +179,7 @@ async def websocket_endpoint(websocket: WebSocket):
             elif action == 'pong':
                 await handle_pong(websocket, redis_client, session_id)
             elif action == 'load_more_messages':
-                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
+                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'],connection_data['persona'])
             elif action == 'clear_conversations':
                 print("hit clear conversation for user", connection_data['username'])
                 await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
@@ -193,9 +194,6 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"WebSocket disconnected for user {connection_data['username']}")
         print(f"Connections: {connections}")
         print(f"sessionid:", session_id)
-
-        # Remove connection from Redis
-        redis_client.hdel('active_users', session_id)
 
         # Attempt to clear user data from Redis
         if session_id:
@@ -218,33 +216,6 @@ async def validate_session(request: Request):
         return {"status": "valid"}
     else:
         return {"status": "invalid"}
-
-# Endpoint to get connections
-@router.get("/api/get_connections")
-async def get_connections():
-    connections = redis_client.hgetall('active_users')
-    # Decode the bytes to string and parse JSON
-    parsed_connections = {k.decode('utf-8'): json.loads(v.decode('utf-8')) for k, v in connections.items()}
-    return parsed_connections
-
-# Endpoint to send a message
-@router.post("/api/send_message")
-async def send_message(request: Request):
-    data = await request.json()
-    username = data.get('username')
-    message = data.get('message')
-
-    if username:
-        # Send to a specific user
-        for session_id, connection_data in connections.items():
-            if connection_data['username'] == username:
-                await websocket.send_text(json.dumps({'action': 'chat_message', 'message': message}), room=session_id)
-    else:
-        # Send to all users
-        for session_id in connections:
-            await websocket.send_text(json.dumps({'action': 'chat_message', 'message': message}), room=session_id)
-
-    return {"status": "success"}
 
 # Run with Uvicorn
 if __name__ == "__main__":

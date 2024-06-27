@@ -12,26 +12,15 @@ export function initializeWebSocket() {
         socket = new WebSocket(WEBSOCKET_URL);
 
         socket.onopen = function() {
-            // Store user connection info in Redis
+        //*    socket.send(JSON.stringify({ action: 'load_messages' }));
             reconnectInterval = 1000;
-            fetch('/api/store_connection', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'username', socket_id: socket.id })
-            });    
         };
 
         socket.onclose = function() {
-            // Remove user connection info from Redis
-            fetch('/api/remove_connection', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'username' })
-            });
             setTimeout(reconnectWebSocket, reconnectInterval);
             reconnectInterval = Math.min(reconnectInterval * 2, MAX_RECONNECT_INTERVAL);
         };
-        
+
         socket.onmessage = function(event) {
             const msg = JSON.parse(event.data);
             handleMessage(msg);
