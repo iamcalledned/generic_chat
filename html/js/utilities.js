@@ -1,12 +1,17 @@
 export function printRecipe(buttonElement) {
     const recipeContainer = buttonElement.closest('.recipe-container');
     if (recipeContainer) {
-        const printContainer = document.createElement('div');
-        printContainer.id = 'printContainer'; // Assign an ID for easy removal
-        printContainer.style.display = 'block'; // Ensure the container is visible for printing
+        // Create a hidden print container if it doesn't exist
+        let printContainer = document.getElementById('printContainer');
+        if (!printContainer) {
+            printContainer = document.createElement('div');
+            printContainer.id = 'printContainer';
+            printContainer.style.display = 'none';
+            document.body.appendChild(printContainer);
+        }
 
         const printContents = recipeContainer.innerHTML;
-        
+
         const styles = `
             <style>
                 body {
@@ -32,18 +37,15 @@ export function printRecipe(buttonElement) {
         `;
 
         printContainer.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
-        document.body.appendChild(printContainer);
 
-        const originalBody = document.body.innerHTML;
-        document.body.innerHTML = printContainer.outerHTML; // Set body content to print container
-        
-        window.print();
-
-        document.body.innerHTML = originalBody; // Restore the original body content
-        document.getElementById('printContainer').remove(); // Clean up the print container
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(printContainer.innerHTML);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
     }
 }
-
 
 export function showTypingIndicator() {
     document.getElementById('typing-container').style.display = 'flex';
