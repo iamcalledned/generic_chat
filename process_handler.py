@@ -10,7 +10,6 @@ import os
 import base64
 import hashlib
 import httpx
-import jwt
 import datetime
 import json
 import time
@@ -46,6 +45,11 @@ app = FastAPI()
 # Define session middleware
 SESSION_SECRET_KEY = os.urandom(24).hex()
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY)
+
+# Define JWT secret key
+JWT_SECRET_KEY = os.urandom(24).hex()
+JWT_ALGORITHM = 'HS256'
+JWT_EXPIRATION_TIME_MINUTES = 60
 
 #####!!!!  Startup   !!!!!!################
 @app.on_event("startup")
@@ -113,12 +117,7 @@ async def login(request: Request):
 ######!!!!     Start callback  endpoint!!!!!######################
 ##################################################################
 
-# Define a secret key to sign the JWT tokens
-JWT_SECRET_KEY = Config.JWT_SECRET_KEY
-JWT_ALGORITHM = 'HS256'
-JWT_EXPIRATION_TIME_MINUTES = 60
-
-def create_jwt_token(data: dict, expires_delta: timedelta = timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)):
+def create_jwt_token(data: dict, expires_delta: datetime.timedelta = datetime.timedelta(minutes=JWT_EXPIRATION_TIME_MINUTES)):
     to_encode = data.copy()
     expire = datetime.datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})
