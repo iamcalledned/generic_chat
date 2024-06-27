@@ -427,3 +427,38 @@ button:hover {
 .print-recipe-button:hover {
     background-color: #0056b3;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap');
+
+.recipe-container {
+    font-family: 'Homemade Apple', cursive;
+    background: url('https://www.transparenttextures.com/patterns/linen.png'), #fff6e1; /* Subtle texture with a light background */
+    border: 2px solid #d4a373;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-container h2 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.recipe-container h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #d4a373;
+    padding-bottom: 5px;
+}
+
+.recipe-container p, .recipe-container li {
+    color: #555;
+    font-size: 1.1em;
+    line-height: 1.6em;
+}
+
+.recipe-container button {
+    display: none; /* Hide the print button in the print version */
+}
