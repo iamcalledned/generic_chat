@@ -2,7 +2,8 @@ export function printRecipe(buttonElement) {
     const recipeContainer = buttonElement.closest('.recipe-container');
     if (recipeContainer) {
         const printContainer = document.createElement('div');
-        printContainer.style.display = 'none'; // Hide the container initially
+        printContainer.id = 'printContainer'; // Assign an ID for easy removal
+        printContainer.style.display = 'block'; // Ensure the container is visible for printing
 
         const printContents = recipeContainer.innerHTML;
         
@@ -33,14 +34,13 @@ export function printRecipe(buttonElement) {
         printContainer.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
         document.body.appendChild(printContainer);
 
-        const originalDisplay = document.body.style.display;
-        document.body.style.display = 'none'; // Hide the original content
-        printContainer.style.display = 'block'; // Show the print container
-
+        const originalBody = document.body.innerHTML;
+        document.body.innerHTML = printContainer.outerHTML; // Set body content to print container
+        
         window.print();
 
-        document.body.style.display = originalDisplay; // Restore the original content display
-        printContainer.remove(); // Remove the temporary print container
+        document.body.innerHTML = originalBody; // Restore the original body content
+        document.getElementById('printContainer').remove(); // Clean up the print container
     }
 }
 
