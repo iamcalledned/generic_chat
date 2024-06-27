@@ -12,7 +12,6 @@ export function initializeWebSocket() {
         socket = new WebSocket(WEBSOCKET_URL);
 
         socket.onopen = function() {
-            console.log('WebSocket connection established');
             // Store user connection info in Redis
             reconnectInterval = 1000;
             fetch('/api/store_connection', {
@@ -20,6 +19,7 @@ export function initializeWebSocket() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: 'username', socket_id: socket.id })
             });    
+            console.log('WebSocket connection established');
         };
 
         socket.onclose = function() {
