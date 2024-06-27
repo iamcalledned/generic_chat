@@ -7,12 +7,14 @@ let reconnectInterval = 1000;
 const MAX_RECONNECT_INTERVAL = 30000;
 let persona = "";
 
+window.printRecipe = printRecipe;  // Make printRecipe globally accessible
+
 export function initializeWebSocket() {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
         socket = new WebSocket(WEBSOCKET_URL);
 
         socket.onopen = function() {
-        //*    socket.send(JSON.stringify({ action: 'load_messages' }));
+            console.log('WebSocket connection established');
             reconnectInterval = 1000;
         };
 
