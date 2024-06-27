@@ -24,4 +24,4 @@ async def schedule_verifier_cleanup(pool):
         await asyncio.sleep(600)
 
 def setup_startup_event(app):
-    app.add_event_handler("startup", lambda: startup_event(app))
+    app.add_event_handler("startup", lambda: asyncio.create_task(startup_event(app)))  # Properly await the coroutine
