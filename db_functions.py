@@ -282,7 +282,7 @@ async def save_code_verifier(pool, state: str, code_verifier: str, client_ip: st
 async def get_code_verifier(pool, state):
     async with pool.acquire() as conn:
         async with conn.cursor(aiomysql.DictCursor) as cursor:
-            await cursor.execute("SELECT code_verifier FROM code_verifiers WHERE state=%s", (state,))
+            await cursor.execute("SELECT code_verifier FROM verifier_store WHERE state=%s", (state,))
             result = await cursor.fetchone()
             return result['code_verifier'] if result else None
         
