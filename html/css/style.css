@@ -412,22 +412,6 @@ button:hover {
     border-radius: 10px;
     margin: 10px 0;
 }
-.print-recipe-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
-}
-
-.print-recipe-button:hover {
-    background-color: #0056b3;
-}
-
 @import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap');
 
 .recipe-container {
@@ -444,6 +428,7 @@ button:hover {
     text-align: center;
     font-size: 1.8em;
     margin-bottom: 10px;
+    color: #d97742; /* A nice brownish color for headings */
 }
 
 .recipe-container h3 {
@@ -451,6 +436,7 @@ button:hover {
     margin-bottom: 10px;
     border-bottom: 1px solid #d4a373;
     padding-bottom: 5px;
+    color: #d97742;
 }
 
 .recipe-container p, .recipe-container li {
@@ -459,6 +445,25 @@ button:hover {
     line-height: 1.6em;
 }
 
-.recipe-container button {
-    display: none; /* Hide the print button in the print version */
+.print-recipe-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #d4a373;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Homemade Apple', cursive;
+}
+
+.print-recipe-button:hover {
+    background-color: #c06937;
+}
+
+/* Hide the print button in the print version */
+@media print {
+    .print-recipe-button {
+        display: none;
+    }
 }
