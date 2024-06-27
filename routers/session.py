@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException
 from starlette.responses import JSONResponse
-from utils.db import get_data_from_db
+from utilities.db import get_data_from_db
 
 router = APIRouter()
 

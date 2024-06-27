@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from utils.db import create_db_pool, delete_old_verifiers
+from utilities.db import create_db_pool, delete_old_verifiers
 from config import Config
 
 log_file_path = Config.LOG_PATH
