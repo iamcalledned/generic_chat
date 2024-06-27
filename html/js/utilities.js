@@ -3,7 +3,8 @@ export function printRecipe(buttonElement) {
     if (recipeContainer) {
         const printContents = recipeContainer.innerHTML;
         const originalContents = document.body.innerHTML;
-
+        const originalScrollPosition = document.getElementById('messages').scrollTop;
+        
         const styles = `
             <style>
                 body {
@@ -31,6 +32,11 @@ export function printRecipe(buttonElement) {
         document.body.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
         window.print();
         document.body.innerHTML = originalContents;
+
+        // Restore scroll position
+        const messagesContainer = document.getElementById('messages');
+        messagesContainer.scrollTop = originalScrollPosition;
+        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to the bottom
     }
 }
 
