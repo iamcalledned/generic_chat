@@ -27,22 +27,46 @@ export function printRecipe(buttonElement) {
             </style>
         `;
 
-        const printWindow = window.open('', '_blank', 'width=800,height=600');
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Print Recipe</title>
-                    ${styles}
-                </head>
-                <body>
-                    <div class="recipe-container">${printContents}</div>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // Handle mobile printing by opening a new tab and triggering print
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Recipe</title>
+                        ${styles}
+                    </head>
+                    <body>
+                        <div class="recipe-container">${printContents}</div>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            // Close the print window after printing (necessary for some mobile browsers)
+            setTimeout(() => printWindow.close(), 1000);
+        } else {
+            // Handle desktop printing
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Recipe</title>
+                        ${styles}
+                    </head>
+                    <body>
+                        <div class="recipe-container">${printContents}</div>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }
     }
 }
 
