@@ -1,4 +1,3 @@
-import pymysql
 import aiomysql
 from config import Config
 
@@ -11,12 +10,12 @@ async def create_db_pool():
         db=Config.DB_NAME,
         charset="utf8mb4",
         autocommit=True,
-        cursorclass=pymysql.cursors.DictCursor  # Ensure DictCursor is used here
+        cursorclass=aiomysql.DictCursor  # Ensure aiomysql.DictCursor is used here
     )
 
 async def get_data_from_db(session_id, pool):
     async with pool.acquire() as conn:
-        async with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
             await cursor.execute("SELECT * FROM userdata WHERE session_id=%s", (session_id,))
             result = await cursor.fetchone()
             return result
