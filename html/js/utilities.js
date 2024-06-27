@@ -3,70 +3,95 @@ export function printRecipe(buttonElement) {
     if (recipeContainer) {
         const printContents = recipeContainer.innerHTML;
 
-        const styles = `
+        const printStyles = `
             <style>
-                body {
-                    font-family: Arial, sans-serif;
-                }
-                .recipe-container {
-                    margin: 20px;
-                    padding: 20px;
-                    border: 1px solid #ccc;
-                    border-radius: 10px;
-                    background-color: #f9f9f9;
-                }
-                .recipe-container h2, .recipe-container h3 {
-                    color: #333;
-                }
-                .recipe-container p, .recipe-container li {
-                    color: #666;
-                }
-                .recipe-container button {
-                    display: none; /* Hide the print button in the print version */
+                @import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap');
+                @media print {
+                    body {
+                        font-family: 'Homemade Apple', cursive;
+                        background: white;
+                    }
+                    .recipe-card {
+                        width: 100%;
+                        max-width: 900px;
+                        margin: auto;
+                        padding: 20px;
+                        border: 1px solid #ccc;
+                        border-radius: 10px;
+                        background: white;
+                        box-shadow: none;
+                    }
+                    .recipe-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        border-bottom: 1px solid #ccc;
+                        padding-bottom: 10px;
+                        margin-bottom: 10px;
+                    }
+                    .recipe-title {
+                        font-size: 2em;
+                        text-align: left;
+                    }
+                    .recipe-icons {
+                        display: flex;
+                        gap: 10px;
+                    }
+                    .recipe-icons img {
+                        height: 40px;
+                    }
+                    .recipe-ingredients,
+                    .recipe-instructions {
+                        width: 45%;
+                    }
+                    .recipe-content {
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .recipe-footer {
+                        text-align: right;
+                        margin-top: 20px;
+                    }
                 }
             </style>
         `;
 
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        if (isMobile) {
-            // Handle mobile printing by opening a new tab and triggering print
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Print Recipe</title>
-                        ${styles}
-                    </head>
-                    <body>
-                        <div class="recipe-container">${printContents}</div>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-            // Close the print window after printing (necessary for some mobile browsers)
-            setTimeout(() => printWindow.close(), 1000);
-        } else {
-            // Handle desktop printing
-            const printWindow = window.open('', '_blank', 'width=800,height=600');
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Print Recipe</title>
-                        ${styles}
-                    </head>
-                    <body>
-                        <div class="recipe-container">${printContents}</div>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
-        }
+        const printWindow = window.open('', '_blank', 'width=900,height=600');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Recipe</title>
+                    ${printStyles}
+                </head>
+                <body>
+                    <div class="recipe-card">
+                        <div class="recipe-header">
+                            <div class="recipe-title">Recipe</div>
+                            <div class="recipe-icons">
+                                <img src="https://path.to/teapot-icon.png" alt="Teapot">
+                                <img src="https://path.to/utensils-icon.png" alt="Utensils">
+                                <!-- Add more icons as needed -->
+                            </div>
+                        </div>
+                        <div class="recipe-content">
+                            <div class="recipe-ingredients">
+                                <h3>Ingredients</h3>
+                                ${recipeContainer.querySelector('.ingredients').innerHTML}
+                            </div>
+                            <div class="recipe-instructions">
+                                <h3>Directions</h3>
+                                ${recipeContainer.querySelector('.instructions').innerHTML}
+                            </div>
+                        </div>
+                        <div class="recipe-footer">from the kitchen of ${message.from}</div>
+                    </div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
     }
 }
 

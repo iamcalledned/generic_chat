@@ -414,58 +414,50 @@ button:hover {
 }
 @import url('https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap');
 
-.recipe-container {
-    font-family: 'Homemade Apple', cursive;
-    background: url('https://www.transparenttextures.com/patterns/linen.png'), #fff6e1; /* Subtle texture with a light background */
-    border: 2px solid #d4a373;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px auto; /* Center the card */
-    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px; /* Set a maximum width for the card */
-    width: 100%; /* Make the card take up 100% of the container width up to the max-width */
-}
-
-.recipe-container h2 {
-    text-align: center;
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    color: #d97742; /* A nice brownish color for headings */
-}
-
-.recipe-container h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #d4a373;
-    padding-bottom: 5px;
-    color: #d97742;
-}
-
-.recipe-container p, .recipe-container li {
-    color: #555;
-    font-size: 1.1em;
-    line-height: 1.6em;
-}
-
-.print-recipe-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-top: 10px;
-    background-color: #d4a373;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Homemade Apple', cursive;
-}
-
-.print-recipe-button:hover {
-    background-color: #c06937;
-}
-
-/* Hide the print button in the print version */
 @media print {
-    .print-recipe-button {
-        display: none;
+    body {
+        font-family: 'Homemade Apple', cursive;
+        background: white;
+    }
+    .recipe-card {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background: white;
+        box-shadow: none;
+    }
+    .recipe-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+    .recipe-title {
+        font-size: 2em;
+        text-align: left;
+    }
+    .recipe-icons {
+        display: flex;
+        gap: 10px;
+    }
+    .recipe-icons img {
+        height: 40px;
+    }
+    .recipe-ingredients,
+    .recipe-instructions {
+        width: 45%;
+    }
+    .recipe-content {
+        display: flex;
+        justify-content: space-between;
+    }
+    .recipe-footer {
+        text-align: right;
+        margin-top: 20px;
     }
 }
