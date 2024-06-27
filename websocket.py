@@ -225,7 +225,6 @@ async def store_connection(request: Request):
     username = data['username']
     socket_id = data['socket_id']
     redis_client.hset('connections', username, socket_id)
-    print("Stored connection for user", username)
     return JSONResponse({'status': 'success'})
 
 @app.post("/api/remove_connection")
