@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from utils.db import create_db_pool, delete_old_verifiers
+from utilities.db import create_db_pool, delete_old_verifiers
 from config import Config
 from main import app  # Import the app instance from main.py
 
