@@ -17,7 +17,6 @@ from handlers import (
     handle_select_persona
 )
 from utilities import clear_session_data_after_timeout, verify_session_id, format_response
-from fastapi.responses import JSONResponse
 
 import redis
 
@@ -217,26 +216,6 @@ async def validate_session(request: Request):
         return {"status": "valid"}
     else:
         return {"status": "invalid"}
-
-# Endpoint to store connection
-@app.post('/api/store_connection')
-async def store_connection(request: Request):
-    data = await request.json()
-    username = data['username']
-    socket_id = data['socket_id']
-    redis_client.hset('connections', username, socket_id)
-    return JSONResponse({'status': 'success'})
-
-@app.post("/api/remove_connection")
-async def remove_connection(request: Request):
-    data = await request.json()
-    username = data.get('username')  # or session_id depending on your implementation
-    if username:
-        redis_client.hdel('connections', username)
-        return JSONResponse({'status': 'success'})
-    else:
-        raise HTTPException(status_code=400, detail="Invalid username")
-
 # Endpoint to get connections
 @router.get("/api/get_connections")
 async def get_connections():
