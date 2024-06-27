@@ -28,10 +28,9 @@ export function printRecipe(buttonElement) {
             </style>
         `;
 
-        document.body.innerHTML = styles + printContents;
+        document.body.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
         window.print();
         document.body.innerHTML = originalContents;
-        window.location.reload(); // Reload the page to restore the original contents
     }
 }
 
