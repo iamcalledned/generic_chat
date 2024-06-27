@@ -1,9 +1,10 @@
+# websocket.py
+
 import asyncio
 import json
 import logging
 from uuid import uuid4
 import traceback
-
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, APIRouter, Request, Depends, status, Body
 from starlette.websockets import WebSocket
 from config import Config
@@ -19,6 +20,7 @@ from handlers import (
 from utilities import clear_session_data_after_timeout, verify_session_id, format_response
 
 import redis
+from jose import JWTError, jwt  # Import JWT library for token validation
 
 # Initialize Redis client
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
@@ -102,30 +104,40 @@ async def startup_event():
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    cookies = websocket.cookies
-    session_id_from_cookies = cookies.get('session_id')
-    print('sessionID from cookies:', session_id_from_cookies)
+    token = websocket.headers.get('Authorization')
+    if not token:
+        await websocket.close(code=1008)
+        return
 
-    # Verify session ID before accepting the WebSocket connection
-    if not await verify_session_id(session_id_from_cookies, redis_client):
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        session_id = payload.get("session_id")
+        if not session_id:
+            await websocket.close(code=1008)
+            return
+
+        session_data = redis_client.get(session_id)
+        if not session_data:
+            await websocket.close(code=1008)
+            return
+
+        session_data = json.loads(session_data)
+        connection_data = {'username': session_data['username'], 'persona': None}
+        connections[session_id] = connection_data
+
+    except JWTError:
         await websocket.close(code=1008)
         return
 
     await websocket.accept()
     client_host, client_port = websocket.client
     client_ip = client_host
-    print(f"Client IP: {client_ip}")
-    print("connections at websocket_endpoint:", connections)
-
-    session_id = session_id_from_cookies
-    connection_data = {'username': None, 'persona': None}  # Initialize connection-specific data
-    connections[session_id] = connection_data
 
     async def ping_client():
         while True:
             try:
                 await websocket.send_text(json.dumps({'action': 'ping'}))
-                await asyncio.sleep(30)  # Send a ping every 30 seconds
+                await asyncio.sleep(30)
             except Exception as e:
                 print(f"Error sending ping: {e}")
                 break
@@ -135,53 +147,28 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         initial_data = await websocket.receive_text()
         initial_data = json.loads(initial_data)
-        print('sessionID from cookies:', session_id)
-
-        if session_id:
-            session_data = redis_client.get(session_id)
-            if session_data:
-                session_data = json.loads(session_data)
-                connection_data['username'] = session_data['username']
-                # Renew the session expiry time upon successful connection
-                redis_client.expire(session_id, 3600)  # Reset expiry to another hour
-
-                # First, ask the user to select a persona
-                await websocket.send_text(json.dumps({
-                    'action': 'select_persona'
-                }))
-                print('sent persona request')
-
-            else:
-                await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Session ID required'}))
-                await websocket.close(code=1008)
-                return
 
         while True:
             data = await websocket.receive_text()
             data_dict = json.loads(data)
-            print('data: ', data_dict)
 
-            # Validate session_id
             if not session_id or not redis_client.exists(session_id):
                 await websocket.send_text(json.dumps({'action': 'redirect_login', 'error': 'Invalid or expired session'}))
                 await websocket.close(code=1008)
                 return
 
-            # Renew the session expiry time
             redis_client.expire(session_id, 3600)
 
-            # Dispatch action to the appropriate handler
             action = data_dict.get('action')
             connection_data['persona'] = data_dict.get('persona')
             if action == 'persona_selected':
-                connection_data['persona'] = data_dict.get('persona')  # Set the persona when selected
+                connection_data['persona'] = data_dict.get('persona')
                 await handle_select_persona(websocket, data_dict, app.state.pool, connection_data['username'])
             elif action == 'pong':
                 await handle_pong(websocket, redis_client, session_id)
             elif action == 'load_more_messages':
-                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'],connection_data['persona'])
+                await handle_load_more_messages(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
             elif action == 'clear_conversations':
-                print("hit clear conversation for user", connection_data['username'])
                 await handle_clear_conversations(websocket, data_dict, app.state.pool, connection_data['username'], connection_data['persona'])
             elif action == 'delete_selected_threads':
                 await handle_delete_selected_threads(websocket, data_dict, app.state.pool, connection_data['username'])
@@ -192,17 +179,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
     except WebSocketDisconnect:
         print(f"WebSocket disconnected for user {connection_data['username']}")
-        print(f"Connections: {connections}")
-        print(f"sessionid:", session_id)
-
-        # Attempt to clear user data from Redis
         if session_id:
-            # Schedule the task instead of immediate deletion
             task = asyncio.create_task(clear_session_data_after_timeout(session_id, connection_data['username'], redis_client, app.state.pool))
             tasks[session_id] = task
-
         connections.pop(session_id, None)
-
     except Exception as e:
         print(f"Unhandled exception for user {connection_data['username']}: {e}")
         print("Exception Traceback: " + traceback.format_exc())

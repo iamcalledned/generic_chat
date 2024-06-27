@@ -6,12 +6,17 @@ let socket;
 let reconnectInterval = 1000;
 const MAX_RECONNECT_INTERVAL = 30000;
 let persona = "";
+let token = "";  // Variable to store the token
 
 window.printRecipe = printRecipe;  // Make printRecipe globally accessible
 
-export function initializeWebSocket() {
+export function setToken(newToken) {
+    token = newToken;
+}
+
+export async function initializeWebSocket() {
     if (!socket || socket.readyState === WebSocket.CLOSED) {
-        socket = new WebSocket(WEBSOCKET_URL);
+        socket = new WebSocket(WEBSOCKET_URL, [], { headers: { Authorization: token } });
 
         socket.onopen = function() {
             console.log('WebSocket connection established');
@@ -121,27 +126,3 @@ export function getSocket() {
 export function getPersona() {
     return persona;
 }
-
-// Initialize event listeners when the script loads
-document.getElementById('send-button').onclick = () => {
-    const messageInput = document.getElementById('message-input');
-    const message = messageInput.value.trim();
-    if (message.length > 0) {
-        sendMessage(message);
-        messageInput.value = '';
-    }
-};
-
-document.getElementById('message-input').onkeypress = (event) => {
-    if (event.key === 'Enter') {
-        const messageInput = document.getElementById('message-input');
-        const message = messageInput.value.trim();
-        if (message.length > 0) {
-            sendMessage(message);
-            messageInput.value = '';
-        }
-        event.preventDefault();
-    }
-};
-
-initializeWebSocket();

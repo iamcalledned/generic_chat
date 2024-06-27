@@ -104,4 +104,13 @@ export function addEventListeners() {
     });
 
     document.getElementById('personaDropdownBtn').addEventListener('click', sendPersona);
+
+    // Retrieve the token from the server (this is just an example, adjust according to your authentication flow)
+    fetch('/api/get_token')
+        .then(response => response.json())
+        .then(data => {
+            setToken(data.token);
+            initializeWebSocket();
+        })
+        .catch(error => console.error('Error fetching token:', error));
 }
