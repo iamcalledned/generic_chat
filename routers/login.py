@@ -3,7 +3,6 @@ from starlette.responses import RedirectResponse
 from utilities.verifier import generate_code_verifier_and_challenge, save_code_verifier, get_code_verifier, delete_code_verifier
 from utilities.token import exchange_code_for_token, validate_token
 from config import Config
-from main import app  # Import the app instance from main.py
 import os
 import datetime
 import logging
@@ -24,7 +23,7 @@ async def login(request: Request):
     state = os.urandom(24).hex()
 
     try:
-        await save_code_verifier(app.state.pool, state, code_verifier, client_ip, login_timestamp)
+        await save_code_verifier(request.app.state.pool, state, code_verifier, client_ip, login_timestamp)
     except Exception as e:
         logging.error(f"Error saving code verifier: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
@@ -46,12 +45,12 @@ async def callback(request: Request, code: str, state: str):
     if not code:
         raise HTTPException(status_code=400, detail="Code parameter is missing")
 
-    code_verifier = await get_code_verifier(app.state.pool, state)
+    code_verifier = await get_code_verifier(request.app.state.pool, state)
     if not code_verifier:
         raise HTTPException(status_code=400, detail="Invalid state or code_verifier missing")
 
     try:
-        await delete_code_verifier(app.state.pool, state)
+        await delete_code_verifier(request.app.state.pool, state)
     except Exception as e:
         logging.error(f"Error deleting code verifier: {e}")
 
@@ -76,7 +75,7 @@ async def callback(request: Request, code: str, state: str):
         session['session_id'] = os.urandom(24).hex()
 
         try:
-            await save_user_info_to_userdata(app.state.pool, session)
+            await save_user_info_to_userdata(request.app.state.pool, session)
         except Exception as e:
             logging.error(f"Error saving user information to userdata: {e}")
 

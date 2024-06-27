@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request, HTTPException
 from starlette.responses import JSONResponse
 from utilities.db import get_data_from_db
-from main import app  # Import the app instance from main.py
 
 router = APIRouter()
 
@@ -12,7 +11,7 @@ async def get_session_data(request: Request):
     if not session_id:
         raise HTTPException(status_code=400, detail="Session ID not found in session data")
 
-    db_data = await get_data_from_db(session_id, app.state.pool)
+    db_data = await get_data_from_db(session_id, request.app.state.pool)
     state = db_data['state']
     username = db_data.get('username')
 

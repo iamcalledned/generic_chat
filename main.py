@@ -4,13 +4,13 @@ import uvicorn
 
 from middlewares import SESSION_SECRET_KEY
 from routers import login, session
-import startup
+from startup import setup_startup_event
 
 app = FastAPI()
 
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET_KEY)
 
-app.add_event_handler("startup", startup.startup_event)
+setup_startup_event(app)
 
 app.include_router(login.router)
 app.include_router(session.router)
