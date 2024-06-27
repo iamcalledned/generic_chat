@@ -1,9 +1,10 @@
 export function printRecipe(buttonElement) {
     const recipeContainer = buttonElement.closest('.recipe-container');
     if (recipeContainer) {
+        const printContainer = document.createElement('div');
+        printContainer.style.display = 'none'; // Hide the container initially
+
         const printContents = recipeContainer.innerHTML;
-        const originalContents = document.body.innerHTML;
-        const originalScrollPosition = document.getElementById('messages').scrollTop;
         
         const styles = `
             <style>
@@ -29,14 +30,17 @@ export function printRecipe(buttonElement) {
             </style>
         `;
 
-        document.body.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
-        window.print();
-        document.body.innerHTML = originalContents;
+        printContainer.innerHTML = `<div class="recipe-container">${printContents}</div>${styles}`;
+        document.body.appendChild(printContainer);
 
-        // Restore scroll position
-        const messagesContainer = document.getElementById('messages');
-        messagesContainer.scrollTop = originalScrollPosition;
-        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to the bottom
+        const originalDisplay = document.body.style.display;
+        document.body.style.display = 'none'; // Hide the original content
+        printContainer.style.display = 'block'; // Show the print container
+
+        window.print();
+
+        document.body.style.display = originalDisplay; // Restore the original content display
+        printContainer.remove(); // Remove the temporary print container
     }
 }
 
