@@ -3,12 +3,38 @@ export function printRecipe(buttonElement) {
     if (recipeContainer) {
         const printContents = recipeContainer.innerHTML;
         const originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
+
+        const styles = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                }
+                .recipe-container {
+                    margin: 20px;
+                    padding: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 10px;
+                    background-color: #f9f9f9;
+                }
+                .recipe-container h2, .recipe-container h3 {
+                    color: #333;
+                }
+                .recipe-container p, .recipe-container li {
+                    color: #666;
+                }
+                .recipe-container button {
+                    display: none; /* Hide the print button in the print version */
+                }
+            </style>
+        `;
+
+        document.body.innerHTML = styles + printContents;
         window.print();
         document.body.innerHTML = originalContents;
         window.location.reload(); // Reload the page to restore the original contents
     }
 }
+
 
 export function showTypingIndicator() {
     document.getElementById('typing-container').style.display = 'flex';
